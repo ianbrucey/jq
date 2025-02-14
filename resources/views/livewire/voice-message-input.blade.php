@@ -180,7 +180,7 @@
              x-transition:leave="transition ease-in duration-100"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="absolute inset-0 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/70 backdrop-blur-sm rounded-lg">
+             class="absolute inset-0 flex items-center justify-center bg-orange-500 rounded-lg" style="background: rgba(255, 165, 0, 0.7);">
             <div class="text-center">
                 <div class="animate-pulse flex items-center space-x-2 text-white">
                     <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -192,7 +192,6 @@
             </div>
         </div>
     </div>
-
     {{-- Voice Controls --}}
     <div class="flex space-x-2">
         {{-- Voice Recorder Button --}}
