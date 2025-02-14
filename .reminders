@@ -1,0 +1,18 @@
+# Project Reminders
+
+## Storage & Configuration Tasks
+- [ ] Set up Linode Object Storage lifecycle rules
+  - Run `php artisan linode:setup-lifecycle` command
+  - Verify temp files are being cleaned up after 24 hours
+  - Test by uploading a file to the temp directory
+  - Command location: `app/Console/Commands/SetupLinodeLifecycleRules.php`
+
+## Environment Setup Required
+- [ ] Ensure these Linode Object Storage credentials are set in `.env`:
+  ```
+  AWS_ACCESS_KEY_ID=
+  AWS_SECRET_ACCESS_KEY=
+  AWS_DEFAULT_REGION=
+  AWS_BUCKET=
+  AWS_ENDPOINT=
+  AWS_USE_PATH_STYLE_ENDPOINT=true

@@ -94,7 +94,7 @@ class TranscriptionController extends Controller
             ]);
 
             $originalPath = $file->store('temp', 'local');
-            $fullOriginalPath = Storage::path($originalPath);
+            $fullOriginalPath = Storage::disk('local')->path($originalPath);
 
             // Check if the file is already an MP3
             $mimeType = mime_content_type($fullOriginalPath);
@@ -109,7 +109,7 @@ class TranscriptionController extends Controller
             $pathForWhisper = $fullOriginalPath;
 
             if ($needsConversion) {
-                $mp3Path = Storage::path('temp/converted_' . uniqid() . '.mp3');
+                $mp3Path = Storage::disk('local')->path('temp/converted_' . uniqid() . '.mp3');
                 Log::info('Converting to MP3', ['target_path' => $mp3Path]);
 
                 try {
@@ -125,7 +125,7 @@ class TranscriptionController extends Controller
                 }
 
                 // Delete the original file as we don't need it anymore
-                Storage::delete($originalPath);
+                Storage::disk('local')->delete($originalPath);
             }
 
             Log::info('Calling OpenAI Whisper API');
@@ -140,7 +140,7 @@ class TranscriptionController extends Controller
             if ($needsConversion) {
                 unlink($mp3Path);
             } else {
-                Storage::delete($originalPath);
+                Storage::disk('local')->delete($originalPath);
             }
 
             return response()->json([
@@ -155,8 +155,8 @@ class TranscriptionController extends Controller
             ]);
 
             // Clean up files in case of error
-            if (isset($originalPath) && Storage::exists($originalPath)) {
-                Storage::delete($originalPath);
+            if (isset($originalPath) && Storage::disk('local')->exists($originalPath)) {
+                Storage::disk('local')->delete($originalPath);
             }
             if (isset($mp3Path) && file_exists($mp3Path)) {
                 unlink($mp3Path);
