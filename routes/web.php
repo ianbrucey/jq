@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TranscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,3 +26,7 @@ Route::middleware([
     Route::resource('cases', \App\Http\Controllers\CaseController::class);
     Route::resource('cases.drafts', \App\Http\Controllers\DraftController::class);
 });
+
+Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])
+    ->name('transcribe')
+    ->middleware(['web', 'auth:sanctum']);
