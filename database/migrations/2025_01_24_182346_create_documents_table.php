@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('case_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('case_file_id')->constrained()->cascadeOnDelete();
             $table->foreignId('draft_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->string('document_type')->comment('supporting_doc,exhibit,correspondence,final_draft');  
-            $table->string('storage_path');  
-            $table->string('original_filename');  
-            $table->string('mime_type');  
-            $table->unsignedInteger('file_size');  
-            $table->string('title');  
+            $table->string('document_type')->comment('supporting_doc,exhibit,correspondence,final_draft');
+            $table->string('storage_path');
+            $table->string('original_filename');
+            $table->string('mime_type');
+            $table->unsignedInteger('file_size');
+            $table->string('title');
             $table->text('description')->nullable();
             $table->timestamps();
         });

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('correspondence', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('case_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('case_file_id')->constrained()->cascadeOnDelete();
             $table->enum('direction', ['incoming', 'outgoing']);
             $table->string('sender_name')->nullable();
             $table->text('sender_address')->nullable();

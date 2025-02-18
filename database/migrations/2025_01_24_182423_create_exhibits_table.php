@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('exhibits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('case_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('case_file_id')->constrained()->cascadeOnDelete();
             $table->foreignId('draft_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
             $table->string('label')->comment('Exhibit A, Exhibit 1.1, etc');

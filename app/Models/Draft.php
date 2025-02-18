@@ -11,7 +11,7 @@ class Draft extends Model
 
     protected $primaryKey = 'draft_id';
     protected $fillable = [
-        'case_id',
+        'case_file_id',
         'draft_type',
         'description',
         'status',
@@ -21,6 +21,6 @@ class Draft extends Model
 
     public function case()
     {
-        return $this->belongsTo(LegalCase::class, 'case_id');
+        return $this->belongsTo(LegalCase::class, 'case_file_id');
     }
 }

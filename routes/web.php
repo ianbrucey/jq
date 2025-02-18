@@ -19,12 +19,12 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard', [
-            'cases' => auth()->user()->cases()->latest()->get()
+            'caseFiles' => auth()->user()->caseFiles()->latest()->get()
         ]);
     })->name('dashboard');
 
-    Route::resource('cases', \App\Http\Controllers\CaseController::class);
-    Route::resource('cases.drafts', \App\Http\Controllers\DraftController::class);
+    Route::resource('case-files', \App\Http\Controllers\CaseFileController::class);
+    Route::resource('case-files.drafts', \App\Http\Controllers\DraftController::class);
 });
 
 Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])

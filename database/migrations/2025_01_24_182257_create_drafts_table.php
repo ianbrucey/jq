@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('drafts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('case_id')->constrained('cases')->cascadeOnDelete();
+            $table->foreignId('case_file_id')->constrained('case_files')->cascadeOnDelete();
             $table->string('draft_type')->comment('complaint,motion,affidavit,letter,contract');
             $table->string('status')->default('draft')->comment('draft,review,published');
             $table->json('structured_context')->nullable();

@@ -23,9 +23,9 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-    public function cases(): HasMany
+    public function caseFiles(): HasMany
     {
-        return $this->hasMany(LegalCase::class);
+        return $this->hasMany(CaseFile::class);
     }
 
     /**

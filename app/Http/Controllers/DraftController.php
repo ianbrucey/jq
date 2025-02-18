@@ -3,24 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Draft;
-use App\Models\LegalCase;
+use App\Models\CaseFile;
 use Illuminate\Http\Request;
 
 class DraftController extends Controller
 {
-    public function create(LegalCase $case)
+    public function create(CaseFile $caseFile)
     {
-        return view('drafts.create', compact('case'));
+        return view('drafts.create', compact('caseFile'));
     }
 
-    public function store(Request $request, LegalCase $case)
+    public function store(Request $request, CaseFile $caseFile)
     {
         $validated = $request->validate([
             'content' => 'required|string'
         ]);
 
-        $case->drafts()->create($validated);
+        $caseFile->drafts()->create($validated);
 
-        return redirect()->route('cases.show', $case);
+        return redirect()->route('case-files.show', $caseFile);
     }
 }
