@@ -16,7 +16,7 @@
 
                     <div>
                         <h4 class="font-medium text-base-content text-md">Desired Outcome</h4>
-                        <p class="mt-2 text-sm text-base-content/60">{{ $caseFile->outcome_goal }}</p>
+                        <p class="mt-2 text-sm text-base-content/60">{{ $caseFile->desired_outcome }}</p>
                     </div>
 
                     <div class="flex items-center gap-4 mt-8">

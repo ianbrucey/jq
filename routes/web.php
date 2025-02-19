@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TranscriptionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,9 +18,21 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', function (Request $request) {
+        $search = $request->input('search');
+        $query = auth()->user()->caseFiles()->latest();
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('case_number', 'like', "%{$search}%")
+                  ->orWhere('desired_outcome', 'like', "%{$search}%");
+            });
+        }
+
         return view('dashboard', [
-            'caseFiles' => auth()->user()->caseFiles()->latest()->paginate(5)
+            'caseFiles' => $query->paginate(5)->withQueryString(),
+            'search' => $search
         ]);
     })->name('dashboard');
 

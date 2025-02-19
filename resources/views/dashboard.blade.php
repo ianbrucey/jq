@@ -43,11 +43,10 @@
     @endpush
 
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <h2 class="text-xl font-semibold leading-tight text-base-content">
                 My Case Files
             </h2>
-            <!-- Changed button colors for better contrast and importance -->
             <a href="{{ route('case-files.create') }}"
                class="btn btn-primary btn-sm">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -60,11 +59,39 @@
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <!-- Search Form -->
+            <div class="mb-6">
+                <form method="GET" action="{{ route('dashboard') }}" class="flex gap-2">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input
+                                type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                placeholder="Search cases by title, number, or outcome..."
+                                class="input input-bordered w-full pr-10"
+                            >
+                            @if(request('search'))
+                                <a href="{{ route('dashboard') }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
             <div class="p-6 overflow-hidden bg-base-100 shadow-xl sm:rounded-lg">
                 @if($caseFiles->count() > 0)
                     <div class="space-y-4">
                         @foreach($caseFiles as $caseFile)
-                            <!-- Changed to card for better visual hierarchy -->
                             <div class="card bg-base-200">
                                 <div class="card-body p-4">
                                     <div class="flex items-center justify-between">
@@ -103,7 +130,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <p class="text-base-content/70">No case files yet. Create your first one!</p>
+                            <p class="text-base-content/70">
+                                @if(request('search'))
+                                    No cases found matching your search.
+                                    <a href="{{ route('dashboard') }}" class="text-primary hover:underline">Clear search</a>
+                                @else
+                                    No case files yet. Create your first one!
+                                @endif
+                            </p>
                         </div>
                     </div>
                 @endif
