@@ -46,9 +46,17 @@
             </div>
         @else
             <div class="space-y-6">
-                <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/50">
-                    <p class="text-sm text-blue-600 dark:text-blue-400">
-                        Additional details help us better assist you with your case. However, you can skip this step if you prefer.
+                {{-- Display Case Title --}}
+                <div class="border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $title }}</h3>
+                    @if ($case_number)
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Case Number: {{ $case_number }}</p>
+                    @endif
+                </div>
+
+                <div class="p-4 rounded-lg bg-blue-400 ">
+                    <p class="text-sm text-gray-50 rounded">
+                        Additional details help us better assist you with your case. However, you can skip these steps if you prefer.
                     </p>
                 </div>
 
