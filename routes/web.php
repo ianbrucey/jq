@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CaseFileDocumentController;
 use App\Http\Controllers\TranscriptionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -43,3 +44,6 @@ Route::middleware([
 Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])
     ->name('transcribe')
     ->middleware(['web', 'auth:sanctum']);
+
+Route::get('/case-files/{caseFile}/documents', [CaseFileDocumentController::class, 'index'])
+    ->name('case-files.documents.index');

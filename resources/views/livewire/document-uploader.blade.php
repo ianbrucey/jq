@@ -65,7 +65,7 @@
 
         {{-- Dropzone --}}
         <label for="file-upload" class="relative block cursor-pointer">
-            <div class="relative border-2 border-dashed border-base-content/30 dark:border-base-content/60 rounded-lg p-8 transition-all duration-200 ease-in-out"
+            <div class="relative border-2 border-dashed border-base-content/30 dark:border-base-content/60 rounded-lg p-8 transition-all duration-500 ease-in-out"
                  :class="{ 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20': isDropping }">
                 <div class="text-center">
                     <svg class="mx-auto h-12 w-12 text-base-content/60" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -91,51 +91,78 @@
 
         {{-- File Preview Section --}}
         <div class="mt-6 space-y-4" x-show="files.length > 0">
-            <template x-for="(file, index) in files" :key="index">
-                <div class="relative flex items-center p-4 bg-base-100 dark:bg-neutral-focus rounded-lg shadow-sm">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center space-x-3">
-                            <svg class="h-8 w-8 text-base-content/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-base-content dark:text-base-content/90" x-text="file.name"></span>
-                                    <span class="text-xs text-base-content/50 dark:text-base-content/60" x-text="formatFileSize(file.size)"></span>
-                                </div>
-                                <div x-show="fileErrors[file.name]" class="text-xs text-red-500 mt-1" x-text="fileErrors[file.name]"></div>
-                                <div class="mt-2 space-y-3">
-                                    <div class="relative">
-                                        <input type="text"
-                                               :name="'documentTitles.' + index"
-                                               class="block w-full border-base-content/30 dark:border-base-content/70 dark:bg-neutral-focus dark:text-base-content/70 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                               placeholder="Custom title (optional - AI will generate if left empty)">
-                                        <div class="mt-1 text-xs text-base-content/50 dark:text-base-content/60">
-                                            Leave blank for AI-generated title
-                                        </div>
-                                    </div>
+            {{-- Save All Button --}}
+            <div class="flex justify-end">
+                <button type="button"
+                        @click="$wire.saveAllDocuments()"
+                        class="btn btn-primary">
+                    Save All Documents
+                </button>
+            </div>
 
-                                    <div class="relative">
-                                        <textarea
-                                            :name="'documentDescriptions.' + index"
-                                            rows="2"
-                                            class="block w-full border-base-content/30 dark:border-base-content/70 dark:bg-neutral-focus dark:text-base-content/70 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                            placeholder="Custom summary (optional - AI will analyze and summarize if left empty)"></textarea>
-                                        <div class="mt-1 text-xs text-base-content/50 dark:text-base-content/60">
-                                            Leave blank for AI-generated summary
+            <template x-for="(file, index) in files" :key="index">
+                <div x-show="files.includes(file)"
+                     x-transition:enter="transition ease-out duration-500"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100"
+                     x-transition:leave="transition ease-in duration-500"
+                     x-transition:leave-start="opacity-100 transform scale-100"
+                     x-transition:leave-end="opacity-0 transform scale-95"
+                     class="relative flex flex-col p-4 bg-base-100 dark:bg-neutral-focus rounded-lg shadow-sm border border-base-content/20">
+                    <div class="flex items-center">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-8 w-8 text-base-content/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium text-base-content dark:text-base-content/90" x-text="file.name"></span>
+                                        <span class="text-xs text-base-content/50 dark:text-base-content/60" x-text="formatFileSize(file.size)"></span>
+                                    </div>
+                                    <div x-show="fileErrors[file.name]" class="text-xs text-red-500 mt-1" x-text="fileErrors[file.name]"></div>
+                                    <div class="mt-2 space-y-3">
+                                        <div class="relative">
+                                            <input type="text"
+                                                   :name="'documentTitles.' + index"
+                                                   class="block w-full border-base-content/30 dark:border-base-content/70 dark:bg-neutral-focus dark:text-base-content/70 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                   placeholder="Enter title">
+                                            <div class="mt-1 text-xs text-base-content/50 dark:text-base-content/60">
+                                                Leave blank for AI-generated title
+                                            </div>
+                                        </div>
+
+                                        <div class="relative">
+                                            <textarea
+                                                :name="'documentDescriptions.' + index"
+                                                rows="2"
+                                                class="block w-full border-base-content/30 dark:border-base-content/70 dark:bg-neutral-focus dark:text-base-content/70 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                placeholder="Enter summary"></textarea>
+                                            <div class="mt-1 text-xs text-base-content/50 dark:text-base-content/60">
+                                                Leave blank for AI-generated summary
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <button type="button"
+                                @click="removeFile(index)"
+                                class="ml-4 text-base-content/60 hover:text-red-500">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
-                    <button type="button"
-                            @click="removeFile(index)"
-                            class="ml-4 text-base-content/60 hover:text-red-500">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+
+                    {{-- Save Button --}}
+                    <div class="mt-4 flex justify-end">
+                        <button type="button"
+                                @click="$wire.saveDocument(index)"
+                                class="btn btn-primary btn-sm">
+                            Save Document
+                        </button>
+                    </div>
                 </div>
             </template>
         </div>

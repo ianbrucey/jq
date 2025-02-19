@@ -25,6 +25,21 @@ class DocumentUploader extends Component
         $this->documentDescriptions = array_values($this->documentDescriptions);
     }
 
+    public function saveDocument($index)
+    {
+        // Add your save logic here
+        // You can access:
+        // - $this->files[$index] for the file
+        // - $this->documentTitles[$index] for the title
+        // - $this->documentDescriptions[$index] for the description
+
+        // After saving, you might want to show a success message
+        $this->dispatch('notify', [
+            'type' => 'success',
+            'message' => 'Document saved successfully'
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.document-uploader');
