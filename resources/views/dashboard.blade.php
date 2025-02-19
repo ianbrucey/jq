@@ -70,6 +70,10 @@
                                     <div class="flex items-center justify-between">
                                         <h3 class="card-title text-base-content">{{ $caseFile->title }}</h3>
                                         <div class="flex items-center space-x-2">
+                                            <a href="{{ route('case-files.show', $caseFile) }}"
+                                               class="btn btn-ghost btn-sm text-primary">
+                                                View Case →
+                                            </a>
                                             <a href="{{ route('case-files.drafts.create', $caseFile) }}"
                                                class="btn btn-ghost btn-sm text-primary">
                                                 Start New Draft →
@@ -86,6 +90,11 @@
                                 </div>
                             </div>
                         @endforeach
+                    </div>
+
+                    <!-- Pagination Links -->
+                    <div class="mt-6">
+                        {{ $caseFiles->links() }}
                     </div>
                 @else
                     <div class="text-center py-8">

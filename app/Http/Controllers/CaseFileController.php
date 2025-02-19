@@ -13,7 +13,7 @@ class CaseFileController extends Controller
     public function index()
     {
         $this->authorize('viewAny', CaseFile::class);
-        $caseFiles = auth()->user()->caseFiles()->latest()->get();
+        $caseFiles = auth()->user()->caseFiles()->latest()->paginate(5); // Change 10 to your desired number of items per page
         return view('case-files.index', compact('caseFiles'));
     }
 

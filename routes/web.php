@@ -19,7 +19,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard', [
-            'caseFiles' => auth()->user()->caseFiles()->latest()->get()
+            'caseFiles' => auth()->user()->caseFiles()->latest()->paginate(5)
         ]);
     })->name('dashboard');
 
