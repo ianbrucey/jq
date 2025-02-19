@@ -1,31 +1,21 @@
 import './bootstrap';
 
-// Dark mode functionality
+// Theme handling
 document.addEventListener('alpine:init', () => {
-    Alpine.store('darkMode', {
-        on: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+    Alpine.store('theme', {
+        current: localStorage.getItem('theme') || 'light',
 
-        toggle() {
-            this.on = !this.on;
-            localStorage.theme = this.on ? 'dark' : 'light';
+        init() {
+            document.documentElement.setAttribute('data-theme', this.current);
+        },
 
-            // Update both Tailwind and DaisyUI themes
-            if (localStorage.theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                document.documentElement.setAttribute('data-theme', 'dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
+        setTheme(theme) {
+            this.current = theme;
+            localStorage.setItem('theme', theme);
+            document.documentElement.setAttribute('data-theme', theme);
         }
     });
 
-    // Set initial dark mode state
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
+    // Initialize theme
+    Alpine.store('theme').init();
 });

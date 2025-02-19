@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-base-100 dark:bg-neutral-focus border-b border-base-content/10 dark:border-base-content/70">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -19,21 +19,43 @@
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <!-- Dark mode toggle -->
-                <button
-                    x-data
-                    @click="$store.darkMode.toggle()"
-                    class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    <!-- Sun icon -->
-                    <svg x-cloak x-show="$store.darkMode.on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <!-- Moon icon -->
-                    <svg x-cloak x-show="!$store.darkMode.on" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
+                <!-- Theme Selector -->
+                <div class="relative flex items-center">
+                    <select
+                        class="select select-bordered  w-40 text-base-content focus:outline-none rounded-lg"
+                        x-model="$store.theme.current"
+                        @change="$store.theme.setTheme($event.target.value)"
+                    >
+                        <option value="light" class="flex items-center gap-2">🌝 Light</option>
+                        <option value="dark" class="flex items-center gap-2">🌚 Dark</option>
+                        <option value="cupcake" class="flex items-center gap-2">🧁 Cupcake</option>
+                        <option value="bumblebee" class="flex items-center gap-2">🐝 Bumblebee</option>
+                        <option value="emerald" class="flex items-center gap-2">✳️ Emerald</option>
+                        <option value="corporate" class="flex items-center gap-2">🏢 Corporate</option>
+                        <option value="synthwave" class="flex items-center gap-2">🌃 Synthwave</option>
+                        <option value="retro" class="flex items-center gap-2">👾 Retro</option>
+                        <option value="cyberpunk" class="flex items-center gap-2">🤖 Cyberpunk</option>
+                        <option value="valentine" class="flex items-center gap-2">🌸 Valentine</option>
+                        <option value="halloween" class="flex items-center gap-2">🎃 Halloween</option>
+                        <option value="garden" class="flex items-center gap-2">🌷 Garden</option>
+                        <option value="forest" class="flex items-center gap-2">🌲 Forest</option>
+                        <option value="aqua" class="flex items-center gap-2">💧 Aqua</option>
+                        <option value="lofi" class="flex items-center gap-2">📻 Lo-Fi</option>
+                        <option value="pastel" class="flex items-center gap-2">🎨 Pastel</option>
+                        <option value="fantasy" class="flex items-center gap-2">🧚 Fantasy</option>
+                        <option value="wireframe" class="flex items-center gap-2">📱 Wireframe</option>
+                        <option value="black" class="flex items-center gap-2">⚫ Black</option>
+                        <option value="luxury" class="flex items-center gap-2">💎 Luxury</option>
+                        <option value="dracula" class="flex items-center gap-2">🧛 Dracula</option>
+                        <option value="cmyk" class="flex items-center gap-2">🖨️ CMYK</option>
+                        <option value="autumn" class="flex items-center gap-2">🍂 Autumn</option>
+                        <option value="business" class="flex items-center gap-2">💼 Business</option>
+                        <option value="acid" class="flex items-center gap-2">🧪 Acid</option>
+                        <option value="lemonade" class="flex items-center gap-2">🍋 Lemonade</option>
+                        <option value="night" class="flex items-center gap-2">🌙 Night</option>
+                        <option value="coffee" class="flex items-center gap-2">☕ Coffee</option>
+                    </select>
+                </div>
 
                 <!-- Teams Dropdown -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
@@ -41,7 +63,7 @@
                         <x-dropdown align="right" width="60">
                             <x-slot name="trigger">
                                 <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-base-content/50 dark:text-base-content/60 bg-base-100 dark:bg-neutral-focus hover:text-base-content/70 dark:hover:text-base-content/70 focus:outline-none focus:bg-base-200 dark:focus:bg-neutral-focus active:bg-base-200 dark:active:bg-neutral-focus transition ease-in-out duration-150">
                                         {{ Auth::user()->currentTeam?->name ?? 'Personal Account' }}
 
                                         <svg class="ms-2 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -54,7 +76,7 @@
                             <x-slot name="content">
                                 <div class="w-60">
                                     <!-- Team Management -->
-                                    <div class="block px-4 py-2 text-xs text-gray-400">
+                                    <div class="block px-4 py-2 text-xs text-base-content/60">
                                         {{ __('Manage Team') }}
                                     </div>
 
@@ -71,9 +93,9 @@
 
                                     <!-- Team Switcher -->
                                     @if (Auth::user()->allTeams()->count() > 1)
-                                        <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                                        <div class="border-t border-base-content/20 dark:border-base-content/60"></div>
 
-                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                        <div class="block px-4 py-2 text-xs text-base-content/60">
                                             {{ __('Switch Teams') }}
                                         </div>
 
@@ -92,12 +114,12 @@
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                                <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-base-content/30 transition">
                                     <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
                                 </button>
                             @else
                                 <span class="inline-flex rounded-md">
-                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-base-content/50 dark:text-base-content/60 bg-base-100 dark:bg-neutral-focus hover:text-base-content/70 dark:hover:text-base-content/70 focus:outline-none focus:bg-base-200 dark:focus:bg-neutral-focus active:bg-base-200 dark:active:bg-neutral-focus transition ease-in-out duration-150">
                                         {{ Auth::user()->name }}
 
                                         <svg class="ms-2 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -110,7 +132,7 @@
 
                         <x-slot name="content">
                             <!-- Account Management -->
-                            <div class="block px-4 py-2 text-xs text-gray-400">
+                            <div class="block px-4 py-2 text-xs text-base-content/60">
                                 {{ __('Manage Account') }}
                             </div>
 
@@ -124,7 +146,7 @@
                                 </x-dropdown-link>
                             @endif
 
-                            <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                            <div class="border-t border-base-content/20 dark:border-base-content/60"></div>
 
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}" x-data>
@@ -142,7 +164,7 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-base-content/60 dark:text-base-content/50 hover:text-base-content/50 dark:hover:text-base-content/60 hover:bg-base-200 dark:hover:bg-neutral-focus focus:outline-none focus:bg-base-200 dark:focus:bg-neutral-focus focus:text-base-content/50 dark:focus:text-base-content/60 transition duration-150 ease-in-out">
                     <svg class="size-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -161,7 +183,7 @@
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+        <div class="pt-4 pb-1 border-t border-base-content/20 dark:border-base-content/60">
             <div class="flex items-center px-4">
                 @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                     <div class="shrink-0 me-3">
@@ -170,8 +192,8 @@
                 @endif
 
                 <div>
-                    <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                    <div class="font-medium text-base text-base-content/80 dark:text-base-content/80">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-base-content/50">{{ Auth::user()->email }}</div>
                 </div>
             </div>
 
@@ -199,9 +221,9 @@
 
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                    <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                    <div class="border-t border-base-content/20 dark:border-base-content/60"></div>
 
-                    <div class="block px-4 py-2 text-xs text-gray-400">
+                    <div class="block px-4 py-2 text-xs text-base-content/60">
                         {{ __('Manage Team') }}
                     </div>
 
@@ -218,9 +240,9 @@
 
                     <!-- Team Switcher -->
                     @if (Auth::user()->allTeams()->count() > 1)
-                        <div class="border-t border-gray-200 dark:border-gray-600"></div>
+                        <div class="border-t border-base-content/20 dark:border-base-content/60"></div>
 
-                        <div class="block px-4 py-2 text-xs text-gray-400">
+                        <div class="block px-4 py-2 text-xs text-base-content/60">
                             {{ __('Switch Teams') }}
                         </div>
 

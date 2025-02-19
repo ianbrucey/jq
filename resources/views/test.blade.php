@@ -167,14 +167,14 @@
     <header class="header">
         <div class="logo">Justice Quest</div>
         <nav>
-            <button class="cta-button">Launch App</button>
+            <button class="cta-btn">Launch App</button>
         </nav>
     </header>
 
     <section class="hero">
         <h1 class="hero-title">Elevate Your Legal Experience</h1>
         <p class="hero-subtitle">Cloud-based legal solutions that reach new heights</p>
-        <button class="cta-button">Start Free Trial</button>
+        <button class="cta-btn">Start Free Trial</button>
 
         <div class="platform">
             <div class="floating-island">
