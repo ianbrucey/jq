@@ -22,6 +22,8 @@ class CreateCaseForm extends Component
     {
         if ($name === 'desired_outcome') {
             $this->desired_outcome = $message;
+        } elseif ($name === 'summary') {
+            $this->summary = $message;
         }
     }
 
@@ -66,9 +68,15 @@ class CreateCaseForm extends Component
             'summary' => 'nullable|string',
         ]);
 
-        $this->caseFile->update([
-            'summary' => $this->summary,
-        ]);
+        // Create the initial case summary
+        if ($this->summary) {
+            $this->caseFile->summaries()->create([
+                'content' => $this->summary,
+                'version' => '1.0',
+                'updated_by' => Auth::id(),
+                'change_notes' => 'Initial case summary',
+            ]);
+        }
 
         return redirect()->route('dashboard');
     }

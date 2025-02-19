@@ -54,13 +54,11 @@
 
                 <div class="space-y-2">
                     <x-label for="summary" value="Case Summary" />
-                    <textarea
-                        id="summary"
-                        wire:model="summary"
-                        class="block w-full border-gray-300 rounded-md shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600"
-                        rows="4"
-                        placeholder="Provide a brief summary of your case"
-                    ></textarea>
+                    <livewire:voice-message-input
+                        name="summary"
+                        :value="$summary"
+                        height="200px"
+                    />
                     @error('summary') <span class="text-sm text-red-500">{{ $message }}</span> @enderror
                 </div>
 

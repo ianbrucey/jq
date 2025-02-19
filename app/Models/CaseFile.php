@@ -12,10 +12,25 @@ class CaseFile extends Model
 
     protected $table = 'case_files';
 
-    protected $fillable = ['title', 'description', 'desired_outcome','user_id'];
+    protected $fillable = [
+        'title',
+        'case_number',
+        'desired_outcome',
+        'user_id'
+    ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function summaries()
+    {
+        return $this->hasMany(CaseSummary::class)->orderBy('created_at', 'desc');
+    }
+
+    public function latestSummary()
+    {
+        return $this->hasOne(CaseSummary::class)->latestOfMany();
     }
 }
