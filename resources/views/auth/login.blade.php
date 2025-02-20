@@ -3,7 +3,11 @@
         <!-- Left side - Login content -->
         <div class="lg:flex-1 bg-gradient-to-br from-indigo-600 to-blue-500 p-6 lg:p-8 flex items-center justify-center">
             <div class="max-w-xl text-base-100 text-center lg:text-left px-4">
-                <img src="{{ asset('images/jq-word-logo.png') }}" class="h-20 lg:h-24 mb-6 mx-auto lg:mx-0" alt="Justice Quest Logo">
+{{--                <img src="{{ asset('images/blacklawyer.png') }}" class="h-48 lg:h-64 mb-6 mx-auto lg:mx-0" alt="Lawyer Image" height="200" width="200">--}}
+{{--                <img src="{{ asset('images/jq-word-logo.png') }}" class="h-10 lg:h-14 mb-6 mx-auto lg:mx-0" alt="Justice Quest Logo" height="250" width="250">--}}
+
+                <img src="{{ asset('images/blacklawyer.png') }}" class="hidden lg:block h-48 lg:h-64 mb-6  lg:mx-0 mx-auto" alt="Lawyer Image" >
+                <img src="{{ asset('images/jq-word-logo.png') }}" class="lg:block h-20 lg:h-32 mb-6 mx-auto lg:mx-0 mx-auto" alt="Justice Quest Logo" >
                 <p class="text-lg lg:text-xl mb-6 lg:mb-8">Log in to continue managing your legal documents efficiently.</p>
             </div>
         </div>

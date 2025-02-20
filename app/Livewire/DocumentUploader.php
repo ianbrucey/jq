@@ -34,10 +34,6 @@ class DocumentUploader extends Component
         // - $this->documentDescriptions[$index] for the description
 
         // After saving, you might want to show a success message
-        $this->dispatch('notify', [
-            'type' => 'success',
-            'message' => 'Document saved successfully'
-        ]);
     }
 
     public function render()

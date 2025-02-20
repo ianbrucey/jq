@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('storage_path');
             $table->string('original_filename');
             $table->string('mime_type');
+            $table->string('openai_file_id');
             $table->unsignedInteger('file_size');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
