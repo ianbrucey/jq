@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CaseFileDocumentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TranscriptionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -47,3 +48,6 @@ Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])
 
 Route::get('/case-files/{caseFile}/documents', [CaseFileDocumentController::class, 'index'])
     ->name('case-files.documents.index');
+
+Route::post('/cases/{caseFile}/documents', [DocumentController::class, 'store'])
+    ->name('documents.store');

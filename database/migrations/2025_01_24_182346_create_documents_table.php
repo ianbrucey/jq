@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('case_file_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('draft_id')->nullable()->constrained()->cascadeOnDelete();
-//            $table->string('document_type')->comment('supporting_doc,exhibit,correspondence,final_draft')->nullable();
             $table->string('storage_path');
             $table->string('original_filename');
             $table->string('mime_type');
-            $table->string('openai_file_id');
-            $table->unsignedInteger('file_size');
+            $table->bigInteger('file_size');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
+            $table->string('openai_file_id')->nullable();
+            $table->enum('ingestion_status', ['pending', 'uploading', 'summarizing', 'indexing', 'indexed', 'failed'])
+                ->default('pending');
+            $table->text('ingestion_error')->nullable();
+            $table->timestamp('ingested_at')->nullable();
             $table->timestamps();
         });
     }
