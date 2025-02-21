@@ -56,7 +56,7 @@
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-blue-700 dark:text-blue-300">
+                    <p class="text-sm text-secondary dark:text-blue-50">
                         Our AI will automatically analyze your documents to generate titles and summaries. You can optionally provide your own or edit the AI-generated ones later.
                     </p>
                 </div>

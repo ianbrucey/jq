@@ -44,15 +44,15 @@ Route::middleware([
     Route::resource('case-files.drafts', \App\Http\Controllers\DraftController::class);
 });
 
-Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])
-    ->name('transcribe')
-    ->middleware(['web', 'auth:sanctum']);
+Route::middleware(['auth'])->group(function () {
+    Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])
+        ->name('transcribe')
+        ->middleware(['web', 'auth:sanctum']);
 
-Route::get('/case-files/{caseFile}/documents', [CaseFileDocumentController::class, 'index'])
-    ->name('case-files.documents.index');
+    Route::resource('case-files.documents', CaseFileDocumentController::class)
+        ->only(['index', 'store']);
+});
 
-Route::post('/cases/{caseFile}/documents', [DocumentController::class, 'store'])
-    ->name('documents.store');
 
 Route::middleware(['auth', 'can:manage-project-tokens'])->group(function () {
     Route::get('/manage-project-tokens', [OpenAiProjectController::class, 'index'])->name('openai.projects.index');

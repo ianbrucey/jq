@@ -1,12 +1,14 @@
 <x-guest-layout>
     <div class="min-h-screen flex flex-col lg:flex-row">
         <!-- Left side - Landing content -->
-        <div class="lg:flex-1 bg-gradient-to-br from-indigo-600 to-blue-500 p-6 lg:p-8 flex items-center justify-center">
+{{--        <div class="lg:flex-1 bg-gradient-to-br from-indigo-600 to-blue-500 p-6 lg:p-8 flex items-center justify-center">--}}
+{{--            <div class="lg:flex-1 bg-gradient-to-br from-black to-yellow-600 p-6 lg:p-8 flex items-center justify-center">--}}
+            <div class="lg:flex-1 bg-gradient-to-br from-yellow-600 to-black p-6 lg:p-8 flex items-center justify-center">
             <div class="max-w-xl text-base-100 text-center lg:text-left px-4">
-                <img src="{{ asset('images/blacklawyer.png') }}" class="h-24 lg:h-32 mb-6 mx-auto lg:mx-0" alt="Lawyer Image" >
                 <h1 class="text-3xl lg:text-5xl font-bold mb-4 lg:mb-6">
-                    <img src="{{ asset('images/jq-word-logo.png') }}" class="h-20 lg:h-32 mb-6 mx-auto lg:mx-0" alt="Justice Quest Logo" >
+                    <img src="{{ asset('images/samurai_lawyer_no_bg.png') }}" class="h-24 lg:h-64 mb-6 mx-auto " alt="Lawyer Image" >
                 </h1>
+                <img src="{{ asset('images/JQ.png') }}" class="h-20 lg:h-64 mb-6 mx-auto " alt="Justice Quest Logo" >
                 <p class="text-lg lg:text-xl mb-6 lg:mb-8">Your AI-powered legal document assistant that streamlines case management, automates document creation, and enhances your legal practice efficiency.</p>
                 <div class="space-y-4 text-left">
                     <div class="flex items-center">
