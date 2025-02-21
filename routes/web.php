@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CaseFileDocumentController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\OpenAiProjectController;
 use App\Http\Controllers\TranscriptionController;
+use App\Http\Livewire\EnhancedApiTokenManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -51,3 +53,17 @@ Route::get('/case-files/{caseFile}/documents', [CaseFileDocumentController::clas
 
 Route::post('/cases/{caseFile}/documents', [DocumentController::class, 'store'])
     ->name('documents.store');
+
+Route::middleware(['auth', 'can:manage-project-tokens'])->group(function () {
+    Route::get('/manage-project-tokens', [OpenAiProjectController::class, 'index'])->name('openai.projects.index');
+    Route::resource('openai/projects', OpenAiProjectController::class)
+        ->except('index')
+        ->names([
+            'create' => 'openai.projects.create',
+            'store' => 'openai.projects.store',
+            'show' => 'openai.projects.show',
+            'edit' => 'openai.projects.edit',
+            'update' => 'openai.projects.update',
+            'destroy' => 'openai.projects.destroy'
+        ]);
+});
