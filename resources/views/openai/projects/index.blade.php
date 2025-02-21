@@ -3,6 +3,13 @@
         <h2 class="font-semibold text-xl text-base-content leading-tight">
             {{ __('OpenAI Projects!') }}
         </h2>
+        <p class="text-base-content/60">
+            OpenAI only allows for 100GB of storage per project, so
+            the purpose of this feature is to add multiple OpenAI API keys for load balancing.<br>
+
+            Each new key must be first created in the OpenAI dashboard and then added here.
+            <span class="text-primary">The keys must not be from the same project.</span>
+        </p>
     </x-slot>
 
     <div class="py-12">
