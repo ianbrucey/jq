@@ -35,15 +35,37 @@ You are a dedicated legal assistant for this case. Your role is to:
 EOT;
 
     /**
-     * Gets or creates an OpenAI client for the given case.
+     * Gets a default OpenAI client using the least-used active project.
+     *
+     * @return void
+     * @throws Exception When no active OpenAI projects are available
+     */
+    private function configureDefaultOpenAi(): void
+    {
+        $project = OpenAiProject::where('is_active', true)
+            ->orderBy('storage_used')
+            ->first();
+
+        if (!$project) {
+            throw new Exception('No available OpenAI projects');
+        }
+
+        // Configure OpenAI with the project credentials
+        config([
+            'openai.api_key' => $project->api_key,
+            'openai.organization' => $project->organization_id
+        ]);
+    }
+
+    /**
+     * Configures OpenAI for the given case.
      *
      * Selects the least-used active OpenAI project if the case doesn't have one assigned.
      *
-     * @param CaseFile $case The case requiring an OpenAI client
-     * @return mixed OpenAI client instance
+     * @param CaseFile $case The case requiring OpenAI configuration
      * @throws Exception When no active OpenAI projects are available
      */
-    private function getOpenAiClient(CaseFile $case)
+    private function configureOpenAi(CaseFile $case): void
     {
         if (!$case->openai_project_id) {
             $project = OpenAiProject::where('is_active', true)
@@ -59,7 +81,11 @@ EOT;
 
         $project = $case->openAiProject;
 
-        return OpenAI::client($project->api_key, $project->organization_id);
+        // Configure OpenAI with the project credentials
+        config([
+            'openai.api_key' => $project->api_key,
+            'openai.organization' => $project->organization_id
+        ]);
     }
 
     /**
@@ -74,13 +100,13 @@ EOT;
     public function setupCaseResources(CaseFile $case): bool
     {
         try {
-            $client = $this->getOpenAiClient($case);
+            $this->configureOpenAi($case);
 
-            $assistant = $this->createAssistant($case, $client);
-            $vectorStore = $this->createVectorStore($case, $client);
+            $assistant = $this->createAssistant($case);
+            $vectorStore = $this->createVectorStore($case);
 
             if ($assistant && $vectorStore) {
-                $this->attachVectorStoreToAssistant($case, $client);
+                $this->attachVectorStoreToAssistant($case);
                 return true;
             }
 
@@ -100,14 +126,13 @@ EOT;
      * Creates an OpenAI assistant for the case.
      *
      * @param CaseFile $case The case requiring an assistant
-     * @param mixed $client The OpenAI client instance
      * @return bool True if creation was successful
      * @throws Exception When assistant creation fails
      */
-    private function createAssistant(CaseFile $case, $client): bool
+    private function createAssistant(CaseFile $case): bool
     {
         try {
-            $response = $client->assistants()->create([
+            $response = OpenAI::assistants()->create([
                 'name' => "Case Agent: {$case->title}",
                 'instructions' => self::ASSISTANT_INSTRUCTIONS,
                 'model' => self::ASSISTANT_MODEL,
@@ -133,14 +158,13 @@ EOT;
      * Creates a vector store for the case's documents.
      *
      * @param CaseFile $case The case requiring a vector store
-     * @param mixed $client The OpenAI client instance
      * @return bool True if creation was successful
      * @throws Exception When vector store creation fails
      */
-    private function createVectorStore(CaseFile $case, $client): bool
+    private function createVectorStore(CaseFile $case): bool
     {
         try {
-            $response = $client->vectorStores()->create([
+            $response = OpenAI::vectorStores()->create([
                 'name' => "Case #{$case->id} Vector Store",
                 'description' => "Vector store for {$case->title}",
                 'expires_after' => null
@@ -162,14 +186,13 @@ EOT;
      * Attaches the vector store to the assistant for document search capabilities.
      *
      * @param CaseFile $case The case whose resources need to be linked
-     * @param mixed $client The OpenAI client instance
      * @return bool True if attachment was successful
      * @throws Exception When attachment fails
      */
-    private function attachVectorStoreToAssistant(CaseFile $case, $client): bool
+    private function attachVectorStoreToAssistant(CaseFile $case): bool
     {
         try {
-            $client->assistants()->update($case->openai_assistant_id, [
+            OpenAI::assistants()->update($case->openai_assistant_id, [
                 'tool_resources' => [
                     'file_search' => [
                         'vector_store_ids' => [$case->openai_vector_store_id]
@@ -188,5 +211,31 @@ EOT;
 
             throw $e;
         }
+    }
+
+    /**
+     * Deletes an OpenAI assistant and its associated resources
+     *
+     * @param string $assistantId The OpenAI assistant ID to delete
+     * @return void
+     * @throws \Exception if deletion fails
+     */
+    public function deleteAssistant(string $assistantId): void
+    {
+        $this->configureDefaultOpenAi();
+        OpenAI::assistants()->delete($assistantId);
+    }
+
+    /**
+     * Deletes a vector store and its associated embeddings
+     *
+     * @param string $vectorStoreId The vector store ID to delete
+     * @return void
+     * @throws \Exception if deletion fails
+     */
+    public function deleteVectorStore(string $vectorStoreId): void
+    {
+        $this->configureDefaultOpenAi();
+        OpenAI::files()->delete($vectorStoreId);
     }
 }

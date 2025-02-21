@@ -32,8 +32,37 @@ class CaseFileObserver
 
     public function deleted(CaseFile $case): void
     {
-        // TODO: Implement cleanup of OpenAI resources
-        // This would delete the assistant and vector store
+        try {
+            // Clean up OpenAI resources associated with the case
+            if ($case->openai_assistant_id) {
+                $this->assistantService->deleteAssistant($case->openai_assistant_id);
+            }
+
+            if ($case->openai_vector_store_id) {
+                $this->assistantService->deleteVectorStore($case->openai_vector_store_id);
+            }
+
+            // Update the storage used for the OpenAI project
+            if ($case->openai_project_id) {
+                $project = $case->openaiProject;
+                if ($project) {
+                    $project->decrement('storage_used', $case->documents()->sum('file_size'));
+                }
+            }
+
+            Log::info('Successfully cleaned up OpenAI resources for deleted case', [
+                'case_id' => $case->id,
+                'assistant_id' => $case->openai_assistant_id,
+                'vector_store_id' => $case->openai_vector_store_id
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to cleanup OpenAI resources for deleted case', [
+                'case_id' => $case->id,
+                'error' => $e->getMessage()
+            ]);
+            // We don't rethrow the exception since the case is already deleted
+            // and we don't want to prevent the deletion from completing
+        }
     }
 
     /**

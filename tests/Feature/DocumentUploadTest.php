@@ -23,20 +23,26 @@ class DocumentUploadTest extends TestCase
     {
         $user = User::factory()->create();
         $caseFile = CaseFile::factory()->create(['user_id' => $user->id]);
-
         $file = UploadedFile::fake()->create('document.pdf', 1000);
 
         $response = $this->actingAs($user)
-            ->post(route('documents.store', $caseFile), [
+            ->post("/cases/{$caseFile->id}/documents", [  // Updated to match route pattern
                 'document' => $file,
                 'title' => 'Test Document',
                 'description' => 'Test Description'
             ]);
 
-        $response->assertStatus(200);
-        
+//        dd($response->);
+
+        if ($response->status() === 500) {
+            dd($response->exceptions);
+            dump($response->exception->getTraceAsString());
+        }
+
+        $response->assertStatus(201); // Note: Changed to 201 as DocumentController returns 201 for successful creation
+
         Storage::disk('s3')->assertExists($file->hashName());
-        
+
         $this->assertDatabaseHas('documents', [
             'case_file_id' => $caseFile->id,
             'original_filename' => 'document.pdf',
@@ -54,7 +60,7 @@ class DocumentUploadTest extends TestCase
         $file = UploadedFile::fake()->create('document.exe', 1000);
 
         $response = $this->actingAs($user)
-            ->post(route('documents.store', $caseFile), [
+            ->post("/cases/{$caseFile->id}/documents", [  // Updated to match route pattern
                 'document' => $file
             ]);
 

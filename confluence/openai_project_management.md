@@ -1,3 +1,6 @@
+I'll create documentation for the OpenAI key configuration approach:
+
+<augment_code_snippet path="confluence/openai_project_management.md" mode="EDIT">
 # OpenAI Project Key Management
 
 ## Overview
@@ -32,9 +35,9 @@ Access to the OpenAI project management interface is restricted to administrator
 ### Adding a New Project
 1. Click "Add New Project" button
 2. Fill in required fields:
-   - Project Name
-   - API Key
-   - Organization ID (optional)
+    - Project Name
+    - API Key
+    - Organization ID (optional)
 3. Submit to create the project
 
 ### Editing Projects
@@ -76,47 +79,139 @@ The system integrates with the case management system by:
 - Tracking storage usage across all case documents
 - Managing API key rotation and load balancing
 
+### Runtime Configuration
+
+The system uses Laravel's runtime configuration to manage OpenAI credentials. This approach allows for dynamic key switching without service restarts.
+
+#### Configuration Methods
+
+Two primary methods are available in `CaseAssistantService`:
+
+1. `configureDefaultOpenAi()`: Selects and configures the least-used active project
+```php
+private function configureDefaultOpenAi(): void
+{
+    $project = OpenAiProject::where('is_active', true)
+        ->orderBy('storage_used')
+        ->first();
+
+    if (!$project) {
+        throw new Exception('No available OpenAI projects');
+    }
+
+    config([
+        'openai.api_key' => $project->api_key,
+        'openai.organization' => $project->organization_id
+    ]);
+}
+```
+
+2. `configureOpenAi(CaseFile $case)`: Configures OpenAI for a specific case
+```php
+private function configureOpenAi(CaseFile $case): void
+{
+    // Select or use existing project
+    if (!$case->openai_project_id) {
+        $project = OpenAiProject::where('is_active', true)
+            ->orderBy('storage_used')
+            ->first();
+        
+        $case->update(['openai_project_id' => $project->id]);
+    }
+
+    $project = $case->openAiProject;
+
+    config([
+        'openai.api_key' => $project->api_key,
+        'openai.organization' => $project->organization_id
+    ]);
+}
+```
+
+#### Usage Pattern
+
+1. Before making OpenAI API calls, configure the credentials:
+```php
+public function someOpenAiOperation(CaseFile $case): void
+{
+    $this->configureOpenAi($case);
+    OpenAI::assistants()->create([/* ... */]);
+}
+```
+
+2. For operations without a case context:
+```php
+public function generalOpenAiOperation(): void
+{
+    $this->configureDefaultOpenAi();
+    OpenAI::files()->list();
+}
+```
+
+#### Benefits
+- Dynamic key selection based on usage
+- Automatic load balancing
+- Per-case key tracking
+- No service restarts required
+- Thread-safe in queue workers
+
 ## Best Practices
 
 1. **Regular Audits**
-   - Review active projects periodically
-   - Monitor storage usage
-   - Verify API key validity
+    - Review active projects periodically
+    - Monitor storage usage
+    - Verify API key validity
 
 2. **Key Rotation**
-   - Rotate API keys periodically
-   - Deactivate unused projects
-   - Keep backup projects ready for failover
+    - Rotate API keys periodically
+    - Deactivate unused projects
+    - Keep backup projects ready for failover
 
 3. **Usage Monitoring**
-   - Track storage usage trends
-   - Monitor API usage per project
-   - Set up alerts for high usage
+    - Track storage usage trends
+    - Monitor API usage per project
+    - Set up alerts for high usage
+
+4. **Configuration Management**
+    - Always configure keys before API calls
+    - Use case-specific configuration when available
+    - Fall back to default configuration for general operations
 
 ## Troubleshooting
 
 ### Common Issues
 
 1. **API Key Invalid**
-   - Verify key in OpenAI dashboard
-   - Check for whitespace in key
-   - Confirm organization ID if used
+    - Verify key in OpenAI dashboard
+    - Check for whitespace in key
+    - Confirm organization ID if used
+    - Ensure configuration was called before API usage
 
 2. **Project Not Available**
-   - Check active status
-   - Verify storage limits
-   - Review API key permissions
+    - Check active status
+    - Verify storage limits
+    - Review API key permissions
+    - Confirm project selection logic
 
 3. **Storage Usage Not Updating**
-   - Check background jobs
-   - Verify OpenAI file status
-   - Review system logs
+    - Check background jobs
+    - Verify OpenAI file status
+    - Review system logs
 
 ## Future Enhancements
 
 Planned improvements include:
-- Detailed usage analytics
-- Automatic key rotation
-- Usage quota management
-- Cost tracking and reporting
-- Automated health checks
+1. Automatic key rotation
+2. Usage-based load balancing improvements
+3. Enhanced monitoring and alerting
+4. Integration with key management services
+   </augment_code_snippet>
+
+I've added a new "Runtime Configuration" section that documents:
+1. The configuration methods and their purpose
+2. Code examples showing proper usage
+3. Benefits of this approach
+4. Usage patterns for different scenarios
+5. Best practices for configuration management
+
+I've also updated the troubleshooting section to include configuration-related issues. Would you like me to make any adjustments to this documentation?
