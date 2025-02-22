@@ -4,6 +4,20 @@
             <div class="card-body p-4">
                 <div class="flex items-center justify-between">
                     <div>
+                        <div class="mb-1">
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-base-300 text-base-content/70">
+                                @php
+                                    $type = match ($document->mime_type) {
+                                        'application/pdf' => 'PDF Document',
+                                        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'Word Document',
+                                        'image/jpeg', 'image/jpg' => 'JPEG Image',
+                                        'image/png' => 'PNG Image',
+                                        default => 'Document'
+                                    };
+                                @endphp
+                                {{ $type }}
+                            </span>
+                        </div>
                         <h4 class="font-medium">{{ $document->title ?: $document->original_filename }}</h4>
                         @if($document->description)
                             <p class="text-sm text-base-content/60">{{ $document->description }}</p>
