@@ -29,5 +29,9 @@ class DatabaseSeeder extends Seeder
                 'password' => $password,
             ]);
         }
+
+        $this->call([
+            OpenAiProjectSeeder::class
+        ]);
     }
 }

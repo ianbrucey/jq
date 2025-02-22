@@ -95,7 +95,28 @@
                             <div class="card bg-base-200">
                                 <div class="card-body p-4">
                                     <div class="flex flex-col space-y-3">
-                                        <h3 class="card-title text-base-content break-words">{{ $caseFile->title }}</h3>
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="card-title text-base-content break-words">{{ $caseFile->title }}</h3>
+
+                                            @if($caseFile->openai_assistant_id)
+                                                <div class="badge badge-success gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Assistant Ready
+                                                </div>
+                                            @else
+                                                <div class="badge badge-warning gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Pending Setup
+                                                </div>
+                                            @endif
+                                        </div>
+
                                         <div class="flex flex-wrap gap-2">
                                             <a href="{{ route('case-files.show', $caseFile) }}"
                                                class="btn btn-sm btn-primary flex-1 sm:flex-none">

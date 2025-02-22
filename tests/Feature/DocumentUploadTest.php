@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class DocumentUploadTest extends TestCase
 {
@@ -16,17 +17,19 @@ class DocumentUploadTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Storage::fake('s3');
+        /** @var Filesystem $storage */
+        $storage = Storage::fake('s3');
     }
 
     public function test_user_can_upload_document()
     {
+        /** @var User $user */
         $user = User::factory()->create();
         $caseFile = CaseFile::factory()->create(['user_id' => $user->id]);
         $file = UploadedFile::fake()->create('document.pdf', 1000);
 
         $response = $this->actingAs($user)
-            ->post("/cases/{$caseFile->id}/documents", [  // Updated to match route pattern
+            ->post("/case-files/{$caseFile->id}/documents", [
                 'document' => $file,
                 'title' => 'Test Document',
                 'description' => 'Test Description'
@@ -41,7 +44,7 @@ class DocumentUploadTest extends TestCase
 
         $response->assertStatus(201); // Note: Changed to 201 as DocumentController returns 201 for successful creation
 
-        Storage::disk('s3')->assertExists($file->hashName());
+        $storage->assertExists('documents/' . $file->hashName());
 
         $this->assertDatabaseHas('documents', [
             'case_file_id' => $caseFile->id,
@@ -54,13 +57,14 @@ class DocumentUploadTest extends TestCase
 
     public function test_rejects_invalid_file_types()
     {
+        /** @var User $user */
         $user = User::factory()->create();
         $caseFile = CaseFile::factory()->create(['user_id' => $user->id]);
 
         $file = UploadedFile::fake()->create('document.exe', 1000);
 
         $response = $this->actingAs($user)
-            ->post("/cases/{$caseFile->id}/documents", [  // Updated to match route pattern
+            ->post("/case-files/{$caseFile->id}/documents", [
                 'document' => $file
             ]);
 

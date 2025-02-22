@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CaseFile extends Model
 {
@@ -16,7 +17,12 @@ class CaseFile extends Model
         'title',
         'case_number',
         'desired_outcome',
-        'user_id'
+        'user_id',
+        'status',
+        'filed_date',
+        'openai_assistant_id',
+        'openai_vector_store_id',
+        'openai_project_id'
     ];
 
     public function user(): BelongsTo
@@ -24,13 +30,18 @@ class CaseFile extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
     public function summaries()
     {
         return $this->hasMany(CaseSummary::class)->orderBy('created_at', 'desc');
     }
 
-    public function latestSummary()
+    public function openAiProject()
     {
-        return $this->hasOne(CaseSummary::class)->latestOfMany();
+        return $this->belongsTo(OpenAiProject::class, 'openai_project_id');
     }
 }

@@ -20,7 +20,7 @@ class CaseAssistantService
     /**
      * The OpenAI model to use for the assistant.
      */
-    private const ASSISTANT_MODEL = 'gpt-4';
+    private const ASSISTANT_MODEL = 'gpt-4o-mini';
 
     /**
      * Base instructions defining the assistant's role and responsibilities.
@@ -42,19 +42,28 @@ EOT;
      */
     private function configureDefaultOpenAi(): void
     {
+        // First try to get an active project
         $project = OpenAiProject::where('is_active', true)
             ->orderBy('storage_used')
             ->first();
 
-        if (!$project) {
-            throw new Exception('No available OpenAI projects');
+        if ($project) {
+            config([
+                'openai.api_key' => $project->api_key,
+                'openai.organization_id' => $project->organization_id
+            ]);
+            return;
         }
 
-        // Configure OpenAI with the project credentials
-        config([
-            'openai.api_key' => $project->api_key,
-            'openai.organization' => $project->organization_id
-        ]);
+        // Fallback to .env configuration
+        $envApiKey = config('openai.api_key');
+        $envOrganization = config('openai.organization');
+
+        if (!$envApiKey) {
+            throw new Exception('No available OpenAI projects or default API key');
+        }
+
+        // Configuration already set from .env, no need to modify
     }
 
     /**
@@ -72,19 +81,30 @@ EOT;
                 ->orderBy('storage_used')
                 ->first();
 
-            if (!$project) {
-                throw new Exception('No available OpenAI projects');
-            }
+            if ($project) {
+                $case->update(['openai_project_id' => $project->id]);
+//                dd($case);
 
-            $case->update(['openai_project_id' => $project->id]);
+            } else {
+
+                // Fallback to .env configuration
+                $envApiKey = config('services.openai.api_key');
+                $envOrganization = config('services.openai.organization_id');
+
+                if (!$envApiKey) {
+                    throw new Exception('No available OpenAI projects or default API key');
+                }
+
+                // No need to update configuration as it's already set from .env
+                return;
+            }
         }
 
         $project = $case->openAiProject;
 
-        // Configure OpenAI with the project credentials
         config([
             'openai.api_key' => $project->api_key,
-            'openai.organization' => $project->organization_id
+            'openai.organization_id' => $project->organization_id
         ]);
     }
 
@@ -138,7 +158,6 @@ EOT;
                 'model' => self::ASSISTANT_MODEL,
                 'tools' => [
                     ['type' => 'file_search'],
-                    ['type' => 'retrieval']
                 ]
             ]);
 
@@ -165,9 +184,7 @@ EOT;
     {
         try {
             $response = OpenAI::vectorStores()->create([
-                'name' => "Case #{$case->id} Vector Store",
-                'description' => "Vector store for {$case->title}",
-                'expires_after' => null
+                'name' => "Case #{$case->id} Vector Store: {$case->title}",
             ]);
 
             $case->update(['openai_vector_store_id' => $response->id]);
@@ -192,9 +209,10 @@ EOT;
     private function attachVectorStoreToAssistant(CaseFile $case): bool
     {
         try {
-            OpenAI::assistants()->update($case->openai_assistant_id, [
+            OpenAI::assistants()->modify($case->openai_assistant_id, [
                 'tool_resources' => [
-                    'file_search' => [
+                    [
+                        'type' => 'file_search',
                         'vector_store_ids' => [$case->openai_vector_store_id]
                     ]
                 ]
@@ -237,5 +255,17 @@ EOT;
     {
         $this->configureDefaultOpenAi();
         OpenAI::files()->delete($vectorStoreId);
+    }
+
+    /**
+     * Configure OpenAI credentials for a specific case.
+     *
+     * @param CaseFile $case
+     * @return void
+     * @throws Exception
+     */
+    public function configureCaseCredentials(CaseFile $case): void
+    {
+        $this->configureOpenAi($case);
     }
 }
