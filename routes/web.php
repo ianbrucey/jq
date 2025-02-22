@@ -67,3 +67,7 @@ Route::middleware(['auth', 'can:manage-project-tokens'])->group(function () {
             'destroy' => 'openai.projects.destroy'
         ]);
 });
+
+Route::get('/documents/{document}/download', function (Document $document) {
+    return Storage::download($document->file_path, $document->original_filename);
+})->name('documents.download');
