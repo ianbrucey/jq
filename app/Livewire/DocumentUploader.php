@@ -31,6 +31,11 @@ class DocumentUploader extends Component
     public function updatedFiles()
     {
         foreach ($this->files as $file) {
+            // Sanitize the filename by replacing spaces with underscores
+            $originalName = $file->getClientOriginalName();
+            $sanitizedName = str_replace(' ', '_', $originalName);
+            $file->storeAs('temp', $sanitizedName);  // Store with sanitized name
+
             $index = count($this->queuedFiles);
             $this->queuedFiles[$index] = $file;
             $this->documentTitles[$index] = '';

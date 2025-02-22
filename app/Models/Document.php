@@ -22,7 +22,8 @@ class Document extends Model
         'ingestion_status',
         'ingestion_error',
         'ingested_at',
-        'openai_file_id'
+        'openai_file_id',
+        'skip_vector_store'
     ];
 
     protected $casts = [

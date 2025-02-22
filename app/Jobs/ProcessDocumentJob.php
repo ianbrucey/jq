@@ -17,9 +17,9 @@ class ProcessDocumentJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 3;
-    public $backoff = [30, 60, 120];
-    public $timeout = 600;
+    public $tries = 1;
+    public $backoff = [10, 60, 120];
+    public $timeout = 60;
 
     private CaseAssistantService $assistantService;
 
@@ -104,99 +104,142 @@ class ProcessDocumentJob implements ShouldQueue
         $this->configureOpenAI();
         $this->document->update(['ingestion_status' => 'summarizing']);
 
-        $messages = [
-            [
-                'role' => 'system',
-                'content' => 'Generate a concise title and summary for the document. Respond in JSON format: {"title": "...", "summary": "..."}'
-            ]
-        ];
-
         try {
-            // Handle different file types
-            switch ($this->document->mime_type) {
-                case 'image/jpeg':
-                case 'image/png':
-                    // Keep existing vision API implementation for images
-                    $url = Storage::disk('s3')->temporaryUrl(
-                        $this->document->storage_path,
-                        now()->addMinutes(5)
-                    );
+            // Catchall for any image type
+            if (str_starts_with($this->document->mime_type, 'image/')) {
+                // 1) Generate a temporary URL for the image in S3
+                $url = Storage::disk('s3')->temporaryUrl(
+                    $this->document->storage_path,
+                    now()->addMinutes(5)
+                );
 
-                    $messages[] = [
+                // 2) Build the Chat Completion messages for GPT-4 Vision
+                $messages = [
+                    [
+                        'role' => 'system',
+                        'content' => 'You are a vision-capable assistant. '
+                            . 'Generate a concise title and summary for the following image. '
+                            . 'Return *only* valid JSON in the format {"title": "...", "summary": "..."} '
+                            . 'with no extra text, code blocks, or markdown.'
+                    ],
+                    [
                         'role' => 'user',
-                        'content' => [
-                            [
-                                'type' => 'image_url',
-                                'image_url' => ['url' => $url]
+                        'content' => "Here is an image URL: $url\n\n"
+                            . "Analyze this image, understand it's content, then provide the JSON response."
+                    ],
+                ];
+
+                $response = OpenAI::chat()->create([
+                    'model'      => 'gpt-4o-mini',
+                    'messages'   => $messages,
+                    'max_tokens' => 500,
+                ]);
+
+                $rawContent = $response->choices[0]->message->content ?? '';
+                $content = json_decode($rawContent, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Log::error('JSON decode error', [
+                        'error' => json_last_error_msg(),
+                        'raw_content' => $rawContent
+                    ]);
+                    throw new \Exception('Failed to decode JSON response: ' . json_last_error_msg());
+                }
+
+                // Skip vector store for images
+                $this->document->update(['skip_vector_store' => true]);
+
+            } else {
+                switch ($this->document->mime_type) {
+                    case 'application/pdf':
+                    case 'application/msword':
+                    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                        // 1) Use the case's Assistant ID for text documents
+                        $assistantId = $this->document->caseFile->openai_assistant_id;
+                        if (!$assistantId) {
+                            throw new \Exception('Case has no associated OpenAI assistant');
+                        }
+
+                        // 2) Create a new thread
+                        $thread = OpenAI::threads()->create([
+                            'messages' => [
+                                [
+                                    'role'    => 'user',
+                                    'content' => 'Please analyze this document and generate a title and summary. '
+                                        . 'Return valid JSON only, in the format: {"title": "...", "summary": "..."}',
+                                    'attachments' => [
+                                        [
+                                            'file_id' => $this->document->openai_file_id,
+                                            'tools' => [
+                                                ['type' => 'file_search']
+                                            ]
+                                        ]
+                                    ]
+                                ]
                             ]
-                        ]
-                    ];
+                        ]);
 
-                    $response = OpenAI::chat()->create([
-                        'model' => 'gpt-4-vision-preview',
-                        'messages' => $messages,
-                        'max_tokens' => 500
-                    ]);
+                        // 3) Create a run on that thread
+                        $run = OpenAI::threads()->runs()->create($thread->id, [
+                            'assistant_id' => $assistantId,
+                        ]);
 
-                    $content = json_decode($response->choices[0]->message->content, true);
-                    break;
+                        // 4) Poll until the run is completed or fails
+                        $startTime = time();
+                        $timeout = 300; // 5 minutes
+                        while (in_array($run->status, ['queued', 'in_progress'])) {
+                            if (time() - $startTime > $timeout) {
+                                throw new \Exception('Run timed out after 5 minutes');
+                            }
+                            sleep(1);
+                            $run = OpenAI::threads()->runs()->retrieve($thread->id, $run->id);
+                        }
 
-                case 'application/pdf':
-                case 'application/msword':
-                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                    // Use the case's assistant for text documents
-                    $assistantId = $this->document->caseFile->openai_assistant_id;
+                        if ($run->status !== 'completed') {
+                            throw new \Exception("Assistant run failed with status: {$run->status}");
+                        }
 
-                    if (!$assistantId) {
-                        throw new \Exception('Case has no associated OpenAI assistant');
-                    }
+                        // 5) Retrieve all messages; find the last assistant message
+                        $allMessages = OpenAI::threads()->messages()->list($thread->id);
+                        $assistantMessage = collect($allMessages->data)
+                            ->where('role', 'assistant')
+                            ->last();
 
-                    // Create a thread
-                    $thread = OpenAI::threads()->create([
-                        'messages' => [
-                            [
-                                'role' => 'user',
-                                'content' => 'Please analyze this document and generate a title and summary in JSON format: {"title": "...", "summary": "..."}'
-                            ]
-                        ]
-                    ]);
+                        if (!$assistantMessage) {
+                            throw new \Exception('No valid assistant message found in thread');
+                        }
 
-                    // Run the assistant
-                    $run = OpenAI::threads()->runs()->create($thread->id, [
-                        'assistant_id' => $assistantId,
-                    ]);
+                        // 6) Extract the JSON response
+                        //    If the library segments text differently, you may need to combine or check multiple array items.
+                        $rawContent = $assistantMessage->content[0]->text->value ?? '';
+                        // Remove any triple backticks if they appear
+                        $rawContent = preg_replace('/```(?:json)?(.*?)```/s', '$1', $rawContent);
+                        $content = json_decode($rawContent, true);
 
-                    // Wait for completion
-                    while (in_array($run->status, ['queued', 'in_progress'])) {
-                        sleep(1);
-                        $run = OpenAI::threads()->runs()->retrieve(
-                            $thread->id,
-                            $run->id
-                        );
-                    }
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            Log::error('JSON decode error', [
+                                'error'       => json_last_error_msg(),
+                                'raw_content' => $rawContent
+                            ]);
+                            throw new \Exception('Failed to decode JSON response: ' . json_last_error_msg());
+                        }
 
-                    if ($run->status !== 'completed') {
-                        throw new \Exception("Assistant run failed with status: {$run->status}");
-                    }
+                        break;
 
-                    // Get the response
-                    $messages = OpenAI::threads()->messages()->list($thread->id);
-                    $lastMessage = $messages->data[0];
-
-                    $content = json_decode($lastMessage->content[0]->text->value, true);
-                    break;
-
-                default:
-                    throw new \Exception("Unsupported file type: {$this->document->mime_type}");
+                    default:
+                        throw new \Exception("Unsupported file type: {$this->document->mime_type}");
+                }
             }
 
+            // Validate the JSON structure
             if (!isset($content['title']) || !isset($content['summary'])) {
-                throw new \Exception('Invalid response format from OpenAI');
+                Log::error('Invalid response format from OpenAI', ['response' => $content]);
+                throw new \Exception('OpenAI response missing required fields');
             }
 
             $this->document->update([
-                'title' => $content['title'] ?? $this->document->title,
-                'description' => $content['summary'] ?? $this->document->description
+                'title' => $content['title'],
+                'description' => $content['summary']
             ]);
 
             return $this;
@@ -205,8 +248,29 @@ class ProcessDocumentJob implements ShouldQueue
         }
     }
 
+
+
     private function attachToVectorStore(): self
     {
+        // Early return conditions with additional logging
+        if ($this->document->skip_vector_store) {
+            Log::info('Skipping vector store attachment - skip_vector_store flag is true', [
+                'document_id' => $this->document->id,
+                'mime_type' => $this->document->mime_type
+            ]);
+            return $this;
+        }
+
+        // Check for any image type (image/*)
+        if (str_starts_with($this->document->mime_type, 'image/')) {
+            Log::info('Skipping vector store attachment for image file', [
+                'document_id' => $this->document->id,
+                'mime_type' => $this->document->mime_type
+            ]);
+            $this->document->update(['skip_vector_store' => true]);
+            return $this;
+        }
+
         $this->configureOpenAI();
         $this->document->update(['ingestion_status' => 'indexing']);
 
@@ -214,6 +278,10 @@ class ProcessDocumentJob implements ShouldQueue
 
         if (!$vectorStoreId) {
             throw new \Exception('Case file has no vector store ID');
+        }
+
+        if (!$this->document->openai_file_id) {
+            throw new \Exception('Document has no OpenAI file ID');
         }
 
         OpenAI::vectorStores()->files()->create($vectorStoreId, [

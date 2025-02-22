@@ -43,7 +43,7 @@ class DocumentService
         return $document;
     }
 
-    private function storeFile(CaseFile $caseFile,  $file): string
+    private function storeFile(CaseFile $caseFile, $file): string
     {
         $path = sprintf(
             'cases/%s/documents/%s',
@@ -51,7 +51,10 @@ class DocumentService
             time()
         );
 
+        // Sanitize the filename by replacing spaces with underscores
+        $sanitizedName = str_replace(' ', '_', $file->getClientOriginalName());
+
         // returns the path where the file was stored. EX: cases/1/documents/1687454239.pdf
-        return $file->storeAs($path, $file->getClientOriginalName(),'s3');
+        return $file->storeAs($path, $sanitizedName, 's3');
     }
 }

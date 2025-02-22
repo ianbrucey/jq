@@ -25,6 +25,7 @@ return new class extends Migration
                 ->default('pending');
             $table->text('ingestion_error')->nullable();
             $table->timestamp('ingested_at')->nullable();
+            $table->boolean('skip_vector_store')->default(false);
             $table->timestamps();
         });
     }
