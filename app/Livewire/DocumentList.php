@@ -16,6 +16,9 @@ class DocumentList extends Component
     public $showingPreviewModal = false;
     public $previewDocument = null;
     public $documentUrls = [];
+    public $search = '';
+
+    protected $queryString = ['search'];
 
     protected $listeners = [
         'document-uploaded' => '$refresh'
@@ -55,10 +58,19 @@ class DocumentList extends Component
 
     public function render()
     {
+        $documents = $this->caseFile->documents()
+            ->when($this->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', '%' . $search . '%')
+                      ->orWhere('original_filename', 'like', '%' . $search . '%')
+                      ->orWhere('description', 'like', '%' . $search . '%');
+                });
+            })
+            ->latest()
+            ->paginate(5);
+
         return view('livewire.document-list', [
-            'documents' => $this->caseFile->documents()
-                ->latest()
-                ->paginate(10)
+            'documents' => $documents
         ]);
     }
 }

@@ -1,32 +1,37 @@
 <div class="space-y-4">
+    <!-- Search Input -->
+    <div class="mb-4">
+        <div class="relative">
+            <input
+                type="text"
+                wire:model.live="search"
+                placeholder="Search documents..."
+                class="input input-bordered w-full pl-10"
+            >
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            @if($search)
+                <button
+                    wire:click="$set('search', '')"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                    <svg class="h-5 w-5 text-base-content/50 hover:text-base-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            @endif
+        </div>
+    </div>
+
+    <!-- Documents List -->
     @forelse($documents as $document)
         <div class="card bg-base-200">
             <div class="card-body p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="mb-1 flex items-center gap-2">
-                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-base-300 text-base-content/70">
-                                @php
-                                    $type = match ($document->mime_type) {
-                                        'application/pdf' => 'PDF Document',
-                                        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'Word Document',
-                                        'image/jpeg', 'image/jpg' => 'JPEG Image',
-                                        'image/png' => 'PNG Image',
-                                        default => 'Document'
-                                    };
-                                @endphp
-                                {{ $type }}
-                            </span>
-                            <button
-                                wire:click="preview({{ $document->id }})"
-                                class="btn btn-xs btn-ghost"
-                                title="Preview Document">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                            </button>
-                        </div>
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
                         <h4 class="font-medium">{{ $document->title ?: $document->original_filename }}</h4>
                         @if($document->description)
                             <p class="text-sm text-base-content/60">{{ $document->description }}</p>
@@ -38,12 +43,10 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button wire:click="getDocumentUrl({{ $document->id }})"
-                                x-data
-                                x-on:click="$wire.getDocumentUrl({{ $document->id }}).then(url => { if (url) window.location.href = url })"
-                                class="btn btn-sm btn-ghost">
+                        <button class="btn btn-sm btn-ghost" wire:click="preview({{ $document->id }})">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
@@ -52,9 +55,20 @@
         </div>
     @empty
         <div class="text-center py-8 text-base-content/60">
-            No documents uploaded yet.
+            @if($search)
+                No documents found matching "{{ $search }}"
+            @else
+                No documents uploaded yet.
+            @endif
         </div>
     @endforelse
+
+    <!-- Pagination -->
+    @if($documents->hasPages())
+        <div class="mt-4">
+            {{ $documents->links() }}
+        </div>
+    @endif
 
     <!-- Document Preview Modal -->
     <x-dialog-modal wire:model.live="showingPreviewModal">
@@ -63,24 +77,20 @@
         </x-slot>
 
         <x-slot name="content">
-            @if($previewDocument && isset($documentUrls[$previewDocument->id]))
+            @if($previewDocument)
                 <div class="space-y-4">
                     <div class="aspect-auto max-h-[70vh] overflow-auto">
                         @if(str_contains($previewDocument->mime_type, 'image'))
-                            <img src="{{ $documentUrls[$previewDocument->id] }}"
+                            <img src="{{ $this->getDocumentUrl($previewDocument->id) }}"
                                  alt="{{ $previewDocument->title }}"
                                  class="max-w-full h-auto">
                         @elseif($previewDocument->mime_type === 'application/pdf')
-                            <iframe src="{{ $documentUrls[$previewDocument->id] }}"
+                            <iframe src="{{ $this->getDocumentUrl($previewDocument->id) }}"
                                     class="w-full h-[70vh]"
-                                    type="application/pdf">
-                            </iframe>
+                                    frameborder="0"></iframe>
                         @else
-                            <div class="p-4 bg-base-300 rounded">
-                                <p class="text-center text-base-content/70">
-                                    Preview not available for this file type.
-                                    Please download to view.
-                                </p>
+                            <div class="p-4 text-center text-base-content/60">
+                                Preview not available for this file type
                             </div>
                         @endif
                     </div>
@@ -89,19 +99,7 @@
         </x-slot>
 
         <x-slot name="footer">
-            <div class="flex justify-end gap-3">
-                @if($previewDocument)
-                    <button wire:click="getDocumentUrl({{ $previewDocument->id }})"
-                            x-data
-                            x-on:click="window.location.href = $wire.documentUrls[{{ $previewDocument->id }}]"
-                            class="btn btn-primary btn-sm">
-                        Download
-                    </button>
-                @endif
-                <button class="btn btn-ghost btn-sm" wire:click="closePreviewModal">
-                    Close
-                </button>
-            </div>
+            <button class="btn btn-ghost" wire:click="closePreviewModal">Close</button>
         </x-slot>
     </x-dialog-modal>
 </div>
