@@ -31,18 +31,30 @@ class DocumentUploader extends Component
     public function updatedFiles()
     {
         foreach ($this->files as $file) {
-            // Sanitize the filename by replacing spaces with underscores
             $originalName = $file->getClientOriginalName();
             $sanitizedName = str_replace(' ', '_', $originalName);
-            $file->storeAs('temp', $sanitizedName);  // Store with sanitized name
+
+            // Store file and create object structure
+            $storedPath = $file->storeAs('temp', $sanitizedName);
+
+            $fileObject = [
+                'file' => $file,
+                'metadata' => [
+                    'name' => $originalName,
+                    'size' => $file->getSize(),
+                    'type' => $file->getMimeType(),
+                    'progress' => 100,
+                    'temporaryUrl' => null
+                ]
+            ];
 
             $index = count($this->queuedFiles);
-            $this->queuedFiles[$index] = $file;
-            $this->documentTitles[$index] = '';
+            $this->queuedFiles[$index] = $fileObject;
+            $this->documentTitles[$index] = ''; // Initialize with empty string
             $this->documentDescriptions[$index] = '';
         }
 
-        $this->files = []; // Clear the temporary upload array
+        $this->files = [];
     }
 
     public function removeFile($key)
@@ -60,13 +72,13 @@ class DocumentUploader extends Component
     public function saveDocument($key)
     {
         try {
-            $file = $this->queuedFiles[$key];
+            $fileObject = $this->queuedFiles[$key];
             $title = $this->documentTitles[$key] ?? null;
             $description = $this->documentDescriptions[$key] ?? null;
 
             app(DocumentService::class)->store(
                 $this->caseFile,
-                $file,
+                $fileObject['file'], // Pass the actual UploadedFile instance
                 $title,
                 $description
             );

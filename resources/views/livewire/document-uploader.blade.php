@@ -107,8 +107,8 @@ Usage:
             <div class="relative flex items-center p-4 border rounded-lg shadow-sm bg-base-100 border-base-content/20">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-base-content" x-text="file.name"></span>
-                        <span class="text-xs text-base-content/60" x-text="formatFileSize(file.size)"></span>
+                        <span class="text-sm font-medium text-base-content" x-text="file.metadata.name"></span>
+                        <span class="text-xs text-base-content/60" x-text="formatFileSize(file.metadata.size)"></span>
                     </div>
 
                     {{-- Progress Bar --}}
@@ -194,25 +194,35 @@ document.addEventListener('alpine:init', () => {
                 this.$wire.upload('files', file, (uploadedFile) => {
                     // Create file object after successful upload
                     const fileObject = {
+                        // Keep the original File object properties
                         name: file.name,
                         size: file.size,
                         type: file.type,
                         progress: 0,
-                        temporaryUrl: uploadedFile.temporaryUrl // Store the temporary URL from Livewire
+                        temporaryUrl: uploadedFile.temporaryUrl
                     };
 
+                    // Get base filename for the title
+                    const baseFileName = file.name.split('\\').pop().split('/').pop();
+
                     this.files.push(fileObject);
-                    this.titles.push('');
+                    this.titles.push('');  // Empty title by default
                     this.descriptions.push('');
 
-                    this.simulateUpload(this.files.length - 1);
+                    // Update progress bar
+                    const fileIndex = this.files.length - 1;
+                    if (fileObject.size > 0) {
+                        this.simulateUpload(fileIndex);
+                    }
                 }, () => {
                     // Handle upload error
                     this.$wire.addError('upload', `Failed to upload ${file.name}`);
                 }, (progressEvent) => {
-                    // Handle upload progress if needed
-                    const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(`Upload progress: ${progress}%`);
+                    // Handle upload progress
+                    if (progressEvent.total > 0) {
+                        const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        console.log(`Upload progress for ${file.name}: ${progress}%`);
+                    }
                 });
             });
         },
