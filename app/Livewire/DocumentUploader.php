@@ -17,6 +17,7 @@ class DocumentUploader extends Component
     public $documentDescriptions = [];
     public $caseFile;
     public $isSavingAll = false;
+    public $savingDocuments = [];
 
     protected $listeners = ['removeFile'];
 
@@ -72,7 +73,8 @@ class DocumentUploader extends Component
 
     public function saveDocument($key)
     {
-//        dd($this->queuedFiles);
+        $this->savingDocuments[$key] = true;
+
         try {
             $fileObject = $this->queuedFiles[$key];
             $title = $this->documentTitles[$key] ?? null;
@@ -80,7 +82,7 @@ class DocumentUploader extends Component
 
             app(DocumentService::class)->store(
                 $this->caseFile,
-                $fileObject['file'], // Pass the actual UploadedFile instance
+                $fileObject['file'],
                 $title,
                 $description
             );
@@ -90,6 +92,8 @@ class DocumentUploader extends Component
         } catch (\Exception $e) {
             Log::error('Failed to upload document: ' . $e->getMessage());
             $this->addError('upload', 'Failed to upload document: ' . $e->getMessage());
+        } finally {
+            unset($this->savingDocuments[$key]);
         }
     }
 

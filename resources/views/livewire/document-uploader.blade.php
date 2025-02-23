@@ -193,11 +193,19 @@ Usage:
 
                 {{-- Save Button --}}
                 <div class="ml-4">
-                    <button type="button"
-                            wire:click="saveDocument(index)"
-                            class="btn btn-primary btn-sm">
-                        Save Document
-                    </button>
+                    <template x-if="!file.isSaving">
+                        <button type="button"
+                                @click="file.isSaving = true; $wire.saveDocument(index); setTimeout(() => file.isSaving = false, 5000)"
+                                class="btn btn-primary btn-sm">
+                            Save Document
+                        </button>
+                    </template>
+                    <template x-if="file.isSaving">
+                        <button class="btn btn-primary btn-sm" disabled>
+                            <span class="loading loading-spinner loading-sm"></span>
+                            Saving...
+                        </button>
+                    </template>
                 </div>
             </div>
         </template>
@@ -250,6 +258,9 @@ document.addEventListener('alpine:init', () => {
                     }
                     return;
                 }
+
+                // Add isSaving property when creating the file object
+                file.isSaving = false;
 
                 this.$wire.upload('files', file,
                     (uploadedFile) => {
