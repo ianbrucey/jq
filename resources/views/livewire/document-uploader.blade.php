@@ -68,7 +68,7 @@ Usage:
 
     {{-- Upload Progress Overlay --}}
     <div x-show="isUploading"
-         class="absolute inset-0 bg-base-100/50 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+         class="fixed inset-0 z-50 flex items-center justify-center bg-base-100/50 backdrop-blur-sm">
         <div class="flex flex-col items-center space-y-4">
             <div class="upload-pulse-ring"></div>
             <p class="text-base-content/70" x-text="uploadingMessage"></p>
