@@ -71,6 +71,7 @@ class DocumentUploader extends Component
 
     public function saveDocument($key)
     {
+//        dd($this->queuedFiles);
         try {
             $fileObject = $this->queuedFiles[$key];
             $title = $this->documentTitles[$key] ?? null;
@@ -93,9 +94,8 @@ class DocumentUploader extends Component
 
     public function saveAllDocuments()
     {
-
-        foreach (array_keys($this->queuedFiles) as $index => $file) {
-            $this->saveDocument($index);
+        while (!empty($this->queuedFiles)) {
+            $this->saveDocument(array_key_first($this->queuedFiles));
         }
     }
 
