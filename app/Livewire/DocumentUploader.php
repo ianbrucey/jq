@@ -16,6 +16,7 @@ class DocumentUploader extends Component
     public $documentTitles = [];
     public $documentDescriptions = [];
     public $caseFile;
+    public $isSavingAll = false;
 
     protected $listeners = ['removeFile'];
 
@@ -94,8 +95,14 @@ class DocumentUploader extends Component
 
     public function saveAllDocuments()
     {
-        while (!empty($this->queuedFiles)) {
-            $this->saveDocument(array_key_first($this->queuedFiles));
+        $this->isSavingAll = true;
+
+        try {
+            while (!empty($this->queuedFiles)) {
+                $this->saveDocument(array_key_first($this->queuedFiles));
+            }
+        } finally {
+            $this->isSavingAll = false;
         }
     }
 

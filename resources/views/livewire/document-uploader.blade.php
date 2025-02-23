@@ -139,8 +139,16 @@ Usage:
         <div class="flex justify-end">
             <button type="button"
                     wire:click="saveAllDocuments"
-                    class="btn btn-primary">
-                Save All Documents
+                    wire:loading.attr="disabled"
+                    wire:target="saveAllDocuments"
+                    class="btn btn-primary"
+                    :class="{ 'loading': $wire.get('isSavingAll') }">
+                <span wire:loading.remove wire:target="saveAllDocuments">
+                    Save All Documents
+                </span>
+                <span wire:loading wire:target="saveAllDocuments">
+                    Saving Documents...
+                </span>
             </button>
         </div>
 
