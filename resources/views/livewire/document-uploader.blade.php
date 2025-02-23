@@ -66,6 +66,47 @@ Usage:
     x-on:drop.prevent="onFileDropped($event)"
     class="relative">
 
+    {{-- Upload Progress Overlay --}}
+    <div x-show="isUploading"
+         class="absolute inset-0 bg-base-100/50 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="upload-pulse-ring"></div>
+            <p class="text-base-content/70" x-text="uploadingMessage"></p>
+        </div>
+    </div>
+
+    {{-- Add this style section at the top of your component --}}
+    <style>
+        .upload-pulse-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid hsl(var(--p));
+            border-radius: 50%;
+            position: relative;
+            animation: upload-pulse 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        .upload-pulse-ring:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 4px solid hsl(var(--p));
+            border-radius: 50%;
+            animation: upload-pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        @keyframes upload-pulse {
+            0% { transform: scale(0.3); opacity: 0.9; }
+            80%, 100% { transform: scale(1); opacity: 0; }
+        }
+
+        @keyframes upload-pulse-ring {
+            0% { transform: scale(0.3); opacity: 0.9; }
+            80%, 100% { transform: scale(1.4); opacity: 0; }
+        }
+    </style>
+
     {{-- Dropzone --}}
     <label for="file-upload" class="relative block cursor-pointer">
         <div class="relative p-8 transition-all duration-200 ease-in-out border-2 border-dashed rounded-lg border-base-content/20"
@@ -166,10 +207,13 @@ Usage:
 document.addEventListener('alpine:init', () => {
     Alpine.data('documentUploader', ({ files = [], titles = [], descriptions = [] } = {}) => ({
         isDropping: false,
+        isUploading: false,
+        uploadingMessage: 'Preparing upload...',
+        pendingUploads: 0,
         files: files,
         titles: titles,
         descriptions: descriptions,
-        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxFileSize: 10 * 1024 * 1024,
         allowedTypes: [
             'application/pdf',
             'application/msword',
@@ -185,48 +229,58 @@ document.addEventListener('alpine:init', () => {
         onFileInputChanged(event) {
             this.handleFiles(event.target.files);
         },
-
         handleFiles(fileList) {
+            this.isUploading = true;
+            this.uploadingMessage = 'Processing files...';
+            this.pendingUploads = fileList.length;
+
             Array.from(fileList).forEach(file => {
-                if (!this.validateFile(file)) return;
-
-                // Use Livewire's upload method
-                this.$wire.upload('files', file, (uploadedFile) => {
-                    // Create file object after successful upload
-                    const fileObject = {
-                        // Keep the original File object properties
-                        name: file.name,
-                        size: file.size,
-                        type: file.type,
-                        progress: 0,
-                        temporaryUrl: uploadedFile.temporaryUrl
-                    };
-
-                    // Get base filename for the title
-                    const baseFileName = file.name.split('\\').pop().split('/').pop();
-
-                    this.files.push(fileObject);
-                    this.titles.push('');  // Empty title by default
-                    this.descriptions.push('');
-
-                    // Update progress bar
-                    const fileIndex = this.files.length - 1;
-                    if (fileObject.size > 0) {
-                        this.simulateUpload(fileIndex);
+                if (!this.validateFile(file)) {
+                    this.pendingUploads--;
+                    if (this.pendingUploads === 0) {
+                        this.isUploading = false;
                     }
-                }, () => {
-                    // Handle upload error
-                    this.$wire.addError('upload', `Failed to upload ${file.name}`);
-                }, (progressEvent) => {
-                    // Handle upload progress
-                    if (progressEvent.total > 0) {
+                    return;
+                }
+
+                this.$wire.upload('files', file,
+                    (uploadedFile) => {
+                        // Use nextTick from Alpine instead
+                        this.$nextTick(() => {
+                            this.pendingUploads--;
+                            this.uploadingMessage = this.pendingUploads > 0
+                                ? `Processing ${this.pendingUploads} remaining files...`
+                                : 'Upload complete!';
+
+                            if (this.pendingUploads === 0) {
+                                setTimeout(() => {
+                                    this.isUploading = false;
+                                }, 500);
+                            }
+                        });
+                    },
+                    () => {
+                        this.uploadingMessage = 'Upload failed!';
+                        this.$wire.addError('upload', `Failed to upload ${file.name}`);
+                        this.pendingUploads--;
+                        if (this.pendingUploads === 0) {
+                            setTimeout(() => {
+                                this.isUploading = false;
+                            }, 1000);
+                        }
+                    },
+                    (progressEvent) => {
                         const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                        console.log(`Upload progress for ${file.name}: ${progress}%`);
+                        this.uploadingMessage = `Uploading... ${progress}%`;
+
+                        const fileIndex = this.files.findIndex(f => f.metadata.name === file.name);
+                        if (fileIndex !== -1 && progressEvent.total > 0) {
+                            this.files[fileIndex].metadata.progress = progress;
+                        }
                     }
-                });
+                );
             });
         },
-
         validateFile(file) {
             if (!this.allowedTypes.includes(file.type)) {
                 this.$wire.addError('upload', `Invalid file type: ${file.name}`);
