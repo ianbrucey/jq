@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\CaseFile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Services\DocumentService;
@@ -21,9 +22,15 @@ class DocumentUploader extends Component
 
     protected $listeners = ['removeFile'];
 
-    public function mount($caseFile = null)
+    public function mount($caseFile)
     {
-        $this->caseFile = $caseFile;
+        $this->caseFile = !is_object($caseFile) ? CaseFile::find(intval($caseFile)) : $caseFile;
+
+//        dd($this->caseFile);
+
+        if(empty($this->caseFile)) {
+            throw new \Exception('Cannot upload documents without a case file');
+        }
     }
 
 //    public function updated() {

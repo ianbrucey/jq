@@ -56,10 +56,12 @@
                 </div>
 
                 {{-- WARNING: DO NOT REMOVE THE DOCUMENT UPLOADER FROM STEP 2 UNLESS EXPLICITLY REQUESTED --}}
-                <div class="space-y-2">
-                    <x-label for="documents" value="Case Documents (Optional)" class="text-base-content" />
-                    <livewire:document-uploader />
-                </div>
+                @if ($caseFile)
+                    <div class="space-y-2">
+                        <x-label for="documents" value="Case Documents (Optional)" class="text-base-content" />
+                        <livewire:document-uploader :case-file="$caseFile"  />
+                    </div>
+                @endif
             </div>
         @endif
 
