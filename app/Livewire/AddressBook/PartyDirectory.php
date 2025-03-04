@@ -159,7 +159,7 @@ class PartyDirectory extends Component
                     ->orWhere('state', 'like', '%' . $this->search . '%')
                     ->orWhere('zip', 'like', '%' . $this->search . '%');
             })
-            ->orderBy('name')
+            ->orderBy('created_at', 'desc')
             ->paginate(5);
 
         return view('livewire.address-book.party-directory', [

@@ -257,6 +257,7 @@
                                 <th class="text-base-content/70">Name & Relationship</th>
                                 <th class="text-base-content/70">Address</th>
                                 <th class="text-base-content/70">Contact Information</th>
+                                <th class="text-base-content/70">Added</th>
                                 <th class="text-base-content/70 text-right">Actions</th>
                             </tr>
                         </thead>
@@ -300,6 +301,9 @@
                                                 </div>
                                             @endif
                                         </div>
+                                    </td>
+                                    <td class="text-sm text-base-content/70">
+                                        {{ $party->created_at->diffForHumans() }}
                                     </td>
                                     <td class="text-right">
                                         <div class="flex justify-end gap-2">

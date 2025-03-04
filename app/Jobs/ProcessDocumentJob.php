@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Document;
+use App\Models\Party;
 use App\Services\OpenAI\CaseAssistantService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -165,8 +166,30 @@ class ProcessDocumentJob implements ShouldQueue
                             'messages' => [
                                 [
                                     'role'    => 'user',
-                                    'content' => 'Please analyze this document and generate a title and summary. '
-                                        . 'Return valid JSON only, in the format: {"title": "...", "summary": "..."}',
+                                    'content' => 'Please analyze this document and provide:
+1. A title and summary of the document.
+2. Any parties and their addresses mentioned in the document.
+
+Return valid JSON only, in the format:
+{
+    "title": "...",
+    "summary": "...",
+    "parties": [
+        {
+            "name": "...",
+            "address_line1": "...",
+            "address_line2": null,
+            "city": "...",
+            "state": "...",
+            "zip": "...",
+            "email": null,
+            "phone": null,
+            "relationship": "..."
+        }
+    ]
+}
+
+For parties, only include entries where you are confident about the name and address. The relationship field should be one of: attorney, court, or opponent. If relationship is unclear, omit it.',
                                     'attachments' => [
                                         [
                                             'file_id' => $this->document->openai_file_id,
@@ -224,23 +247,31 @@ class ProcessDocumentJob implements ShouldQueue
                             throw new \Exception('Failed to decode JSON response: ' . json_last_error_msg());
                         }
 
+                        // Validate the JSON structure
+                        if (!isset($content['title']) || !isset($content['summary'])) {
+                            Log::error('Invalid response format from OpenAI', ['response' => $content]);
+                            throw new \Exception('OpenAI response missing required fields');
+                        }
+
+                        $this->document->update([
+                            'title' => $content['title'],
+                            'description' => $content['summary']
+                        ]);
+
+                        // Handle extracted parties if present
+                        if (isset($content['parties']) && is_array($content['parties'])) {
+                            Party::createFromDocumentAnalysis(
+                                $content['parties'],
+                                $this->document->caseFile->user_id
+                            );
+                        }
+
                         break;
 
                     default:
                         throw new \Exception("Unsupported file type: {$this->document->mime_type}");
                 }
             }
-
-            // Validate the JSON structure
-            if (!isset($content['title']) || !isset($content['summary'])) {
-                Log::error('Invalid response format from OpenAI', ['response' => $content]);
-                throw new \Exception('OpenAI response missing required fields');
-            }
-
-            $this->document->update([
-                'title' => $content['title'],
-                'description' => $content['summary']
-            ]);
 
             return $this;
         } catch (\Exception $e) {
