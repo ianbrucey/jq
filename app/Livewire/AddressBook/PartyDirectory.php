@@ -6,6 +6,7 @@ use App\Enums\UsState;
 use App\Models\Party;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class PartyDirectory extends Component
 {
@@ -16,6 +17,7 @@ class PartyDirectory extends Component
     public $editingParty = null;
     public $partyToDelete = null;
     public $showDeleteModal = false;
+    public $search = '';
 
     // Form properties
     public $name = '';
@@ -63,9 +65,7 @@ class PartyDirectory extends Component
     public function toggleForm()
     {
         $this->isFormVisible = !$this->isFormVisible;
-        if (!$this->isFormVisible) {
-            $this->reset(['editingParty', 'name', 'address_line1', 'address_line2', 'city', 'state', 'zip', 'email', 'phone', 'relationship']);
-        }
+        $this->dispatch('form-toggled');
     }
 
     public function setActiveTab($tab)
@@ -132,9 +132,33 @@ class PartyDirectory extends Component
         $this->showDeleteModal = false;
     }
 
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    #[On('address-selected')]
+    public function handleAddressSelection($address)
+    {
+        logger()->info('Address selection handler called', ['address' => $address]);
+
+        $this->address_line1 = $address['address_line1'];
+        $this->city = $address['city'];
+        $this->state = $address['state'];
+        $this->zip = $address['zip'];
+    }
+
     public function render()
     {
         $parties = Party::where('user_id', auth()->id())
+            ->where(function($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('address_line1', 'like', '%' . $this->search . '%')
+                    ->orWhere('address_line2', 'like', '%' . $this->search . '%')
+                    ->orWhere('city', 'like', '%' . $this->search . '%')
+                    ->orWhere('state', 'like', '%' . $this->search . '%')
+                    ->orWhere('zip', 'like', '%' . $this->search . '%');
+            })
             ->orderBy('name')
             ->paginate(5);
 

@@ -39,6 +39,9 @@ return [
         'api_key' => env('OPENAI_API_KEY'),
         'organization' => env('OPENAI_ORGANIZATION_ID'),
         'organization_id' => env('OPENAI_ORGANIZATION_ID'),
-    ]
+    ],
 
+    'google' => [
+        'places_api_key' => env('GOOGLE_PLACES_API_KEY'),
+    ],
 ];

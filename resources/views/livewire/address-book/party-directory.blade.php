@@ -1,4 +1,71 @@
 <div class="space-y-6">
+    <!-- Add this at the top of the file, after the opening div -->
+    @push('scripts')
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key') }}&libraries=places"></script>
+        <script>
+            document.addEventListener('livewire:initialized', function () {
+                function initializeAddressAutocomplete() {
+                    const input = document.getElementById('address_line1');
+                    if (!input) return;
+
+                    const autocomplete = new google.maps.places.Autocomplete(input, {
+                        types: ['address'],
+                        fields: ['address_components', 'formatted_address']
+                    });
+
+                    autocomplete.addListener('place_changed', function() {
+                        const place = autocomplete.getPlace();
+                        console.log('Place changed event fired');
+
+                        let addressComponents = {
+                            street_number: '',
+                            route: '',
+                            locality: '',
+                            administrative_area_level_1: '',
+                            postal_code: ''
+                        };
+
+                        // Extract each component
+                        place.address_components.forEach(component => {
+                            const type = component.types[0];
+                            if (addressComponents.hasOwnProperty(type)) {
+                                addressComponents[type] = component.long_name;
+                                if (type === 'administrative_area_level_1') {
+                                    addressComponents[type] = component.short_name;
+                                }
+                            }
+                        });
+
+                        const address_line1 = [
+                            addressComponents.street_number,
+                            addressComponents.route
+                        ].filter(Boolean).join(' ');
+
+                        const payload = {
+                            address_line1: address_line1,
+                            city: addressComponents.locality,
+                            state: addressComponents.administrative_area_level_1,
+                            zip: addressComponents.postal_code
+                        };
+
+                        console.log('About to dispatch address-selected with payload:', payload);
+
+                        // Update to pass as array with named parameter
+                        Livewire.dispatch('address-selected', { address: payload });
+                    });
+                }
+
+                // Initialize on page load
+                initializeAddressAutocomplete();
+
+                // Re-initialize when the form becomes visible
+                Livewire.on('form-toggled', () => {
+                    setTimeout(initializeAddressAutocomplete, 100);
+                });
+            });
+        </script>
+    @endpush
+
     <!-- Header and Controls -->
     <div class="flex justify-between items-center">
         <h2 class="text-2xl font-semibold text-base-content">Address Book</h2>
@@ -12,7 +79,6 @@
         </button>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs tabs-boxed">
         <a wire:click="setActiveTab('manual')"
            class="tab {{ $activeTab === 'manual' ? 'tab-active' : '' }}">
@@ -67,7 +133,25 @@
                             <label class="label">
                                 <span class="label-text">Address Line 1</span>
                             </label>
-                            <input type="text" wire:model="address_line1" class="input input-bordered w-full" placeholder="Street Address">
+                            <div class="relative">
+                                <!-- Hidden dummy input to prevent autocomplete -->
+                                <input
+                                    type="text"
+                                    style="position: absolute; top: -9999px; left: -9999px;"
+                                    name="address_line1_hidden"
+                                    tabindex="-1"
+                                />
+                                <!-- Actual input -->
+                                <input
+                                    type="text"
+                                    id="address_line1"
+                                    wire:model="address_line1"
+                                    class="input input-bordered w-full"
+                                    placeholder="Start typing to search an address..."
+                                    autocomplete="off"
+                                    x-ref="addressInput"
+                                >
+                            </div>
                             @error('address_line1') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
 
@@ -136,6 +220,35 @@
 
             <!-- Parties list -->
             <div class="bg-base-100 rounded-box shadow-lg">
+                <!-- Search Bar -->
+                <div class="p-4">
+                    <div class="relative">
+                        <input
+                            type="text"
+                            wire:model.live="search"
+                            placeholder="Search contacts by name or address..."
+                            class="input input-bordered w-full pl-10"
+                        >
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        @if($search)
+                            <button
+                                wire:click="$set('search', '')"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-base-content/50 hover:text-base-content"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="border-t border-base-200"></div>
+
                 <div class="overflow-x-auto">
                     <table class="table table-zebra w-full">
                         <thead>
