@@ -88,10 +88,6 @@
            class="tab {{ $activeTab === 'voice' ? 'tab-active' : '' }}">
             Voice Input
         </a>
-        <a wire:click="setActiveTab('scan')"
-           class="tab {{ $activeTab === 'scan' ? 'tab-active' : '' }}">
-            Document Scan
-        </a>
     </div>
 
     <!-- Tab Content -->
@@ -362,16 +358,48 @@
                 </div>
             </x-modal>
         @elseif($activeTab === 'voice')
-            <div class="bg-base-100 rounded-box p-6 shadow-lg">
+            <div class="bg-base-100 rounded-box p-6 shadow-lg space-y-4">
                 <h3 class="text-xl font-semibold mb-4">Voice Input</h3>
-                <!-- Voice input implementation here -->
-                <p class="text-base-content/70">Voice input feature coming soon...</p>
-            </div>
-        @elseif($activeTab === 'scan')
-            <div class="bg-base-100 rounded-box p-6 shadow-lg">
-                <h3 class="text-xl font-semibold mb-4">Document Scan</h3>
-                <!-- Document scan implementation here -->
-                <p class="text-base-content/70">Document scan feature coming soon...</p>
+
+                <div class="alert alert-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <h3 class="font-bold">Speaking Instructions</h3>
+                        <p>Speak naturally and list as many names and addresses as you wish. Don't worry about mistakes - we'll help sort everything out afterwards.</p>
+                    </div>
+                </div>
+
+                <livewire:voice-message-input
+                    name="contact_dictation"
+                    height="300px"
+                    wire:model="voiceText"
+                    @voice-transcribed="$set('voiceText', $event.detail)"
+                />
+
+                <div class="flex justify-end mt-4">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        wire:click="processVoiceInput"
+                        wire:loading.attr="disabled"
+                        wire:target="processVoiceInput"
+                    >
+                        <span wire:loading.remove wire:target="processVoiceInput">
+                            Process Contacts
+                        </span>
+                        <span wire:loading wire:target="processVoiceInput">
+                            Processing...
+                        </span>
+                    </button>
+                </div>
+
+                @if($voiceText)
+                    <div class="mt-4">
+                        <pre class="text-sm bg-base-200 p-4 rounded">{{ $voiceText }}</pre>
+                    </div>
+                @endif
             </div>
         @endif
     </div>

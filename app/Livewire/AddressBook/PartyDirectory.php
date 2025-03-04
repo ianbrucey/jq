@@ -18,6 +18,16 @@ class PartyDirectory extends Component
     public $partyToDelete = null;
     public $showDeleteModal = false;
     public $search = '';
+    public $voiceText = '';
+
+    protected $listeners = [
+        'voice-transcribed' => 'handleVoiceTranscription'
+    ];
+
+    public function handleVoiceTranscription($text)
+    {
+        $this->voiceText = $text;
+    }
 
     // Form properties
     public $name = '';
@@ -146,6 +156,32 @@ class PartyDirectory extends Component
         $this->city = $address['city'];
         $this->state = $address['state'];
         $this->zip = $address['zip'];
+    }
+
+    public function processVoiceInput()
+    {
+        if (empty($this->voiceText)) {
+            $this->addError('voice', 'No text to process');
+            return;
+        }
+
+        try {
+            $parties = Party::createFromVoiceInput($this->voiceText, auth()->id());
+
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => count($parties) . ' contacts processed successfully'
+            ]);
+
+            // Reset the voice input
+            $this->voiceText = '';
+
+        } catch (\Exception $e) {
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => 'Failed to process contacts: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function render()
