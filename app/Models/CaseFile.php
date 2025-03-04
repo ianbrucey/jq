@@ -44,4 +44,9 @@ class CaseFile extends Model
     {
         return $this->belongsTo(OpenAiProject::class, 'openai_project_id');
     }
+
+    public function threads(): HasMany
+    {
+        return $this->hasMany(Thread::class);
+    }
 }

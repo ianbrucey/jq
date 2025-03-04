@@ -222,22 +222,53 @@
         "updated_at": {"type": "timestamp", "nullable": true}
       }
     },
-    "correspondence": {
-      "description": "Stores case correspondence",
+    "threads": {
+      "description": "Stores communication threads for case files",
       "columns": {
         "id": {"type": "bigint", "primary": true, "autoIncrement": true},
         "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
-        "direction": {"type": "enum", "values": ["incoming", "outgoing"], "nullable": false},
-        "sender_name": {"type": "string", "nullable": true},
-        "sender_address": {"type": "text", "nullable": true},
-        "recipient_name": {"type": "string", "nullable": true},
-        "recipient_address": {"type": "text", "nullable": true},
-        "sent_date": {"type": "date", "nullable": false},
-        "document_id": {"type": "bigint", "nullable": false, "references": {"table": "documents", "column": "id"}},
-        "summary": {"type": "text", "nullable": true},
+        "title": {"type": "string", "nullable": false},
+        "status": {"type": "enum", "values": ["open", "closed", "archived"], "default": "open"},
+        "created_by": {"type": "bigint", "nullable": false, "references": {"table": "users", "column": "id"}},
         "created_at": {"type": "timestamp", "nullable": true},
         "updated_at": {"type": "timestamp", "nullable": true}
       }
+    },
+    "communications": {
+      "description": "Stores individual communications within threads",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "thread_id": {"type": "bigint", "nullable": false, "references": {"table": "threads", "column": "id", "onDelete": "cascade"}},
+        "type": {"type": "enum", "values": ["email", "letter", "phone", "other"]},
+        "content": {"type": "text", "nullable": true},
+        "sent_at": {"type": "timestamp", "nullable": false},
+        "subject": {"type": "string", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "communication_participants": {
+      "description": "Pivot table for communication participants",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "communication_id": {"type": "bigint", "nullable": false, "references": {"table": "communications", "column": "id", "onDelete": "cascade"}},
+        "party_id": {"type": "bigint", "nullable": false, "references": {"table": "parties", "column": "id"}},
+        "role": {"type": "enum", "values": ["sender", "recipient"]},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "unique": [["communication_id", "party_id", "role"]]
+    },
+    "communication_documents": {
+      "description": "Pivot table for communication attachments",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "communication_id": {"type": "bigint", "nullable": false, "references": {"table": "communications", "column": "id", "onDelete": "cascade"}},
+        "document_id": {"type": "bigint", "nullable": false, "references": {"table": "documents", "column": "id", "onDelete": "cascade"}},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "unique": [["communication_id", "document_id"]]
     },
     "reminders": {
       "description": "Stores case reminders and deadlines",
@@ -345,10 +376,54 @@
       "type": "many-to-one"
     },
     {
-      "from": {"table": "correspondence", "column": "case_file_id"},
+      "from": {"table": "threads", "column": "case_file_id"},
       "to": {"table": "case_files", "column": "id"},
       "type": "many-to-one"
     },
     {
-      "from": {"table": "correspondence", "column": "document_id"},
-      "to": {"table": "documents", "
+      "from": {"table": "communications", "column": "thread_id"},
+      "to": {"table": "threads", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "communication_participants", "column": "communication_id"},
+      "to": {"table": "communications", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "communication_participants", "column": "party_id"},
+      "to": {"table": "parties", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "communication_documents", "column": "communication_id"},
+      "to": {"table": "communications", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "communication_documents", "column": "document_id"},
+      "to": {"table": "documents", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "reminders", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "parties", "column": "id"},
+      "to": {"table": "communication_participants", "column": "party_id"},
+      "type": "one-to-many"
+    },
+    {
+      "from": {"table": "openai_projects", "column": "id"},
+      "to": {"table": "case_files", "column": "openai_project_id"},
+      "type": "one-to-many"
+    },
+    {
+      "from": {"table": "personal_access_tokens", "column": "id"},
+      "to": {"table": "api_token_usage", "column": "personal_access_token_id"},
+      "type": "one-to-many"
+    }
+  ]
+}
