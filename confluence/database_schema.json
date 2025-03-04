@@ -1,0 +1,354 @@
+{
+  "tables": {
+    "users": {
+      "description": "Stores user account information",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "name": {"type": "string", "nullable": false},
+        "email": {"type": "string", "nullable": false, "unique": true},
+        "email_verified_at": {"type": "timestamp", "nullable": true},
+        "password": {"type": "string", "nullable": false},
+        "remember_token": {"type": "string", "nullable": true},
+        "current_team_id": {"type": "bigint", "nullable": true},
+        "profile_photo_path": {"type": "string", "nullable": true, "size": 2048},
+        "two_factor_secret": {"type": "text", "nullable": true},
+        "two_factor_recovery_codes": {"type": "text", "nullable": true},
+        "two_factor_confirmed_at": {"type": "timestamp", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "password_reset_tokens": {
+      "description": "Stores password reset tokens",
+      "columns": {
+        "email": {"type": "string", "primary": true},
+        "token": {"type": "string", "nullable": false},
+        "created_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "sessions": {
+      "description": "Stores user session information",
+      "columns": {
+        "id": {"type": "string", "primary": true},
+        "user_id": {"type": "bigint", "nullable": true, "index": true},
+        "ip_address": {"type": "string", "nullable": true, "size": 45},
+        "user_agent": {"type": "text", "nullable": true},
+        "payload": {"type": "longText", "nullable": false},
+        "last_activity": {"type": "integer", "nullable": false, "index": true}
+      }
+    },
+    "cache": {
+      "description": "Stores application cache data",
+      "columns": {
+        "key": {"type": "string", "primary": true},
+        "value": {"type": "mediumText", "nullable": false},
+        "expiration": {"type": "integer", "nullable": false}
+      }
+    },
+    "cache_locks": {
+      "description": "Stores cache locks",
+      "columns": {
+        "key": {"type": "string", "primary": true},
+        "owner": {"type": "string", "nullable": false},
+        "expiration": {"type": "integer", "nullable": false}
+      }
+    },
+    "jobs": {
+      "description": "Stores queued jobs",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "queue": {"type": "string", "nullable": false, "index": true},
+        "payload": {"type": "longText", "nullable": false},
+        "attempts": {"type": "unsignedTinyInteger", "nullable": false},
+        "reserved_at": {"type": "unsignedInteger", "nullable": true},
+        "available_at": {"type": "unsignedInteger", "nullable": false},
+        "created_at": {"type": "unsignedInteger", "nullable": false}
+      }
+    },
+    "job_batches": {
+      "description": "Stores job batch information",
+      "columns": {
+        "id": {"type": "string", "primary": true},
+        "name": {"type": "string", "nullable": false},
+        "total_jobs": {"type": "integer", "nullable": false},
+        "pending_jobs": {"type": "integer", "nullable": false},
+        "failed_jobs": {"type": "integer", "nullable": false},
+        "failed_job_ids": {"type": "longText", "nullable": false},
+        "options": {"type": "mediumText", "nullable": true},
+        "cancelled_at": {"type": "integer", "nullable": true},
+        "created_at": {"type": "integer", "nullable": false},
+        "finished_at": {"type": "integer", "nullable": true}
+      }
+    },
+    "failed_jobs": {
+      "description": "Stores failed job information",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "uuid": {"type": "string", "nullable": false, "unique": true},
+        "connection": {"type": "text", "nullable": false},
+        "queue": {"type": "text", "nullable": false},
+        "payload": {"type": "longText", "nullable": false},
+        "exception": {"type": "longText", "nullable": false},
+        "failed_at": {"type": "timestamp", "nullable": false, "default": "CURRENT_TIMESTAMP"}
+      }
+    },
+    "personal_access_tokens": {
+      "description": "Stores API tokens for authentication",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "tokenable_type": {"type": "string", "nullable": false},
+        "tokenable_id": {"type": "bigint", "nullable": false},
+        "name": {"type": "string", "nullable": false},
+        "token": {"type": "string", "nullable": false, "unique": true, "size": 64},
+        "abilities": {"type": "text", "nullable": true},
+        "last_used_at": {"type": "timestamp", "nullable": true},
+        "expires_at": {"type": "timestamp", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "teams": {
+      "description": "Stores team information",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "user_id": {"type": "bigint", "nullable": false, "index": true},
+        "name": {"type": "string", "nullable": false},
+        "personal_team": {"type": "boolean", "nullable": false},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "team_user": {
+      "description": "Pivot table for team members",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "team_id": {"type": "bigint", "nullable": false},
+        "user_id": {"type": "bigint", "nullable": false},
+        "role": {"type": "string", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "unique": [["team_id", "user_id"]]
+    },
+    "team_invitations": {
+      "description": "Stores team invitations",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "team_id": {"type": "bigint", "nullable": false, "references": {"table": "teams", "column": "id", "onDelete": "cascade"}},
+        "email": {"type": "string", "nullable": false},
+        "role": {"type": "string", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "unique": [["team_id", "email"]]
+    },
+    "case_files": {
+      "description": "Stores legal case information",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "user_id": {"type": "bigint", "nullable": false, "references": {"table": "users", "column": "id", "onDelete": "cascade"}},
+        "title": {"type": "string", "nullable": false},
+        "case_number": {"type": "string", "nullable": true},
+        "desired_outcome": {"type": "text", "nullable": false},
+        "status": {"type": "string", "nullable": false, "default": "open"},
+        "openai_project_id": {"type": "bigint", "nullable": true, "references": {"table": "openai_projects", "column": "id", "onDelete": "set null"}},
+        "openai_assistant_id": {"type": "string", "nullable": true},
+        "openai_vector_store_id": {"type": "string", "nullable": true},
+        "filed_date": {"type": "date", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "case_summaries": {
+      "description": "Stores case summary information",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "content": {"type": "longText", "nullable": false},
+        "version": {"type": "string", "nullable": false, "default": "1.0"},
+        "updated_by": {"type": "bigint", "nullable": false, "references": {"table": "users", "column": "id"}},
+        "change_notes": {"type": "text", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "drafts": {
+      "description": "Stores legal document drafts",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "draft_type": {"type": "string", "nullable": false, "comment": "complaint,motion,affidavit,letter,contract"},
+        "status": {"type": "string", "nullable": false, "default": "draft", "comment": "draft,review,published"},
+        "structured_context": {"type": "json", "nullable": true},
+        "ai_summary": {"type": "text", "nullable": true},
+        "interview_completed_at": {"type": "timestamp", "nullable": true},
+        "published_at": {"type": "timestamp", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "documents": {
+      "description": "Stores uploaded documents",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "storage_path": {"type": "string", "nullable": false},
+        "original_filename": {"type": "string", "nullable": false},
+        "mime_type": {"type": "string", "nullable": false},
+        "file_size": {"type": "bigint", "nullable": false},
+        "title": {"type": "string", "nullable": true},
+        "description": {"type": "text", "nullable": true},
+        "openai_file_id": {"type": "string", "nullable": true},
+        "ingestion_status": {"type": "enum", "values": ["pending", "uploading", "summarizing", "indexing", "indexed", "failed"], "default": "pending"},
+        "ingestion_error": {"type": "text", "nullable": true},
+        "ingested_at": {"type": "timestamp", "nullable": true},
+        "skip_vector_store": {"type": "boolean", "default": false},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "exhibits": {
+      "description": "Stores case exhibits",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "draft_id": {"type": "bigint", "nullable": true, "references": {"table": "drafts", "column": "id", "onDelete": "cascade"}},
+        "document_id": {"type": "bigint", "nullable": false, "references": {"table": "documents", "column": "id", "onDelete": "cascade"}},
+        "label": {"type": "string", "nullable": false, "comment": "Exhibit A, Exhibit 1.1, etc"},
+        "description": {"type": "text", "nullable": true},
+        "sort_order": {"type": "unsignedSmallInteger", "nullable": false, "default": 0},
+        "dated": {"type": "date", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "correspondence": {
+      "description": "Stores case correspondence",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "direction": {"type": "enum", "values": ["incoming", "outgoing"], "nullable": false},
+        "sender_name": {"type": "string", "nullable": true},
+        "sender_address": {"type": "text", "nullable": true},
+        "recipient_name": {"type": "string", "nullable": true},
+        "recipient_address": {"type": "text", "nullable": true},
+        "sent_date": {"type": "date", "nullable": false},
+        "document_id": {"type": "bigint", "nullable": false, "references": {"table": "documents", "column": "id"}},
+        "summary": {"type": "text", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "reminders": {
+      "description": "Stores case reminders and deadlines",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "title": {"type": "string", "nullable": false},
+        "description": {"type": "text", "nullable": true},
+        "due_date": {"type": "date", "nullable": false},
+        "completed_at": {"type": "timestamp", "nullable": true},
+        "is_recurring": {"type": "boolean", "nullable": false, "default": false},
+        "recurrence_pattern": {"type": "string", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "parties": {
+      "description": "Stores contact information",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "name": {"type": "string", "nullable": false},
+        "address_line1": {"type": "string", "nullable": false},
+        "address_line2": {"type": "string", "nullable": true},
+        "city": {"type": "string", "nullable": false},
+        "state": {"type": "string", "nullable": false},
+        "zip": {"type": "string", "nullable": false},
+        "email": {"type": "string", "nullable": true},
+        "phone": {"type": "string", "nullable": true},
+        "relationship": {"type": "string", "nullable": true, "comment": "e.g. attorney, court, opponent"},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "openai_projects": {
+      "description": "Stores OpenAI project configurations",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "name": {"type": "string", "nullable": false},
+        "api_key": {"type": "string", "nullable": false},
+        "organization_id": {"type": "string", "nullable": true},
+        "storage_used": {"type": "unsignedBigint", "nullable": false, "default": 0},
+        "is_active": {"type": "boolean", "nullable": false, "default": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "api_token_usage": {
+      "description": "Tracks API token usage",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "personal_access_token_id": {"type": "bigint", "nullable": false, "references": {"table": "personal_access_tokens", "column": "id", "onDelete": "cascade"}},
+        "endpoint": {"type": "string", "nullable": false},
+        "method": {"type": "string", "nullable": false},
+        "ip_address": {"type": "string", "nullable": false},
+        "response_code": {"type": "integer", "nullable": false},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    }
+  },
+  "relationships": [
+    {
+      "from": {"table": "case_files", "column": "user_id"},
+      "to": {"table": "users", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "case_files", "column": "openai_project_id"},
+      "to": {"table": "openai_projects", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "case_summaries", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "case_summaries", "column": "updated_by"},
+      "to": {"table": "users", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "drafts", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "documents", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "exhibits", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "exhibits", "column": "draft_id"},
+      "to": {"table": "drafts", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "exhibits", "column": "document_id"},
+      "to": {"table": "documents", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "correspondence", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "correspondence", "column": "document_id"},
+      "to": {"table": "documents", "

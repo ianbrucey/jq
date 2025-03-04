@@ -6,19 +6,19 @@
                 type="text"
                 wire:model.live="search"
                 placeholder="Search documents..."
-                class="input input-bordered w-full pl-10"
+                class="w-full pl-10 input input-bordered"
             >
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg class="w-5 h-5 text-base-content/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
             @if($search)
                 <button
                     wire:click="$set('search', '')"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    class="absolute inset-y-0 right-0 flex items-center pr-3"
                 >
-                    <svg class="h-5 w-5 text-base-content/50 hover:text-base-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 text-base-content/50 hover:text-base-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -29,14 +29,14 @@
     <!-- Documents List -->
     @forelse($documents as $document)
         <div class="card bg-base-200">
-            <div class="card-body p-4">
+            <div class="p-4 card-body">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
                         <h4 class="font-medium">{{ $document->title ?: $document->original_filename }}</h4>
                         @if($document->description)
                             <p class="text-sm text-base-content/60">{{ $document->description }}</p>
                         @endif
-                        <div class="text-xs text-base-content/60 mt-1">
+                        <div class="mt-1 text-xs text-base-content/60">
                             {{ number_format($document->file_size / 1024 / 1024, 2) }} MB
                             · {{ $document->created_at->diffForHumans() }}
                             · Status: {{ ucfirst($document->ingestion_status) }}
@@ -54,7 +54,7 @@
             </div>
         </div>
     @empty
-        <div class="text-center py-8 text-base-content/60">
+        <div class="py-8 text-center text-base-content/60">
             @if($search)
                 No documents found matching "{{ $search }}"
             @else
@@ -83,7 +83,7 @@
                         @if(str_contains($previewDocument->mime_type, 'image'))
                             <img src="{{ $this->getDocumentUrl($previewDocument->id) }}"
                                  alt="{{ $previewDocument->title }}"
-                                 class="max-w-full h-auto">
+                                 class="h-auto max-w-full">
                         @elseif($previewDocument->mime_type === 'application/pdf')
                             <iframe src="{{ $this->getDocumentUrl($previewDocument->id) }}"
                                     class="w-full h-[70vh]"

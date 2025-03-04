@@ -4,7 +4,7 @@ use App\Http\Controllers\CaseFileDocumentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\OpenAiProjectController;
 use App\Http\Controllers\TranscriptionController;
-use App\Http\Livewire\EnhancedApiTokenManager;
+use App\Livewire\EnhancedApiTokenManager;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -71,3 +71,13 @@ Route::middleware(['auth', 'can:manage-project-tokens'])->group(function () {
 Route::get('/documents/{document}/download', function (Document $document) {
     return Storage::download($document->file_path, $document->original_filename);
 })->name('documents.download');
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/address-book', function () {
+        return view('address-book.index');
+    })->name('address-book.index');
+});

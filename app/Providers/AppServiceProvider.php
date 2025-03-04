@@ -6,7 +6,7 @@ use App\Models\CaseFile;
 use App\Observers\CaseFileObserver;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use App\Http\Livewire\EnhancedApiTokenManager;
+use App\Livewire\EnhancedApiTokenManager;
 use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
