@@ -218,8 +218,9 @@
                 </form>
             @endif
 
+        <hr class="border-accent">
             <!-- Parties list -->
-            <div class="bg-base-100 rounded-box shadow-lg">
+            <div class="bg-base-100 rounded-box shadow-lg mt-5">
                 <!-- Search Bar -->
                 <div class="p-4">
                     <div class="relative">
