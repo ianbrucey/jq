@@ -217,4 +217,10 @@ Usage:
             {{ $message }}
         </div>
     @enderror
+
+    {{-- Document List Section --}}
+    <div class="border-t border-base-content/10 pt-8 mt-8">
+        <h3 class="text-lg font-medium text-base-content mb-4">Uploaded Documents</h3>
+        <livewire:document-list :case-file="$caseFile" />
+    </div>
 </div>

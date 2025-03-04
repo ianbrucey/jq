@@ -16,7 +16,8 @@
                 </button>
             </div>
 
-            <div x-show="isOpen"
+            <div
+{{--                x-show="isOpen"--}}
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0 transform -translate-y-2"
                  x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -27,10 +28,6 @@
             </div>
         </div>
 
-        <!-- Documents List Section -->
-        <div class="border-t border-base-content/10 pt-8">
-            <h3 class="text-lg font-medium text-base-content mb-4">Case Documents</h3>
-            <livewire:document-list :case-file="$caseFile" />
-        </div>
+
     </div>
 </div>
