@@ -44,6 +44,7 @@ Route::middleware([
     Route::resource('case-files.drafts', \App\Http\Controllers\DraftController::class);
 });
 
+// AUTHENTICATED USER ROUTES
 Route::middleware(['auth'])->group(function () {
     Route::post('/transcribe', [TranscriptionController::class, 'transcribe'])
         ->name('transcribe')
@@ -51,7 +52,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('case-files.documents', CaseFileDocumentController::class)
         ->only(['index', 'store']);
+
+    // Updated correspondence route to fetch the CaseFile model
+    Route::get('/case-files/{caseFile}/correspondences', function(App\Models\CaseFile $caseFile) {
+        return view('case-files.correspondences.index', ['caseFile' => $caseFile]);
+    })->name('case-files.correspondences.index');
 });
+// AUTHENTICATED USER ROUTES
 
 
 Route::middleware(['auth', 'can:manage-project-tokens'])->group(function () {
