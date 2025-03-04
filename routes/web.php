@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CaseFileDocumentController;
+use App\Http\Controllers\CorrespondenceController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\OpenAiProjectController;
 use App\Http\Controllers\TranscriptionController;
@@ -57,6 +58,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/case-files/{caseFile}/correspondences', function(App\Models\CaseFile $caseFile) {
         return view('case-files.correspondences.index', ['caseFile' => $caseFile]);
     })->name('case-files.correspondences.index');
+
+    Route::get('/case-files/{caseFile}/correspondences/{thread}', [CorrespondenceController::class, 'show'])
+        ->name('case-files.correspondences.show');
 });
 // AUTHENTICATED USER ROUTES
 

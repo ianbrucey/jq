@@ -8,7 +8,7 @@ use Livewire\Component;
 class ThreadView extends Component
 {
     public Thread $thread;
-    public $showAddCommunication = false;
+    public $showAddCommunicationModal = false; // Renamed from showAddCommunication
 
     protected $listeners = [
         'communicationAdded' => '$refresh'

@@ -33,8 +33,8 @@
 
     <div class="space-y-4">
         @forelse($threads as $thread)
-            <div class="card bg-base-200 hover:bg-base-300 transition-colors cursor-pointer"
-                 wire:click="selectThread({{ $thread->id }})">
+            <a href="{{ route('case-files.correspondences.show', ['caseFile' => $caseFile, 'thread' => $thread]) }}"
+               class="block card bg-base-200 hover:bg-base-300 transition-colors">
                 <div class="card-body p-4">
                     <div class="flex justify-between items-start gap-4">
                         <div class="flex-1">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         @empty
             <div class="text-center py-8 text-base-content/60">
                 @if($search)
@@ -93,13 +93,6 @@
         <div class="mt-6">
             {{ $threads->links() }}
         </div>
-    @endif
-
-    @if($selectedThread)
-        <livewire:correspondence.thread-view
-            :thread="$selectedThread"
-            :key="'thread-' . $selectedThread->id"
-        />
     @endif
 
     <livewire:correspondence.create-thread-modal :case-file="$caseFile" />

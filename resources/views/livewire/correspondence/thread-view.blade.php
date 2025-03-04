@@ -1,7 +1,7 @@
 <div class="mt-8 space-y-6">
     <div class="flex justify-between items-center">
         <h3 class="text-lg font-medium">{{ $thread->title }}</h3>
-        <button wire:click="$set('showAddCommunication', true)" class="btn btn-primary btn-sm">
+        <button wire:click="$set('showAddCommunicationModal', true)" class="btn btn-primary btn-sm">
             Add Communication
         </button>
     </div>
@@ -13,12 +13,12 @@
                     <div>
                         <h4 class="font-medium">{{ $communication->subject }}</h4>
                         <p class="text-sm text-base-content/60">
-                            {{ $communication->sent_at->format('M j, Y g:ia') }} - 
+                            {{ $communication->sent_at->format('M j, Y g:ia') }} -
                             {{ ucfirst($communication->type) }}
                         </p>
                     </div>
                 </div>
-                
+
                 <div class="prose max-w-none mt-4">
                     {!! nl2br(e($communication->content)) !!}
                 </div>
@@ -43,7 +43,13 @@
         @endforelse
     </div>
 
-    @if($showAddCommunication)
-        <livewire:correspondence.add-communication-form :thread="$thread" />
-    @endif
+    <!-- Modal for Add Communication Form -->
+    <x-modal wire:model="showAddCommunicationModal">
+        <div class="p-6">
+            <livewire:correspondence.add-communication-form
+                :thread="$thread"
+                :key="'communication-form-' . $thread->id"
+            />
+        </div>
+    </x-modal>
 </div>

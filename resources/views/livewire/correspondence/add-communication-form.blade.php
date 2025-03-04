@@ -1,4 +1,4 @@
-<div class="bg-base-200/50 rounded-lg p-6">
+<div>
     <h4 class="text-lg font-medium mb-4">Add Communication</h4>
 
     <form wire:submit.prevent="save" class="space-y-4">
@@ -38,7 +38,7 @@
         </div>
 
         <div class="flex justify-end space-x-3">
-            <button type="button" class="btn btn-ghost" wire:click="$set('showAddCommunication', false)">
+            <button type="button" class="btn btn-ghost" wire:click="cancel">
                 Cancel
             </button>
             <button type="submit" class="btn btn-primary">

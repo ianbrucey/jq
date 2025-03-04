@@ -54,7 +54,14 @@ class AddCommunicationForm extends Component
         }
 
         $this->reset(['type', 'content', 'subject', 'selectedParties', 'documents']);
-        $this->emit('communicationAdded');
+        $this->dispatch('communicationAdded');
+        // Close the modal by emitting to parent
+        $this->dispatch('closeAddCommunicationModal');
+    }
+
+    public function cancel()
+    {
+        $this->dispatch('closeAddCommunicationModal');
     }
 
     public function render()
