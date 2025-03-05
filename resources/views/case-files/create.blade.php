@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-base-content/80 dark:text-base-content/80">
-            Start A New Case File
+            {{ __('app.start_new_case') }}
         </h2>
     </x-slot>
 

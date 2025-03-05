@@ -2,6 +2,7 @@
 
 return [
     'new_case' => 'New Case',
+    'start_new_case' => 'Start A New Case File',
     'search_cases' => 'Search cases...',
     'assistant_ready' => 'Assistant Ready',
     'assistant_pending' => 'Assistant Pending',

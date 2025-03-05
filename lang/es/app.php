@@ -2,6 +2,7 @@
 
 return [
     'new_case' => 'Nuevo Caso',
+    'start_new_case' => 'Iniciar un Nuevo Expediente',
     'search_cases' => 'Buscar casos...',
     'assistant_ready' => 'Asistente Listo',
     'assistant_pending' => 'Asistente Pendiente',

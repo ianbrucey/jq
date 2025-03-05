@@ -17,8 +17,8 @@ This document outlines the systematic approach for implementing multilingual sup
 ### Phase 2: Content Inventory & Extraction
 #### Core UI Elements
 - [x] Navigation bar text
-- [ ] Dashboard labels and content
-- [ ] Button text
+- [x] Dashboard labels and content
+- [x] Button text
 - [ ] Form labels and placeholders
 - [ ] Error messages
 - [ ] Success notifications

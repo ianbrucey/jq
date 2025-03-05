@@ -3,14 +3,14 @@
         @if ($step === 1)
             <div class="grid gap-6">
                 <div class="space-y-2">
-                    <x-label for="title" value="Case Title" class="text-base-content" />
+                    <x-label for="title" value="{{ __('forms.case_title') }}" class="text-base-content" />
                     <input
                         id="title"
                         type="text"
                         wire:model="title"
                         required
                         autofocus
-                        placeholder="Enter the case title"
+                        placeholder="{{ __('forms.enter_case_title') }}"
                         class="input input-bordered w-full"
                     />
                     @error('title') <span class="text-error text-sm">{{ $message }}</span> @enderror
@@ -18,7 +18,7 @@
 
                 <div class="space-y-2">
                     <x-label for="case_number" class="text-base-content">
-                        Case or Reference Number <span class="text-primary">(optional)</span>
+                        {{ __('forms.case_reference_number') }} <span class="text-primary">({{ __('forms.optional') }})</span>
                     </x-label>
                     <input
                         id="case_number"
@@ -31,26 +31,28 @@
                 </div>
 
                 <div class="space-y-2">
-                    <x-label for="desired_outcome" value="Desired Outcome" class="text-base-content" />
-                    <input
+                    <x-label for="desired_outcome" class="text-base-content">
+                        {{ __('forms.desired_outcome') }}
+                    </x-label>
+                    <textarea
                         id="desired_outcome"
-                        type="text"
                         wire:model="desired_outcome"
                         required
-                        placeholder="What outcome are you seeking?"
-                        class="input input-bordered w-full"
-                    />
+                        placeholder="{{ __('forms.enter_desired_outcome') }}"
+                        class="textarea textarea-bordered w-full"
+                    ></textarea>
                     @error('desired_outcome') <span class="text-error text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
         @else
             <div class="grid gap-6">
                 <div class="space-y-2">
-                    <x-label for="summary" value="Case Summary" class="text-base-content" />
+                    <x-label for="summary" value="{{ __('forms.case_summary') }}" class="text-base-content" />
                     <livewire:voice-message-input
                         name="summary"
                         :value="$summary"
                         height="200px"
+                        :placeholder="__('forms.enter_case_summary')"
                     />
                     @error('summary') <span class="text-error text-sm">{{ $message }}</span> @enderror
                 </div>
@@ -58,8 +60,8 @@
                 {{-- WARNING: DO NOT REMOVE THE DOCUMENT UPLOADER FROM STEP 2 UNLESS EXPLICITLY REQUESTED --}}
                 @if ($caseFile)
                     <div class="space-y-2">
-                        <x-label for="documents" value="Case Documents (Optional)" class="text-base-content" />
-                        <livewire:document-uploader :case-file="$caseFile"  />
+                        <x-label for="documents" value="{{ __('forms.case_documents') }}" class="text-base-content" />
+                        <livewire:document-uploader :case-file="$caseFile" />
                     </div>
                 @endif
             </div>
@@ -68,17 +70,17 @@
         <div class="flex items-center justify-end mt-6 space-x-4">
             @if ($step === 1)
                 <button type="button" onclick="window.history.back()" class="btn btn-ghost">
-                    Cancel
+                    {{ __('forms.cancel') }}
                 </button>
                 <button type="submit" class="btn btn-primary">
-                    Continue
+                    {{ __('forms.continue') }}
                 </button>
             @else
                 <button type="button" wire:click="skipAdditionalDetails" class="btn btn-ghost">
-                    Skip for Now
+                    {{ __('forms.skip_for_now') }}
                 </button>
                 <button type="submit" class="btn btn-primary">
-                    Save Details
+                    {{ __('forms.save_details') }}
                 </button>
             @endif
         </div>

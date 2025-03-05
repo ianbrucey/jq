@@ -108,18 +108,18 @@ Usage:
     </style>
 
     {{-- Dropzone --}}
-    <label for="file-upload" class="relative block cursor-pointer">
-        <div class="relative p-8 transition-all duration-200 ease-in-out border-2 border-dashed rounded-lg border-base-content/20"
+    <label class="block w-full">
+        <div class="relative border-2 border-dashed rounded-lg cursor-pointer"
              :class="{ 'border-primary bg-primary/5': isDropping }">
             <div class="text-center">
                 <svg class="w-12 h-12 mx-auto text-base-content/50" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <div class="mt-4 text-sm leading-6 text-base-content">
-                    <span class="font-semibold text-primary">Click to upload</span>
-                    <span class="pl-1">or drag and drop</span>
+                    <span class="font-semibold text-primary">{{ __('documents.click_to_upload') }}</span>
+                    <span class="pl-1">{{ __('documents.or_drag_and_drop') }}</span>
                 </div>
-                <p class="text-xs leading-5 text-base-content/60">PDF, DOC, DOCX, JPG, PNG up to 10MB each</p>
+                <p class="text-xs leading-5 text-base-content/60">{{ __('documents.allowed_file_types') }}</p>
             </div>
 
             <input
@@ -144,66 +144,49 @@ Usage:
                     class="btn btn-primary"
                     :class="{ 'loading': $wire.get('isSavingAll') }">
                 <span wire:loading.remove wire:target="saveAllDocuments">
-                    Save All Documents
+                    {{ __('documents.save_all_documents') }}
                 </span>
                 <span wire:loading wire:target="saveAllDocuments">
-                    Saving Documents...
+                    {{ __('documents.saving_documents') }}
                 </span>
             </button>
         </div>
 
         <template x-for="(file, index) in files" :key="index">
-            <div class="relative flex items-center p-4 border rounded-lg shadow-sm bg-base-100 border-base-content/20">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-base-content" x-text="file.metadata.name"></span>
-                        <span class="text-xs text-base-content/60" x-text="formatFileSize(file.metadata.size)"></span>
-                    </div>
-
-                    {{-- Progress Bar --}}
-                    <div class="relative h-2 mt-2 overflow-hidden rounded-full bg-base-200" x-show="file.progress < 100">
-                        <div class="absolute top-0 left-0 h-full transition-all duration-300 bg-primary"
-                             :style="`width: ${file.progress}%`"></div>
-                    </div>
-
-                    {{-- Title Input --}}
-                    <div class="mt-2">
+            <div class="flex items-start p-4 space-x-4 bg-base-200 rounded-lg">
+                <div class="flex-1">
+                    <div class="mb-2">
                         <input type="text"
                                x-model="titles[index]"
                                class="w-full input input-bordered"
-                               placeholder="Document Title (optional)">
+                               :placeholder="__('documents.document_title_placeholder')">
                     </div>
-
-                    {{-- Description Input --}}
                     <div class="mt-2">
                         <textarea x-model="descriptions[index]"
                                 class="w-full textarea textarea-bordered"
-                                placeholder="Document Description (optional)"></textarea>
+                                :placeholder="__('documents.document_description_placeholder')"></textarea>
                     </div>
                 </div>
-
-                {{-- Remove Button --}}
                 <button type="button"
                         x-on:click="removeFile(index)"
-                        class="ml-4 text-base-content/60 hover:text-error">
+                        class="ml-4 text-base-content/60 hover:text-error"
+                        :title="__('documents.remove_document')">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-
-                {{-- Save Button --}}
                 <div class="ml-4">
                     <template x-if="!file.isSaving">
                         <button type="button"
                                 @click="file.isSaving = true; $wire.saveDocument(index); setTimeout(() => file.isSaving = false, 5000)"
                                 class="btn btn-primary btn-sm">
-                            Save Document
+                            {{ __('documents.save_document') }}
                         </button>
                     </template>
                     <template x-if="file.isSaving">
                         <button class="btn btn-primary btn-sm" disabled>
                             <span class="loading loading-spinner loading-sm"></span>
-                            Saving...
+                            {{ __('documents.saving') }}
                         </button>
                     </template>
                 </div>

@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'click_to_upload' => 'Haga clic para subir',
+    'or_drag_and_drop' => 'o arrastre y suelte',
+    'allowed_file_types' => 'PDF, DOC, DOCX, JPG, PNG hasta 10MB cada uno',
+    'save_all_documents' => 'Guardar Todos los Documentos',
+    'saving_documents' => 'Guardando Documentos...',
+    'document_title_placeholder' => 'Título del Documento (opcional)',
+    'document_description_placeholder' => 'Descripción del Documento (opcional)',
+    'remove_document' => 'Eliminar Documento',
+    'save_document' => 'Guardar Documento',
+    'saving' => 'Guardando...',
+    'search_documents' => 'Buscar documentos...',
+    'status' => 'Estado',
+    'status_pending' => 'Pendiente',
+    'status_processing' => 'Procesando',
+    'status_completed' => 'Completado',
+    'status_failed' => 'Fallido',
+    'preview_document' => 'Vista Previa del Documento',
+    'no_documents_found' => 'No se encontraron documentos que coincidan con ":search"',
+    'no_documents_uploaded' => 'Aún no se han subido documentos.',
+    'document_preview' => 'Vista Previa del Documento',
+    'close' => 'Cerrar',
+];
