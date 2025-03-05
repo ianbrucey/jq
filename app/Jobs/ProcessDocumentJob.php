@@ -168,7 +168,7 @@ class ProcessDocumentJob implements ShouldQueue
                                     'role'    => 'user',
                                     'content' => 'Please analyze this document and provide:
 1. A title and summary of the document.
-2. Any parties and their addresses mentioned in the document.
+2. Any parties and their addresses mentioned in the document, but only if you are very confident. ignore addresses or parties that you cannot be sure of. Do not make up your own.
 
 Return valid JSON only, in the format:
 {
