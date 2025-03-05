@@ -73,7 +73,7 @@
                                             {{ $document->human_file_size }}
                                         </p>
                                     </div>
-                                    <a href="{{ Storage::url($document->file_path) }}"
+                                    <a href="{{ Storage::url($document->storage_path) }}"
                                        target="_blank"
                                        class="btn btn-ghost btn-sm ml-2">
                                         <svg xmlns="http://www.w3.org/2000/svg"

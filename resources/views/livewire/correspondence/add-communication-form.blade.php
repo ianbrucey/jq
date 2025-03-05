@@ -126,7 +126,7 @@
                     >
 
                     <!-- Search Results Dropdown -->
-                    @if(strlen($documentSearch) >= 2)
+                    @if($documentSearch)
                         <div class="absolute z-10 w-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-300">
                             @if(count($documentSearchResults) > 0)
                                 @foreach($documentSearchResults as $document)
@@ -138,7 +138,7 @@
                                             @else
                                                 <div class="font-medium">{{ $document->original_filename }}</div>
                                             @endif
-                                            <div class="text-sm text-base-content/70">
+                                            <div class="text-xs text-base-content/70">
                                                 Added {{ $document->created_at->diffForHumans() }}
                                             </div>
                                         </div>
@@ -150,7 +150,7 @@
                                     </div>
                                 @endforeach
                             @else
-                                <div class="p-2 text-sm text-base-content/70 text-center">
+                                <div class="p-4 text-center text-base-content/70">
                                     No documents found matching "{{ $documentSearch }}"
                                 </div>
                             @endif
@@ -160,30 +160,48 @@
 
                 <!-- Selected Documents List -->
                 <div class="mt-4 space-y-2">
-                    @forelse($selectedDocuments as $documentId)
-                        @php
-                            $document = App\Models\Document::find($documentId);
-                        @endphp
-                        <div class="flex justify-between items-center p-2 bg-base-200 rounded">
-                            <div>
-                                @if($document->title)
-                                    <div class="font-medium">{{ $document->title }}</div>
-                                    <div class="text-sm text-base-content/70">{{ $document->original_filename }}</div>
-                                @else
-                                    <div class="font-medium">{{ $document->original_filename }}</div>
-                                @endif
-                            </div>
-                            <button type="button"
-                                wire:click="removeDocument({{ $documentId }})"
-                                class="btn btn-sm btn-ghost text-error">
-                                Remove
-                            </button>
-                        </div>
-                    @empty
+                    @if(empty($selectedDocuments) && empty($newDocuments))
                         <div class="text-sm text-base-content/60 text-center py-4">
                             No documents selected yet
                         </div>
-                    @endforelse
+                    @else
+                        <!-- Existing Documents -->
+                        @foreach($selectedDocuments as $documentId)
+                            @php
+                                $document = App\Models\Document::find($documentId);
+                            @endphp
+                            <div class="flex justify-between items-center p-2 bg-base-200 rounded">
+                                <div>
+                                    @if($document->title)
+                                        <div class="font-medium">{{ $document->title }}</div>
+                                        <div class="text-sm text-base-content/70">{{ $document->original_filename }}</div>
+                                    @else
+                                        <div class="font-medium">{{ $document->original_filename }}</div>
+                                    @endif
+                                </div>
+                                <button type="button"
+                                    wire:click="removeDocument({{ $documentId }})"
+                                    class="btn btn-sm btn-ghost text-error">
+                                    Remove
+                                </button>
+                            </div>
+                        @endforeach
+
+                        <!-- Newly Uploaded Documents -->
+                        @foreach($newDocuments as $index => $document)
+                            <div class="flex justify-between items-center p-2 bg-base-200 rounded">
+                                <div class="font-medium">
+                                    {{ $document->getClientOriginalName() }}
+                                    <span class="text-sm text-base-content/70">(New Upload)</span>
+                                </div>
+                                <button type="button"
+                                    wire:click="removeNewDocument({{ $index }})"
+                                    class="btn btn-sm btn-ghost text-error">
+                                    Remove
+                                </button>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
 
                 <!-- Upload New Document Option -->
