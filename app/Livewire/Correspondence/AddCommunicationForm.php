@@ -20,15 +20,20 @@ class AddCommunicationForm extends Component
     public $documents = [];
     public $partySearch = '';
     public $searchResults = [];
+    public $documentSearch = '';
+    public $documentSearchResults = [];
+    public $selectedDocuments = [];
+    public $newDocuments = [];
 
     protected $rules = [
         'type' => 'required|in:email,letter,phone,other',
-        'content' => 'required_without:documents|string|nullable',
+        'content' => 'required_without:selectedDocuments|string|nullable',
         'subject' => 'nullable|string|max:255',
         'sent_at' => 'required|date',
         'selectedParties' => 'required|array|min:1',
         'selectedParties.*' => 'in:sender,recipient',
-        'documents.*' => 'nullable|file|max:10240'
+        'selectedDocuments' => 'array',
+        'newDocuments.*' => 'nullable|file|max:10240'
     ];
 
     public function mount()
@@ -58,6 +63,47 @@ class AddCommunicationForm extends Component
         unset($this->selectedParties[$partyId]);
     }
 
+    public function updatedDocumentSearch()
+    {
+        if (strlen($this->documentSearch) >= 2) {
+            // Search both original_filename and title fields
+            $this->documentSearchResults = $this->thread->caseFile
+                ->documents()
+                ->where(function ($query) {
+                    $query->where('original_filename', 'like', "%{$this->documentSearch}%")
+                          ->orWhere('title', 'like', "%{$this->documentSearch}%");
+                })
+                ->limit(5)
+                ->get();
+        } else {
+            $this->documentSearchResults = [];
+        }
+    }
+
+    public function addDocument($documentId)
+    {
+        if (!in_array($documentId, $this->selectedDocuments)) {
+            $this->selectedDocuments[] = $documentId;
+        }
+        $this->documentSearch = '';
+        $this->documentSearchResults = [];
+    }
+
+    public function removeDocument($documentId)
+    {
+        $this->selectedDocuments = array_filter(
+            $this->selectedDocuments,
+            fn($id) => $id !== $documentId
+        );
+    }
+
+    public function removeNewDocument($index)
+    {
+        $newDocuments = $this->newDocuments;
+        unset($newDocuments[$index]);
+        $this->newDocuments = array_values($newDocuments); // Reset array keys
+    }
+
     public function save()
     {
         $this->validate();
@@ -74,14 +120,25 @@ class AddCommunicationForm extends Component
             $communication->participants()->attach($partyId, ['role' => $role]);
         }
 
-        // Handle documents
-        foreach ($this->documents as $document) {
-            // Implement document handling logic here
+        // Handle existing documents
+        if (!empty($this->selectedDocuments)) {
+            $communication->documents()->attach($this->selectedDocuments);
         }
 
-        $this->reset(['type', 'content', 'subject', 'selectedParties', 'documents']);
+        // Handle new document uploads
+        foreach ($this->newDocuments as $document) {
+            $newDoc = $this->thread->caseFile->documents()->create([
+                'name' => $document->getClientOriginalName(),
+                'file_path' => $document->store('documents', 'public'),
+                'file_size' => $document->getSize(),
+                'mime_type' => $document->getMimeType(),
+            ]);
+
+            $communication->documents()->attach($newDoc->id);
+        }
+
+        $this->reset(['type', 'content', 'subject', 'selectedParties', 'selectedDocuments', 'newDocuments']);
         $this->dispatch('communicationAdded');
-        // Close the modal by emitting to parent
         $this->dispatch('closeAddCommunicationModal');
     }
 

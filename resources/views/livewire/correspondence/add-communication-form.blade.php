@@ -116,19 +116,89 @@
         <div class="space-y-4">
             <h5 class="font-medium text-base-content/80">5. Documents</h5>
             <div class="bg-base-100 rounded-lg p-4 border border-base-300">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-sm text-base-content/70">Attach relevant documents</span>
-                    <input type="file" wire:model="documents" multiple class="hidden" id="document-upload">
-                    <label for="document-upload" class="btn btn-sm btn-ghost">
-                        Add Documents
-                    </label>
+                <!-- Search Input -->
+                <div class="relative">
+                    <input
+                        type="text"
+                        wire:model.live="documentSearch"
+                        placeholder="Search documents..."
+                        class="input input-bordered w-full"
+                    >
+
+                    <!-- Search Results Dropdown -->
+                    @if(strlen($documentSearch) >= 2)
+                        <div class="absolute z-10 w-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-300">
+                            @if(count($documentSearchResults) > 0)
+                                @foreach($documentSearchResults as $document)
+                                    <div class="p-2 hover:bg-base-200 flex justify-between items-center">
+                                        <div>
+                                            @if($document->title)
+                                                <div class="font-medium">{{ $document->title }}</div>
+                                                <div class="text-sm text-base-content/70">{{ $document->original_filename }}</div>
+                                            @else
+                                                <div class="font-medium">{{ $document->original_filename }}</div>
+                                            @endif
+                                            <div class="text-sm text-base-content/70">
+                                                Added {{ $document->created_at->diffForHumans() }}
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            wire:click="addDocument({{ $document->id }})"
+                                            class="btn btn-sm">
+                                            Add Document
+                                        </button>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="p-2 text-sm text-base-content/70 text-center">
+                                    No documents found matching "{{ $documentSearch }}"
+                                </div>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
-                <div class="text-sm text-base-content/60 text-center py-4">
-                    No documents attached yet
+                <!-- Selected Documents List -->
+                <div class="mt-4 space-y-2">
+                    @forelse($selectedDocuments as $documentId)
+                        @php
+                            $document = App\Models\Document::find($documentId);
+                        @endphp
+                        <div class="flex justify-between items-center p-2 bg-base-200 rounded">
+                            <div>
+                                @if($document->title)
+                                    <div class="font-medium">{{ $document->title }}</div>
+                                    <div class="text-sm text-base-content/70">{{ $document->original_filename }}</div>
+                                @else
+                                    <div class="font-medium">{{ $document->original_filename }}</div>
+                                @endif
+                            </div>
+                            <button type="button"
+                                wire:click="removeDocument({{ $documentId }})"
+                                class="btn btn-sm btn-ghost text-error">
+                                Remove
+                            </button>
+                        </div>
+                    @empty
+                        <div class="text-sm text-base-content/60 text-center py-4">
+                            No documents selected yet
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Upload New Document Option -->
+                <div class="mt-4 pt-4 border-t border-base-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-base-content/70">Or upload new documents</span>
+                        <input type="file" wire:model="newDocuments" multiple class="hidden" id="document-upload">
+                        <label for="document-upload" class="btn btn-sm btn-ghost">
+                            Upload New
+                        </label>
+                    </div>
+                    @error('newDocuments.*') <span class="text-error text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
-            @error('documents.*') <span class="text-error text-sm">{{ $message }}</span> @enderror
+            @error('selectedDocuments') <span class="text-error text-sm">{{ $message }}</span> @enderror
         </div>
 
         <!-- Form Actions -->

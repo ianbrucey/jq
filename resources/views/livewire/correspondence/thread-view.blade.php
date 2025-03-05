@@ -10,7 +10,7 @@
         @forelse($thread->communications as $communication)
             <div class="bg-base-200/50 rounded-lg p-4">
                 <!-- Date Header -->
-                <div class="bg-secondary text-white border-b text-sm text-base-content/70 mb-3 w-full p-2 rounded-lg">
+                <div class="text-sm text-base-content/70 mb-3">
                     {{ $communication->sent_at->format('l, F j, Y g:ia') }}
                 </div>
 
@@ -51,18 +51,43 @@
                     </span>
                 </div>
 
-                <div class="prose max-w-none mt-4">
-                    {!! nl2br(e($communication->content)) !!}
-                </div>
+                <!-- Communication Content -->
+                @if($communication->content)
+                    <div class="prose max-w-none mt-4">
+                        {!! nl2br(e($communication->content)) !!}
+                    </div>
+                @endif
 
+                <!-- Documents Section -->
                 @if($communication->documents->isNotEmpty())
-                    <div class="mt-4">
+                    <div class="mt-4 pt-4 border-t border-base-300">
                         <h5 class="text-sm font-medium mb-2">Attachments:</h5>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             @foreach($communication->documents as $document)
-                                <a href="#" class="badge badge-outline">
-                                    {{ $document->name }}
-                                </a>
+                                <div class="flex items-center p-2 bg-base-300/50 rounded-lg">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate">
+                                            {{ $document->name }}
+                                        </p>
+                                        <p class="text-xs text-base-content/70">
+                                            {{ $document->human_file_size }}
+                                        </p>
+                                    </div>
+                                    <a href="{{ Storage::url($document->file_path) }}"
+                                       target="_blank"
+                                       class="btn btn-ghost btn-sm ml-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="h-4 w-4"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  stroke-width="2"
+                                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                    </a>
+                                </div>
                             @endforeach
                         </div>
                     </div>

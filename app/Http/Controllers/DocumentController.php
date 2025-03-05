@@ -44,4 +44,15 @@ class DocumentController extends Controller
             ], 500);
         }
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $documents = Document::search($search)
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return response()->json($documents);
+    }
 }
