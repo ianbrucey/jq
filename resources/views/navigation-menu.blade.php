@@ -13,14 +13,14 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('navigation.dashboard') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('address-book.index') }}" :active="request()->routeIs('address-book.*')">
-                        {{ __('Address Book') }}
+                        {{ __('navigation.address_book') }}
                     </x-nav-link>
                     @can('manage-project-tokens')
                         <x-nav-link href="{{ route('openai.projects.index') }}" :active="request()->routeIs('api-tokens')">
-                            {{ __('Manage Project Tokens') }}
+                            {{ __('navigation.manage_project_tokens') }}
                         </x-nav-link>
                     @endcan
                 </div>
@@ -29,6 +29,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Theme Selector -->
                 <div class="relative flex items-center">
+{{--                    <span class="mr-2 text-sm text-base-content/60">{{ __('navigation.theme') }}:</span>--}}
                     <select
                         class="w-40 rounded-lg select select-bordered text-base-content focus:outline-none"
                         x-model="$store.theme.current"
@@ -65,9 +66,15 @@
                     </select>
                 </div>
 
-                <!-- Add Language Selector here -->
+                <!-- Add this somewhere visible in your navigation menu for debugging -->
+{{--                <div class="text-xs">--}}
+{{--                    Current Language: {{ App::getLocale() }}--}}
+{{--                </div>--}}
+
+                <!-- Language Selector -->
                 <div class="relative flex items-center ml-4">
-                    @livewire('language-selector')
+{{--                    <span class="mr-2 text-sm text-base-content/60">{{ __('navigation.language') }}:</span>--}}
+                    <livewire:language-selector />
                 </div>
 
                 <!-- Teams Dropdown -->
@@ -207,10 +214,10 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('navigation.dashboard') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('address-book.index') }}" :active="request()->routeIs('address-book.*')">
-                {{ __('Address Book') }}
+                {{ __('navigation.address_book') }}
             </x-responsive-nav-link>
         </div>
 
