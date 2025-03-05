@@ -234,6 +234,15 @@
 
     <!-- Modal -->
     <x-modal wire:model="showUploadModal">
+        <!-- Add the close button at the top -->
+        <button
+            type="button"
+            wire:click="$set('showUploadModal', false)"
+            class="w-full bg-red-600 hover:bg-red-900 py-3 text-white text-sm font-medium transition-colors duration-200"
+        >
+            Close Uploader
+        </button>
+
         <div class="p-6">
             <h3 class="text-lg font-medium text-base-content mb-4">Upload New Document</h3>
             <livewire:document-uploader :case-file="$thread->caseFile" />
