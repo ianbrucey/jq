@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-base-content/80 dark:text-base-content/80 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Profile') }}
         </h2>
     </x-slot>
@@ -12,6 +12,11 @@
 
                 <x-section-border />
             @endif
+
+            <!-- Add Language Settings Section -->
+            @livewire('user-language-settings')
+
+            <x-section-border />
 
             @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
                 <div class="mt-10 sm:mt-0">

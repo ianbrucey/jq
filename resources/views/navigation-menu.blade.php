@@ -65,6 +65,11 @@
                     </select>
                 </div>
 
+                <!-- Add Language Selector here -->
+                <div class="relative flex items-center ml-4">
+                    @livewire('language-selector')
+                </div>
+
                 <!-- Teams Dropdown -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                     <div class="relative ms-3">
