@@ -87,7 +87,7 @@ class DocumentUploader extends Component
             $title = $this->documentTitles[$key] ?? null;
             $description = $this->documentDescriptions[$key] ?? null;
 
-            app(DocumentService::class)->store(
+            $document = app(DocumentService::class)->store(
                 $this->caseFile,
                 $fileObject['file'],
                 $title,
@@ -95,7 +95,7 @@ class DocumentUploader extends Component
             );
 
             $this->removeFile($key);
-            $this->dispatch('document-uploaded');
+            $this->dispatch('document-uploaded', document: $document);
         } catch (\Exception $e) {
             Log::error('Failed to upload document: ' . $e->getMessage());
             $this->addError('upload', 'Failed to upload document: ' . $e->getMessage());

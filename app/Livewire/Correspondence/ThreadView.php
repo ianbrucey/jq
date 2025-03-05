@@ -4,15 +4,18 @@ namespace App\Livewire\Correspondence;
 
 use App\Models\Thread;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class ThreadView extends Component
 {
     public Thread $thread;
-    public $showAddCommunicationModal = false; // Renamed from showAddCommunication
+    public $showAddCommunicationModal = false;
 
-    protected $listeners = [
-        'communicationAdded' => '$refresh'
-    ];
+    #[On('communicationDeleted')]
+    public function refreshThread()
+    {
+        $this->thread->refresh();
+    }
 
     public function mount(Thread $thread)
     {

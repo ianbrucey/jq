@@ -17,8 +17,7 @@ class Communication extends Model
     ];
 
     protected $casts = [
-        'sent_at' => 'datetime',
-        'type' => 'string',
+        'sent_at' => 'datetime'
     ];
 
     public function thread(): BelongsTo
@@ -37,5 +36,12 @@ class Communication extends Model
     {
         return $this->belongsToMany(Document::class, 'communication_documents')
             ->withTimestamps();
+    }
+
+    public function delete()
+    {
+        // The related records in communication_participants and communication_documents
+        // will be automatically deleted due to the onDelete: cascade constraint
+        return parent::delete();
     }
 }

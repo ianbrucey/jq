@@ -6,10 +6,13 @@ use App\Models\Party;
 use App\Models\Thread;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\On;
 
 class AddCommunicationForm extends Component
 {
     use WithFileUploads;
+
+    public $showUploadModal = false;
 
     public Thread $thread;
     public $type = 'email';
@@ -139,12 +142,22 @@ class AddCommunicationForm extends Component
 
         $this->reset(['type', 'content', 'subject', 'selectedParties', 'selectedDocuments', 'newDocuments']);
         $this->dispatch('communicationAdded');
-        $this->dispatch('closeAddCommunicationModal');
+        $this->dispatch('close-modal'); // Remove this line if you're using wire:model
     }
 
     public function cancel()
     {
-        $this->dispatch('closeAddCommunicationModal');
+        $this->dispatch('close-modal'); // Remove this line if you're using wire:model
+    }
+
+    #[On('document-uploaded')]
+    public function handleDocumentUploaded($document)
+    {
+        if(isset($document['id'])){
+            $this->selectedDocuments[] = $document['id'];
+        }
+
+        $this->showUploadModal = false;
     }
 
     public function render()

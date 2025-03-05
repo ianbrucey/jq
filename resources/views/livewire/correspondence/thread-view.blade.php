@@ -1,4 +1,4 @@
-<div class="mt-8 space-y-6">
+<div class="relative">
     <div class="flex justify-between items-center">
         <h3 class="text-lg font-medium">{{ $thread->title }}</h3>
         <button wire:click="$set('showAddCommunicationModal', true)" class="btn btn-primary btn-sm">
@@ -6,12 +6,18 @@
         </button>
     </div>
 
-    <div class="space-y-6">
+    <div class="mt-8 space-y-6 overflow-y-auto">
         @forelse($thread->communications as $communication)
             <div class="bg-base-200/50 rounded-lg p-4">
                 <!-- Date Header -->
-                <div class="text-sm text-base-content/70 mb-3">
-                    {{ $communication->sent_at->format('l, F j, Y g:ia') }}
+                <div class="flex justify-between items-start">
+                    <div class="text-sm text-base-content/70 mb-3">
+                        {{ $communication->sent_at->format('l, F j, Y g:ia') }}
+                    </div>
+                    <livewire:correspondence.delete-communication
+                        :communication="$communication"
+                        :key="'delete-'.$communication->id"
+                    />
                 </div>
 
                 <div class="flex justify-between items-start mb-2">
