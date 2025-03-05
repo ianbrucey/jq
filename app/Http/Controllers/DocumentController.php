@@ -2,57 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CaseFile;
-use App\Services\DocumentService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Models\Document;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentController extends Controller
 {
-    public function __construct(
-        private DocumentService $documentService
-    ) {}
+    use AuthorizesRequests;
 
-    public function store(Request $request, CaseFile $caseFile)
+    public function show(Document $document): StreamedResponse
     {
-        $request->validate([
-            'document' => 'required|file|max:10240',
-            'title' => 'nullable|string|max:255',
-            'description' => 'nullable|string'
+        $this->authorize('view', $document);
+
+        return Storage::response($document->storage_path, $document->original_filename, [
+            'Content-Type' => $document->mime_type,
+            'Content-Disposition' => 'inline; filename="' . $document->original_filename . '"'
         ]);
-
-        try {
-            $document = $this->documentService->store(
-                $caseFile,
-                $request->file('document'),
-                $request->input('title'),
-                $request->input('description')
-            );
-
-            return response()->json([
-                'message' => 'Document uploaded successfully',
-                'document' => $document
-            ], 201);
-        } catch (\Exception $e) {
-            Log::error('Document upload failed', [
-                'case_id' => $caseFile->id,
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'message' => 'Failed to upload document'
-            ], 500);
-        }
-    }
-
-    public function search(Request $request)
-    {
-        $search = $request->input('search');
-
-        $documents = Document::search($search)
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        return response()->json($documents);
     }
 }

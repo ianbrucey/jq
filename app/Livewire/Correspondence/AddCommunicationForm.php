@@ -56,9 +56,17 @@ class AddCommunicationForm extends Component
         }
     }
 
+    public function clearPartySearch()
+    {
+        $this->partySearch = '';
+        $this->searchResults = [];
+    }
+
     public function addParticipant($partyId, $role)
     {
         $this->selectedParties[$partyId] = $role;
+        $this->partySearch = ''; // Reset the search input
+        $this->searchResults = []; // Clear the search results
     }
 
     public function removeParticipant($partyId)
@@ -107,6 +115,12 @@ class AddCommunicationForm extends Component
         $this->newDocuments = array_values($newDocuments); // Reset array keys
     }
 
+    public function clearDocumentSearch()
+    {
+        $this->documentSearch = '';
+        $this->documentSearchResults = [];
+    }
+
     public function save()
     {
         $this->validate();
@@ -142,12 +156,12 @@ class AddCommunicationForm extends Component
 
         $this->reset(['type', 'content', 'subject', 'selectedParties', 'selectedDocuments', 'newDocuments']);
         $this->dispatch('communicationAdded');
-        $this->dispatch('close-modal'); // Remove this line if you're using wire:model
+        $this->dispatch('close-add-communication-modal');
     }
 
     public function cancel()
     {
-        $this->dispatch('close-modal'); // Remove this line if you're using wire:model
+        $this->dispatch('close-add-communication-modal');
     }
 
     #[On('document-uploaded')]

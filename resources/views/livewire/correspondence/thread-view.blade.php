@@ -1,13 +1,49 @@
 <div class="relative">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center border-b pb-5">
         <h3 class="text-lg font-medium">{{ $thread->title }}</h3>
-        <button wire:click="$set('showAddCommunicationModal', true)" class="btn btn-primary btn-sm">
-            Add Communication
-        </button>
+        <div class="flex gap-2">
+            <a href="{{ route('case-files.show', $thread->case_file_id) }}" class="btn btn-ghost btn-sm">
+                ← Back to Case
+            </a>
+            <button wire:click="$set('showAddCommunicationModal', true)" class="btn btn-primary btn-sm">
+                Add Communication
+            </button>
+        </div>
     </div>
 
+    <div class="mt-4">
+        {{ $communications->links() }}
+    </div>
+
+    {{-- Temporarily hidden search functionality
+    <div class="mt-4">
+        <div class="form-control">
+            <div class="relative">
+                <input
+                    type="text"
+                    wire:model.defer="search"
+                    wire:keydown.enter="$refresh"
+                    placeholder="Search communications..."
+                    class="input input-bordered w-full pr-10"
+                >
+                @if($search)
+                    <button
+                        type="button"
+                        wire:click="clearSearch"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-base-content/70 hover:text-base-content"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                @endif
+            </div>
+        </div>
+    </div>
+    --}}
+
     <div class="mt-8 space-y-6 overflow-y-auto">
-        @forelse($thread->communications as $communication)
+        @forelse($communications as $communication)
             <div class="bg-base-200/50 rounded-lg p-4">
                 <!-- Date Header -->
                 <div class="flex justify-between items-start">
@@ -73,26 +109,37 @@
                                 <div class="flex items-center p-2 bg-base-300/50 rounded-lg">
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium truncate">
-                                            {{ $document->name }}
+                                            {{ $document->title ?: $document->original_filename }}
                                         </p>
                                         <p class="text-xs text-base-content/70">
                                             {{ $document->human_file_size }}
                                         </p>
                                     </div>
-                                    <a href="{{ Storage::url($document->storage_path) }}"
-                                       target="_blank"
-                                       class="btn btn-ghost btn-sm ml-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="h-4 w-4"
-                                             fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke="currentColor">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  stroke-width="2"
-                                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                        </svg>
-                                    </a>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="btn btn-ghost btn-sm"
+                                            wire:click="preview({{ $document->id }})"
+                                        >
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
+                                        <a href="{{ $this->getDocumentUrl($document->id) }}"
+                                           target="_blank"
+                                           class="btn btn-ghost btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-4 w-4"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width="2"
+                                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                            </svg>
+                                        </a>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -101,9 +148,17 @@
             </div>
         @empty
             <div class="text-center py-8 text-base-content/60">
-                No communications in this thread yet.
+                @if($search)
+                    No communications found matching "{{ $search }}"
+                @else
+                    No communications in this thread yet.
+                @endif
             </div>
         @endforelse
+
+        <div class="mt-4">
+            {{ $communications->links() }}
+        </div>
     </div>
 
     <!-- Modal for Add Communication Form -->
@@ -115,4 +170,37 @@
             />
         </div>
     </x-modal>
+
+    <!-- Document Preview Modal -->
+    <x-dialog-modal wire:model.live="showingPreviewModal">
+        <x-slot name="title">
+            Document Preview
+        </x-slot>
+
+        <x-slot name="content">
+            @if($previewDocument)
+                <div class="space-y-4">
+                    <div class="aspect-auto max-h-[70vh] overflow-auto">
+                        @if(str_contains($previewDocument->mime_type, 'image'))
+                            <img src="{{ $this->getDocumentUrl($previewDocument->id) }}"
+                                 alt="{{ $previewDocument->title }}"
+                                 class="h-auto max-w-full">
+                        @elseif($previewDocument->mime_type === 'application/pdf')
+                            <iframe src="{{ $this->getDocumentUrl($previewDocument->id) }}"
+                                    class="w-full h-[70vh]"
+                                    frameborder="0"></iframe>
+                        @else
+                            <div class="p-4 text-center text-base-content/60">
+                                Preview not available for this file type
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
+        </x-slot>
+
+        <x-slot name="footer">
+            <button class="btn btn-ghost" wire:click="closePreviewModal">Close</button>
+        </x-slot>
+    </x-dialog-modal>
 </div>

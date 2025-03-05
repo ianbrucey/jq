@@ -83,6 +83,10 @@ Route::get('/documents/{document}/download', function (Document $document) {
     return Storage::download($document->file_path, $document->original_filename);
 })->name('documents.download');
 
+Route::get('/documents/{document}/show', [DocumentController::class, 'show'])
+    ->name('document.show')
+    ->middleware(['signed', 'auth']);
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

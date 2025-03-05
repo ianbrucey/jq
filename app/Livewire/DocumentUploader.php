@@ -19,14 +19,14 @@ class DocumentUploader extends Component
     public $caseFile;
     public $isSavingAll = false;
     public $savingDocuments = [];
+    public $showDocumentList = true;
 
     protected $listeners = ['removeFile'];
 
-    public function mount($caseFile)
+    public function mount($caseFile, $showDocumentList = true)
     {
-        $this->caseFile = !is_object($caseFile) ? CaseFile::find(intval($caseFile)) : $caseFile;
-
-//        dd($this->caseFile);
+        $this->caseFile = $caseFile;
+        $this->showDocumentList = $showDocumentList;
 
         if(empty($this->caseFile)) {
             throw new \Exception('Cannot upload documents without a case file');
