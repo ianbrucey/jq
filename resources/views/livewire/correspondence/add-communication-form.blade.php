@@ -10,8 +10,8 @@
             <div>
                 <label class="block text-sm font-medium text-base-content/80">Type</label>
                 <select wire:model="type" class="select select-bordered w-full mt-1">
-                    <option value="email">Email</option>
                     <option value="letter">Letter</option>
+                    <option value="email">Email</option>
                     <option value="phone">Phone Call</option>
                     <option value="other">Other</option>
                 </select>
@@ -37,7 +37,7 @@
 
         <!-- Section 3: Date & Time -->
         <div class="space-y-4">
-            <h5 class="font-medium text-base-content/80">3. Date & Time</h5>
+            <h5 class="font-medium text-base-content/80">3. Date & Time Sent</h5>
             <div>
                 <label class="block text-sm font-medium text-base-content/80">Date & Time</label>
                 <input type="datetime-local" wire:model="sent_at" class="input input-bordered w-full mt-1">
@@ -47,17 +47,66 @@
 
         <!-- Section 4: Participants -->
         <div class="space-y-4">
-            <h5 class="font-medium text-base-content/80">4. Participants</h5>
+            <h5 class="font-medium text-base-content/80">4. Participants <span class="text-primary">(senders & recipients)</span></h5>
             <div class="bg-base-100 rounded-lg p-4 border border-base-300">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-sm text-base-content/70">Select participants and their roles</span>
-                    <button type="button" class="btn btn-sm btn-ghost">
-                        Add Participant
-                    </button>
+                <!-- Search Input -->
+                <div class="relative">
+                    <input
+                        type="text"
+                        wire:model.live="partySearch"
+                        placeholder="Search parties..."
+                        class="input input-bordered w-full"
+                    >
+
+                    <!-- Search Results Dropdown -->
+                    @if(count($searchResults) > 0)
+                        <div class="absolute z-10 w-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-300">
+                            @foreach($searchResults as $party)
+                                <div class="p-2 hover:bg-base-200 flex justify-between items-center">
+                                    <div>
+                                        <div class="font-medium">{{ $party->name }}</div>
+                                        <div class="text-sm text-base-content/70">{{ $party->email }}</div>
+                                    </div>
+                                    <div class="space-x-2">
+                                        <button type="button"
+                                            wire:click="addParticipant({{ $party->id }}, 'sender')"
+                                            class="btn btn-sm">
+                                            Add as Sender
+                                        </button>
+                                        <button type="button"
+                                            wire:click="addParticipant({{ $party->id }}, 'recipient')"
+                                            class="btn btn-sm">
+                                            Add as Recipient
+                                        </button>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
-                <div class="text-sm text-base-content/60 text-center py-4">
-                    No participants added yet
+                <!-- Selected Participants List -->
+                <div class="mt-4 space-y-2">
+                    @forelse($selectedParties as $partyId => $role)
+                        @php
+                            $party = App\Models\Party::find($partyId);
+                        @endphp
+                        <div class="flex justify-between items-center p-2 bg-base-200 rounded">
+                            <div>
+                                <span class="font-medium">{{ $party->name }}</span>
+                                <span class="text-sm text-base-content/70">({{ ucfirst($role) }})</span>
+                            </div>
+                            <button type="button"
+                                wire:click="removeParticipant({{ $partyId }})"
+                                class="btn btn-sm btn-ghost text-error">
+                                Remove
+                            </button>
+                        </div>
+                    @empty
+                        <div class="text-sm text-base-content/60 text-center py-4">
+                            No participants added yet
+                        </div>
+                    @endforelse
                 </div>
             </div>
             @error('selectedParties') <span class="text-error text-sm">{{ $message }}</span> @enderror

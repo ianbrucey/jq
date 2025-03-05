@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Correspondence;
 
+use App\Models\Party;
 use App\Models\Thread;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -15,8 +16,10 @@ class AddCommunicationForm extends Component
     public $content;
     public $subject;
     public $sent_at;
-    public $selectedParties = [];
+    public $selectedParties = []; // Format: ['party_id' => 'role']
     public $documents = [];
+    public $partySearch = '';
+    public $searchResults = [];
 
     protected $rules = [
         'type' => 'required|in:email,letter,phone,other',
@@ -24,12 +27,35 @@ class AddCommunicationForm extends Component
         'subject' => 'nullable|string|max:255',
         'sent_at' => 'required|date',
         'selectedParties' => 'required|array|min:1',
+        'selectedParties.*' => 'in:sender,recipient',
         'documents.*' => 'nullable|file|max:10240'
     ];
 
     public function mount()
     {
         $this->sent_at = now()->format('Y-m-d H:i');
+    }
+
+    public function updatedPartySearch()
+    {
+        if (strlen($this->partySearch) >= 2) {
+            $this->searchResults = Party::where('name', 'like', "%{$this->partySearch}%")
+                ->orWhere('email', 'like', "%{$this->partySearch}%")
+                ->limit(5)
+                ->get();
+        } else {
+            $this->searchResults = [];
+        }
+    }
+
+    public function addParticipant($partyId, $role)
+    {
+        $this->selectedParties[$partyId] = $role;
+    }
+
+    public function removeParticipant($partyId)
+    {
+        unset($this->selectedParties[$partyId]);
     }
 
     public function save()
