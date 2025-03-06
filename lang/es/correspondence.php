@@ -41,6 +41,20 @@ return [
         'save_communication' => 'Guardar comunicación',
         'close_uploader' => 'Cerrar cargador',
         'upload_new_document' => 'Subir nuevo documento',
+        // Thread View Specific
+        'add_communication' => 'Agregar Comunicación',
+        'back_to_case' => 'Volver al Caso',
+        'to' => 'Para:',
+        'attachments' => 'Archivos Adjuntos:',
+        'file_size' => 'Tamaño del archivo',
+        'search_communications' => 'Buscar comunicaciones...',
+        'no_communications' => 'Sin comunicaciones aún',
+        'latest' => 'Último',
+        'human_file_size' => ':size',
+        'from' => 'De:',
+        'document_preview' => 'Vista Previa del Documento',
+        'no_communications_found' => 'No se encontraron comunicaciones que coincidan con ":search"',
+        'no_communications_yet' => 'No hay comunicaciones en este hilo todavía.',
     ],
     'threads' => 'Conversaciones',
     'new_thread' => 'Nueva Conversación',
@@ -64,4 +78,8 @@ return [
     ],
     'tracker' => 'Seguimiento de Correspondencia',
     'back_to_case' => 'Volver al Caso',
+    // Top level translations for basic structure
+    'thread' => 'Hilo',
+    'back_to_threads' => 'Volver a los Hilos',
+    'thread_for' => 'Hilo - :title', // For showing thread with case file title
 ];

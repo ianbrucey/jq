@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold leading-tight text-base-content/80">
-                {{ __('Correspondence Thread') }} - {{ $caseFile->title }}
+                {{ __('correspondence.thread_for', ['title' => $caseFile->title]) }}
             </h2>
             <a href="{{ route('case-files.correspondences.index', $caseFile) }}"
                class="btn btn-ghost btn-sm">
-                ← Back to Threads
+                ← {{ __('correspondence.back_to_threads') }}
             </a>
         </div>
     </x-slot>

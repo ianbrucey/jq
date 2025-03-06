@@ -41,6 +41,20 @@ return [
         'save_communication' => 'Save Communication',
         'close_uploader' => 'Close Uploader',
         'upload_new_document' => 'Upload New Document',
+        // Thread View Specific
+        'add_communication' => 'Add Communication',
+        'back_to_case' => 'Back to Case',
+        'to' => 'To:',
+        'attachments' => 'Attachments:',
+        'file_size' => 'File size',
+        'search_communications' => 'Search communications...',
+        'no_communications' => 'No communications yet',
+        'latest' => 'Latest',
+        'human_file_size' => ':size',
+        'from' => 'From:',
+        'document_preview' => 'Document Preview',
+        'no_communications_found' => 'No communications found matching ":search"',
+        'no_communications_yet' => 'No communications in this thread yet.',
     ],
     'threads' => 'Threads',
     'new_thread' => 'New Thread',
@@ -56,6 +70,9 @@ return [
     'title_placeholder' => 'e.g., Insurance Claim Follow-up',
     'cancel' => 'Cancel',
     'create_thread' => 'Create Thread',
+    'thread' => 'Correspondence Thread',
+    'back_to_threads' => 'Back to Threads',
+    'thread_for' => 'Thread - :title', // For showing thread with case file title
 
     'status' => [
         'open' => 'Open',

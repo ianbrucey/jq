@@ -3,10 +3,10 @@
         <h3 class="text-lg font-medium">{{ $thread->title }}</h3>
         <div class="flex gap-2">
             <a href="{{ route('case-files.show', $thread->case_file_id) }}" class="btn btn-ghost btn-sm">
-                ← Back to Case
+                ← {{ __('correspondence.correspondence.back_to_case') }}
             </a>
             <button wire:click="$set('showAddCommunicationModal', true)" class="btn btn-primary btn-sm">
-                Add Communication
+                {{ __('correspondence.correspondence.add_communication') }}
             </button>
         </div>
     </div>
@@ -64,7 +64,7 @@
                         <div class="mt-2 space-y-2">
                             <!-- Senders -->
                             <div>
-                                <span class="text-sm text-base-content/70">From:</span>
+                                <span class="text-sm text-base-content/70">{{ __('correspondence.correspondence.from') }}</span>
                                 <div class="mt-1 flex flex-wrap gap-2">
                                     @foreach($communication->participants()->wherePivot('role', 'sender')->get() as $sender)
                                         <span class="px-2 py-1 text-xs rounded-full bg-accent/20 text-accent-content">
@@ -76,7 +76,7 @@
 
                             <!-- Recipients -->
                             <div>
-                                <span class="text-sm text-base-content/70">To:</span>
+                                <span class="text-sm text-base-content/70">{{ __('correspondence.correspondence.to') }}</span>
                                 <div class="mt-1 flex flex-wrap gap-2">
                                     @foreach($communication->participants()->wherePivot('role', 'recipient')->get() as $recipient)
                                         <span class="px-2 py-1 text-xs rounded-full bg-accent/20 text-accent-content">
@@ -103,7 +103,7 @@
                 <!-- Documents Section -->
                 @if($communication->documents->isNotEmpty())
                     <div class="mt-4 pt-4 border-t border-base-300">
-                        <h5 class="text-sm font-medium mb-2">Attachments:</h5>
+                        <h5 class="text-sm font-medium mb-2">{{ __('correspondence.correspondence.attachments') }}</h5>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             @foreach($communication->documents as $document)
                                 <div class="flex items-center p-2 bg-base-300/50 rounded-lg">
@@ -112,7 +112,7 @@
                                             {{ $document->title ?: $document->original_filename }}
                                         </p>
                                         <p class="text-xs text-base-content/70">
-                                            {{ $document->human_file_size }}
+                                            {{ __('correspondence.correspondence.human_file_size', ['size' => $document->human_file_size]) }}
                                         </p>
                                     </div>
                                     <div class="flex gap-2">
@@ -149,9 +149,9 @@
         @empty
             <div class="text-center py-8 text-base-content/60">
                 @if($search)
-                    No communications found matching "{{ $search }}"
+                    {{ __('correspondence.correspondence.no_communications_found', ['search' => $search]) }}
                 @else
-                    No communications in this thread yet.
+                    {{ __('correspondence.correspondence.no_communications_yet') }}
                 @endif
             </div>
         @endforelse
