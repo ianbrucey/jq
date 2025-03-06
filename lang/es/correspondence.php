@@ -122,4 +122,10 @@ return [
         'senders_required' => 'Se requiere al menos un remitente',
         'recipients_required' => 'Se requiere al menos un destinatario',
     ],
+    'delete_communication' => [
+        'title' => 'Eliminar comunicación',
+        'confirmation' => '¿Está seguro de que desea eliminar esta comunicación? Esta acción no se puede deshacer.',
+        'cancel' => 'Cancelar',
+        'confirm' => 'Eliminar',
+    ],
 ];

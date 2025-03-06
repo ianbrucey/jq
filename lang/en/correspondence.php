@@ -118,4 +118,10 @@ return [
         'senders_required' => 'At least one sender is required',
         'recipients_required' => 'At least one recipient is required',
     ],
+    'delete_communication' => [
+        'title' => 'Delete Communication',
+        'confirmation' => 'Are you sure you want to delete this communication? This action cannot be undone.',
+        'cancel' => 'Cancel',
+        'confirm' => 'Delete',
+    ],
 ];
