@@ -5,7 +5,7 @@ This guide explains how to implement a rich text editor using Laravel Livewire a
 
 ## Prerequisites
 
-- Laravel 10.x
+- Laravel 11.x
 - Livewire 3.x
 - Composer
 - NPM
