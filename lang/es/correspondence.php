@@ -66,6 +66,7 @@ return [
         'document_preview' => 'Vista Previa del Documento',
         'no_communications_found' => 'No se encontraron comunicaciones que coincidan con ":search"',
         'no_communications_yet' => 'No hay comunicaciones en este hilo todavía.',
+        'no_parties_found' => 'No se encontraron participantes',
     ],
     'threads' => 'Conversaciones',
     'new_thread' => 'Nueva Conversación',

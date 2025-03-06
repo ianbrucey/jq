@@ -73,30 +73,36 @@
                             </button>
                         @endif
 
-                        <!-- Search Results -->
-                        @if($searchResults && count($searchResults) > 0)
+                        <!-- Search Results for Participants -->
+                        @if($partySearch && strlen($partySearch) >= 2)
                             <div class="absolute z-10 w-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-300">
-                                @foreach($searchResults as $party)
-                                    <div class="p-2 hover:bg-base-200 flex justify-between items-center">
-                                        <div>
-                                            <div class="font-medium">{{ $party->name }}</div>
-                                            <div class="text-sm text-base-content/70">{{ $party->email }}</div>
+                                @if(count($searchResults) > 0)
+                                    @foreach($searchResults as $party)
+                                        <div class="p-2 hover:bg-base-200 flex justify-between items-center">
+                                            <div>
+                                                <div class="font-medium">{{ $party->name }}</div>
+                                                <div class="text-sm text-base-content/70">{{ $party->email }}</div>
+                                            </div>
+                                            <div class="space-x-2">
+                                                <button type="button"
+                                                    wire:click="addParticipant({{ $party->id }}, 'sender')"
+                                                    class="btn btn-sm">
+                                                    {{ __('correspondence.correspondence.add_as_sender') }}
+                                                </button>
+                                                <button type="button"
+                                                    wire:click="addParticipant({{ $party->id }}, 'recipient')"
+                                                    class="btn btn-sm">
+                                                    {{ __('correspondence.correspondence.add_as_recipient') }}
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div class="space-x-2">
-                                            <button type="button"
-                                                wire:click="addParticipant({{ $party->id }}, 'sender')"
-                                                class="btn btn-sm">
-                                                {{ __('correspondence.correspondence.add_as_sender') }}
-                                            </button>
-                                            <button type="button"
-                                                wire:click="addParticipant({{ $party->id }}, 'recipient')"
-                                                class="btn btn-sm">
-                                                {{ __('correspondence.correspondence.add_as_recipient') }}
-                                            </button>
-                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-2 text-center text-base-content/70">
+                                        {{ __('correspondence.correspondence.no_parties_found') }}
                                     </div>
-                                @endforeach
-                           </div>
+                                @endif
+                            </div>
                         @endif
                     </div>
 
@@ -188,25 +194,31 @@
                         @endif
 
                         <!-- Document Search Results -->
-                        @if($documentSearchResults && count($documentSearchResults) > 0)
+                        @if($documentSearch && strlen($documentSearch) >= 2)
                             <div class="absolute z-10 w-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-300">
-                                @foreach($documentSearchResults as $document)
-                                    <div class="p-2 hover:bg-base-200 flex justify-between items-center">
-                                        <div>
-                                            <div class="font-medium">{{ $document->title ?: $document->original_filename }}</div>
-                                            <div class="text-sm text-base-content/70">
-                                                {{ number_format($document->file_size / 1024, 2) }} KB
+                                @if(count($documentSearchResults) > 0)
+                                    @foreach($documentSearchResults as $document)
+                                        <div class="p-2 hover:bg-base-200 flex justify-between items-center">
+                                            <div>
+                                                <div class="font-medium">{{ $document->title ?: $document->original_filename }}</div>
+                                                <div class="text-sm text-base-content/70">
+                                                    {{ number_format($document->file_size / 1024, 2) }} KB
+                                                </div>
                                             </div>
+                                            <button type="button"
+                                                wire:click="addDocument({{ $document->id }})"
+                                                class="btn btn-sm"
+                                                @if(in_array($document->id, $selectedDocuments)) disabled @endif
+                                            >
+                                                {{ __('correspondence.correspondence.add_document') }}
+                                            </button>
                                         </div>
-                                        <button type="button"
-                                            wire:click="addDocument({{ $document->id }})"
-                                            class="btn btn-sm"
-                                            @if(in_array($document->id, $selectedDocuments)) disabled @endif
-                                        >
-                                            {{ __('correspondence.correspondence.add_document') }}
-                                        </button>
+                                    @endforeach
+                                @else
+                                    <div class="p-2 text-center text-base-content/70">
+                                        {{ __('correspondence.correspondence.no_documents_found') }}
                                     </div>
-                                @endforeach
+                                @endif
                             </div>
                         @endif
                     </div>

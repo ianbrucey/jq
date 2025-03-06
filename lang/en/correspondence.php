@@ -31,7 +31,7 @@ return [
         ],
         'subject' => 'Subject',
         'content' => 'Content',
-        'content_label' => 'Communication Content',
+        'content_label' => 'Communication Content or Notes',
         'date_time_sent' => 'Date & Time Sent',
         'date_time' => 'Date and Time',
         'participants' => 'Participants',
@@ -54,6 +54,8 @@ return [
         'save_communication' => 'Save Communication',
         'close_uploader' => 'Close Uploader',
         'upload_new_document' => 'Upload New Document',
+        'no_parties_found' => 'No matching parties found',
+        'no_documents_found' => 'No matching documents found',
         // Thread View Specific
         'add_communication' => 'Add Communication',
         'back_to_case' => 'Back to Case',
