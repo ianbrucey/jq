@@ -12,6 +12,7 @@ return [
     'file_size_label' => 'Size',
     'uploaded_date_label' => 'Uploaded',
     'upload_new_documents' => 'Upload New Documents',
+    'ai_assist_notice' => 'AI will automatically generate a title & summary if none is provided',
 
     // Document Actions
     'save_all_documents' => 'Save All Documents',

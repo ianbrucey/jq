@@ -126,20 +126,24 @@ Usage:
                         <span class="text-sm font-medium text-base-content p-2 bg-accent rounded-full" x-text="file.metadata.name"></span>
                         <span>{{ __('documents.file_size_label') }}: </span>
                         <span x-text="formatFileSize(file.metadata.size)"></span>
-
                     </div>
                     <div class="mb-2">
                         <input type="text"
                                x-model="titles[index]"
                                class="w-full input input-bordered"
                                placeholder="{{ __('documents.document_title_placeholder') }}">
+                        <div class="mt-1 flex items-center gap-2 text-sm text-info/80">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>{{ __('documents.ai_assist_notice') }}</span>
+                        </div>
                     </div>
                     <div class="mt-2">
                         <textarea x-model="descriptions[index]"
                                 class="w-full textarea textarea-bordered"
                                 placeholder="{{ __('documents.document_description_placeholder') }}"></textarea>
                     </div>
-
                 </div>
                 <button type="button"
                         x-on:click="removeFile(index)"
