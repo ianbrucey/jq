@@ -5,6 +5,7 @@ namespace App\Livewire\Correspondence;
 use App\Models\Thread;
 use App\Models\Document;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Url;
@@ -21,6 +22,13 @@ class ThreadView extends Component
 
     #[Url(history: true)]
     public $search = '';
+
+    #[On('communication-added')]
+    public function handleCommunicationAdded()
+    {
+        $this->showAddCommunicationModal = false;
+        $this->resetPage();
+    }
 
     protected $queryString = [
         'search' => ['except' => ''],

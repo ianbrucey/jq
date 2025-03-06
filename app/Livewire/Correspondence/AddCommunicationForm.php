@@ -164,8 +164,12 @@ class AddCommunicationForm extends Component
             'searchResults'
         ]);
 
+        // Dispatch both events
         $this->dispatch('communication-saved');
-        $this->dispatch('close-modal');
+        $this->dispatch('close-add-communication-modal');
+
+        // Dispatch refresh event to parent
+        $this->dispatch('communication-added')->to('correspondence.thread-view');
     }
 
     public function cancel()
@@ -180,7 +184,8 @@ class AddCommunicationForm extends Component
             'partySearch',
             'searchResults'
         ]);
-        $this->dispatch('close-modal');
+        // Update the event name to match the listener
+        $this->dispatch('close-add-communication-modal');
     }
 
     #[On('document-uploaded')]
