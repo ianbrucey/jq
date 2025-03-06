@@ -174,7 +174,7 @@
                             <button
                                 type="button"
                                 wire:click="clearDocumentSearch"
-                                class="absolute right-3 top-6 -translate-y-1/2 text-base-content/50 hover:text-base-content"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
@@ -182,26 +182,57 @@
                             </button>
                         @endif
 
-                        @if(empty($selectedDocuments) && empty($newDocuments))
+                        <!-- Document Search Results -->
+                        @if($documentSearchResults && count($documentSearchResults) > 0)
+                            <div class="absolute z-10 w-full mt-1 bg-base-100 rounded-lg shadow-lg border border-base-300">
+                                @foreach($documentSearchResults as $document)
+                                    <div class="p-2 hover:bg-base-200 flex justify-between items-center">
+                                        <div>
+                                            <div class="font-medium">{{ $document->title ?: $document->original_filename }}</div>
+                                            <div class="text-sm text-base-content/70">
+                                                {{ number_format($document->file_size / 1024, 2) }} KB
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                            wire:click="addDocument({{ $document->id }})"
+                                            class="btn btn-sm"
+                                            @if(in_array($document->id, $selectedDocuments)) disabled @endif
+                                        >
+                                            {{ __('correspondence.correspondence.add_document') }}
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Selected Documents List -->
+                    <div class="mt-4 space-y-2">
+                        @if(!empty($selectedDocuments))
+                            @foreach($thread->caseFile->documents()->whereIn('id', $selectedDocuments)->get() as $document)
+                                <div class="flex items-center justify-between bg-base-200 p-2 rounded">
+                                    <div>
+                                        <span class="font-medium">{{ $document->title ?: $document->original_filename }}</span>
+                                        <span class="text-sm text-base-content/70">
+                                            {{ number_format($document->file_size / 1024, 2) }} KB
+                                        </span>
+                                    </div>
+                                    <button type="button"
+                                            wire:click="removeDocument({{ $document->id }})"
+                                            class="btn btn-ghost btn-sm text-error">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            @endforeach
+                        @else
                             <div class="text-center py-4 text-base-content/60">
                                 {{ __('correspondence.correspondence.no_documents_selected') }}
                             </div>
                         @endif
                     </div>
-
-                    <!-- Upload New Document Option -->
-                    <div class="mt-4 pt-4 border-t border-base-300">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm text-base-content/70">{{ __('correspondence.correspondence.or_upload_new_documents') }}</span>
-                            <button type="button"
-                                    wire:click="$set('showUploadModal', true)"
-                                    class="btn btn-sm btn-ghost">
-                                {{ __('correspondence.correspondence.upload_new') }}
-                            </button>
-                        </div>
-                    </div>
                 </div>
-                @error('selectedDocuments') <span class="text-error text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Form Actions -->

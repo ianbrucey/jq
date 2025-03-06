@@ -91,6 +91,12 @@ class AddCommunicationForm extends Component
         }
     }
 
+    public function clearDocumentSearch()
+    {
+        $this->documentSearch = '';
+        $this->documentSearchResults = [];
+    }
+
     public function addDocument($documentId)
     {
         if (!in_array($documentId, $this->selectedDocuments)) {
@@ -102,10 +108,7 @@ class AddCommunicationForm extends Component
 
     public function removeDocument($documentId)
     {
-        $this->selectedDocuments = array_filter(
-            $this->selectedDocuments,
-            fn($id) => $id !== $documentId
-        );
+        $this->selectedDocuments = array_values(array_diff($this->selectedDocuments, [$documentId]));
     }
 
     public function removeNewDocument($index)
@@ -113,12 +116,6 @@ class AddCommunicationForm extends Component
         $newDocuments = $this->newDocuments;
         unset($newDocuments[$index]);
         $this->newDocuments = array_values($newDocuments); // Reset array keys
-    }
-
-    public function clearDocumentSearch()
-    {
-        $this->documentSearch = '';
-        $this->documentSearchResults = [];
     }
 
     public function save()
