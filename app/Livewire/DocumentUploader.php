@@ -29,7 +29,7 @@ class DocumentUploader extends Component
         $this->showDocumentList = $showDocumentList;
 
         if(empty($this->caseFile)) {
-            throw new \Exception('Cannot upload documents without a case file');
+            throw new \Exception(__('documents.errors.no_case_file'));
         }
     }
 
@@ -59,7 +59,7 @@ class DocumentUploader extends Component
 
             $index = count($this->queuedFiles);
             $this->queuedFiles[$index] = $fileObject;
-            $this->documentTitles[$index] = ''; // Initialize with empty string
+            $this->documentTitles[$index] = '';
             $this->documentDescriptions[$index] = '';
         }
 
@@ -98,7 +98,7 @@ class DocumentUploader extends Component
             $this->dispatch('document-uploaded', document: $document);
         } catch (\Exception $e) {
             Log::error('Failed to upload document: ' . $e->getMessage());
-            $this->addError('upload', 'Failed to upload document: ' . $e->getMessage());
+            $this->addError('upload', __('documents.errors.upload_failed', ['message' => $e->getMessage()]));
         } finally {
             unset($this->savingDocuments[$key]);
         }

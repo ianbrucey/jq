@@ -75,68 +75,35 @@ Usage:
         </div>
     </div>
 
-    {{-- Add this style section at the top of your component --}}
-    <style>
-        .upload-pulse-ring {
-            width: 80px;
-            height: 80px;
-            border: 4px solid hsl(var(--p));
-            border-radius: 50%;
-            position: relative;
-            animation: upload-pulse 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-
-        .upload-pulse-ring:after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border: 4px solid hsl(var(--p));
-            border-radius: 50%;
-            animation: upload-pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-
-        @keyframes upload-pulse {
-            0% { transform: scale(0.3); opacity: 0.9; }
-            80%, 100% { transform: scale(1); opacity: 0; }
-        }
-
-        @keyframes upload-pulse-ring {
-            0% { transform: scale(0.3); opacity: 0.9; }
-            80%, 100% { transform: scale(1.4); opacity: 0; }
-        }
-    </style>
-
-    {{-- Dropzone --}}
-    <label class="block w-full">
-        <div class="relative border-2 border-dashed rounded-lg cursor-pointer"
-             :class="{ 'border-primary bg-primary/5': isDropping }">
-            <div class="text-center">
-                <svg class="w-12 h-12 mx-auto text-base-content/50" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <div class="mt-4 text-sm leading-6 text-base-content">
-                    <span class="font-semibold text-primary">{{ __('documents.click_to_upload') }}</span>
-                    <span class="pl-1">{{ __('documents.or_drag_and_drop') }}</span>
-                </div>
-                <p class="text-xs leading-5 text-base-content/60">{{ __('documents.allowed_file_types') }}</p>
+    {{-- File Upload Area --}}
+    <label for="file-upload"
+           class="relative block w-full rounded-lg border-2 border-dashed border-base-content/20 p-12 text-center hover:border-base-content/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+           :class="{ 'border-primary': isDropping }">
+        <div class="flex flex-col items-center justify-center">
+            <svg class="w-12 h-12 mx-auto text-base-content/50" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <div class="mt-4 text-sm leading-6 text-base-content">
+                <span class="font-semibold text-primary">{{ __('documents.click_to_upload') }}</span>
+                <span class="pl-1">{{ __('documents.or_drag_and_drop') }}</span>
             </div>
-
-            <input
-                id="file-upload"
-                type="file"
-                class="hidden"
-                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                multiple
-                x-on:change="onFileInputChanged($event)"
-            >
+            <p class="text-xs leading-5 text-base-content/60">{{ __('documents.allowed_file_types') }}</p>
         </div>
+
+        <input
+            id="file-upload"
+            type="file"
+            class="hidden"
+            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+            multiple
+            x-on:change="onFileInputChanged($event)"
+        >
     </label>
 
     {{-- File Preview Section --}}
     <div class="mt-6 space-y-4" x-show="files.length > 0">
-        {{-- Save All Button --}}
-        <div class="flex justify-end">
+        <div class="flex justify-between items-center">
+            <h3 class="text-lg font-medium text-base-content">{{ __('documents.upload_documents_title') }}</h3>
             <button type="button"
                     wire:click="saveAllDocuments"
                     wire:loading.attr="disabled"
@@ -165,6 +132,10 @@ Usage:
                         <textarea x-model="descriptions[index]"
                                 class="w-full textarea textarea-bordered"
                                 :placeholder="__('documents.document_description_placeholder')"></textarea>
+                    </div>
+                    <div class="mt-2 text-sm text-base-content/60">
+                        <span>{{ __('documents.file_size_label') }}: </span>
+                        <span x-text="formatFileSize(file.metadata.size)"></span>
                     </div>
                 </div>
                 <button type="button"
@@ -204,7 +175,7 @@ Usage:
     {{-- Document List Section --}}
     @if($showDocumentList)
         <div class="border-t border-base-content/10 pt-8 mt-8">
-            <h3 class="text-lg font-medium text-base-content mb-4">Uploaded Documents</h3>
+            <h3 class="text-lg font-medium text-base-content mb-4">{{ __('documents.uploaded_documents') }}</h3>
             <livewire:document-list :case-file="$caseFile" />
         </div>
     @endif

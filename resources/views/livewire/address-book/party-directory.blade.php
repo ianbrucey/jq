@@ -31,7 +31,7 @@
             @if($isFormVisible)
                 <form wire:submit="save" class="space-y-6 bg-base-200 p-6 rounded-lg">
                     <h3 class="text-lg font-medium">
-                        {{ $editingParty ? 'Edit Contact' : 'New Contact' }}
+                        {{ $editingParty ? __('addressbook.edit_contact') : __('addressbook.new_contact') }}
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -124,7 +124,7 @@
                                     <span class="label-text">{{ __('addressbook.state') }}</span>
                                 </label>
                                 <select wire:model="state" class="select select-bordered w-full">
-                                    <option value="">Select State</option>
+                                    <option value="">{{ __('addressbook.select_state') }}</option>
                                     @foreach($this->states as $value => $label)
                                         <option value="{{ $value }}">{{ $label }}</option>
                                     @endforeach
@@ -168,8 +168,8 @@
                     </div>
 
                     <div class="flex justify-end space-x-3">
-                        <button type="button" wire:click="toggleForm" class="btn btn-ghost">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Contact</button>
+                        <button type="button" wire:click="toggleForm" class="btn btn-ghost">{{ __('addressbook.cancel') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('addressbook.save_contact') }}</button>
                     </div>
                 </form>
             @endif
@@ -183,7 +183,7 @@
                         <input
                             type="text"
                             wire:model.live="search"
-                            placeholder="Search contacts by name or address..."
+                            placeholder="{{ __('addressbook.search_placeholder') }}"
                             class="input input-bordered w-full pl-10"
                         >
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -210,11 +210,11 @@
                     <table class="table table-zebra w-full">
                         <thead>
                             <tr class="bg-base-200">
-                                <th class="text-base-content/70">Name & Relationship</th>
-                                <th class="text-base-content/70">Address</th>
-                                <th class="text-base-content/70">Contact Information</th>
-                                <th class="text-base-content/70">Added</th>
-                                <th class="text-base-content/70 text-right">Actions</th>
+                                <th class="text-base-content/70">{{ __('addressbook.name_relationship') }}</th>
+                                <th class="text-base-content/70">{{ __('addressbook.address') }}</th>
+                                <th class="text-base-content/70">{{ __('addressbook.contact_information') }}</th>
+                                <th class="text-base-content/70">{{ __('addressbook.added') }}</th>
+                                <th class="text-base-content/70 text-right">{{ __('addressbook.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -224,7 +224,7 @@
                                         <div class="font-medium">{{ $party->name }}</div>
                                         @if($party->relationship)
                                             <div class="text-sm text-base-content/60">
-                                                <span class="badge badge-sm">{{ ucfirst($party->relationship) }}</span>
+                                                <span class="badge badge-sm">{{ __('addressbook.relationships.' . $party->relationship) }}</span>
                                             </div>
                                         @endif
                                     </td>
@@ -267,11 +267,13 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                                 </svg>
+                                                <span class="sr-only">{{ __('addressbook.edit') }}</span>
                                             </button>
                                             <button class="btn btn-ghost btn-sm text-error" wire:click="confirmDelete({{ $party->id }})">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                                                 </svg>
+                                                <span class="sr-only">{{ __('addressbook.delete') }}</span>
                                             </button>
                                         </div>
                                     </td>
@@ -283,8 +285,8 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                             </svg>
-                                            <p class="text-lg">No contacts found</p>
-                                            <p class="text-sm">Click 'New Contact' to add someone to your address book</p>
+                                            <p class="text-lg">{{ __('addressbook.no_contacts') }}</p>
+                                            <p class="text-sm">{{ __('addressbook.add_contact_prompt') }}</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -320,15 +322,15 @@
             </x-confirmation-modal>
         @elseif($activeTab === 'voice')
             <div class="bg-base-100 rounded-box p-6 shadow-lg space-y-4">
-                <h3 class="text-xl font-semibold mb-4">Voice Input</h3>
+                <h3 class="text-xl font-semibold mb-4">{{ __('addressbook.voice_input_title') }}</h3>
 
                 <div class="alert alert-info">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <div>
-                        <h3 class="font-bold">Speaking Instructions</h3>
-                        <p>Speak naturally and list as many names and addresses as you wish. Don't worry about mistakes - we'll help sort everything out afterwards.</p>
+                        <h3 class="font-bold">{{ __('addressbook.speaking_instructions_title') }}</h3>
+                        <p>{{ __('addressbook.speaking_instructions') }}</p>
                     </div>
                 </div>
 
@@ -348,10 +350,10 @@
                         wire:target="processVoiceInput"
                     >
                         <span wire:loading.remove wire:target="processVoiceInput">
-                            Process Contacts
+                            {{ __('addressbook.process_contacts') }}
                         </span>
                         <span wire:loading wire:target="processVoiceInput">
-                            Processing...
+                            {{ __('addressbook.processing') }}
                         </span>
                     </button>
                 </div>
