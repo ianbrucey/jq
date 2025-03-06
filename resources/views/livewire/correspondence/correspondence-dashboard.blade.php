@@ -1,8 +1,8 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center">
-        <h3 class="text-lg font-medium">Threads</h3>
+        <h3 class="text-lg font-medium">{{ __('correspondence.threads') }}</h3>
         <button wire:click="showCreateModal" class="btn btn-primary btn-sm">
-            New Thread
+            {{ __('correspondence.new_thread') }}
         </button>
     </div>
 
@@ -11,7 +11,7 @@
         <input
             type="text"
             wire:model.live="search"
-            placeholder="Search threads..."
+            placeholder="{{ __('correspondence.search_threads_placeholder') }}"
             class="input input-bordered w-full pl-10"
         >
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -41,7 +41,7 @@
                             <div class="flex items-center gap-3">
                                 <h4 class="font-medium">{{ $thread->title }}</h4>
                                 <span class="badge badge-sm badge-{{ $thread->status === 'open' ? 'success' : 'neutral' }}">
-                                    {{ $thread->status }}
+                                    {{ __('correspondence.status.' . $thread->status) }}
                                 </span>
                             </div>
 
@@ -50,12 +50,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                {{ $thread->communications->first()?->sent_at?->diffForHumans() ?? 'No communications yet' }}
+                                {{ $thread->communications->first()?->sent_at?->diffForHumans() ?? __('correspondence.no_communications') }}
                             </div>
 
                             @if($thread->communications->isNotEmpty())
                                 <div class="mt-2 text-sm">
-                                    Latest: {{ Str::limit($thread->communications->first()?->content, 100) }}
+                                    {{ __('correspondence.latest') }}: {{ Str::limit($thread->communications->first()?->content, 100) }}
                                 </div>
                             @endif
                         </div>
@@ -75,15 +75,15 @@
                     <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <p class="font-medium">No threads found</p>
-                    <p class="mt-1">No threads match your search "{{ $search }}"</p>
+                    <p class="font-medium">{{ __('correspondence.no_threads_found') }}</p>
+                    <p class="mt-1">{{ __('correspondence.no_threads_match', ['search' => $search]) }}</p>
                 @else
                     <svg class="mx-auto h-12 w-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
-                    <p class="font-medium">No threads yet</p>
-                    <p class="mt-1">Start a new conversation by clicking 'New Thread'</p>
+                    <p class="font-medium">{{ __('correspondence.no_threads_yet') }}</p>
+                    <p class="mt-1">{{ __('correspondence.start_new_thread') }}</p>
                 @endif
             </div>
         @endforelse

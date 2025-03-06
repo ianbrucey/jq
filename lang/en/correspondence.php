@@ -42,4 +42,26 @@ return [
         'close_uploader' => 'Close Uploader',
         'upload_new_document' => 'Upload New Document',
     ],
+    'threads' => 'Threads',
+    'new_thread' => 'New Thread',
+    'search_threads_placeholder' => 'Search threads...',
+    'no_communications' => 'No communications yet',
+    'latest' => 'Latest',
+    'no_threads_found' => 'No threads found',
+    'no_threads_match' => 'No threads match your search ":search"',
+    'no_threads_yet' => 'No threads yet',
+    'start_new_thread' => "Start a new conversation by clicking 'New Thread'",
+    'create_new_thread' => 'Create New Thread',
+    'title' => 'Title',
+    'title_placeholder' => 'e.g., Insurance Claim Follow-up',
+    'cancel' => 'Cancel',
+    'create_thread' => 'Create Thread',
+
+    'status' => [
+        'open' => 'Open',
+        'closed' => 'Closed',
+        'archived' => 'Archived'
+    ],
+    'tracker' => 'Correspondence Tracker',
+    'back_to_case' => 'Back to Case',
 ];

@@ -42,4 +42,26 @@ return [
         'close_uploader' => 'Cerrar cargador',
         'upload_new_document' => 'Subir nuevo documento',
     ],
+    'threads' => 'Conversaciones',
+    'new_thread' => 'Nueva Conversación',
+    'search_threads_placeholder' => 'Buscar conversaciones...',
+    'no_communications' => 'Sin comunicaciones aún',
+    'latest' => 'Último',
+    'no_threads_found' => 'No se encontraron conversaciones',
+    'no_threads_match' => 'Ninguna conversación coincide con tu búsqueda ":search"',
+    'no_threads_yet' => 'No hay conversaciones aún',
+    'start_new_thread' => "Inicia una nueva conversación haciendo clic en 'Nueva Conversación'",
+    'create_new_thread' => 'Crear Nueva Conversación',
+    'title' => 'Título',
+    'title_placeholder' => 'ej., Seguimiento de Reclamo de Seguro',
+    'cancel' => 'Cancelar',
+    'create_thread' => 'Crear Conversación',
+
+    'status' => [
+        'open' => 'Abierto',
+        'closed' => 'Cerrado',
+        'archived' => 'Archivado'
+    ],
+    'tracker' => 'Seguimiento de Correspondencia',
+    'back_to_case' => 'Volver al Caso',
 ];
