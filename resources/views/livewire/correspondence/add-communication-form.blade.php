@@ -168,7 +168,7 @@
     </div>
 
     <!-- Modal -->
-    <x-modal wire:model="showUploadModal">
+    <x-modal wire:model.live="showUploadModal">
         <!-- Add the close button at the top -->
         <button
             type="button"
@@ -187,3 +187,18 @@
         </div>
     </x-modal>
 </div>
+
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('close-modal', () => {
+            // Find the modal close button and click it
+            document.querySelector('[x-data="{ show: true }"] button[x-on:click="show = false"]')?.click();
+        });
+
+        Livewire.on('communication-saved', () => {
+            // Handle any additional UI updates after saving
+            // For example, show a notification
+            // Or refresh the parent component
+        });
+    });
+</script>

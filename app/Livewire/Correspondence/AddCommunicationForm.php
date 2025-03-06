@@ -143,25 +143,47 @@ class AddCommunicationForm extends Component
         }
 
         // Handle new document uploads
-        foreach ($this->newDocuments as $document) {
-            $newDoc = $this->thread->caseFile->documents()->create([
-                'name' => $document->getClientOriginalName(),
-                'file_path' => $document->store('documents', 'public'),
-                'file_size' => $document->getSize(),
-                'mime_type' => $document->getMimeType(),
-            ]);
+        if (!empty($this->newDocuments)) {
+            foreach ($this->newDocuments as $document) {
+                $newDoc = $this->thread->caseFile->documents()->create([
+                    'name' => $document->getClientOriginalName(),
+                    'file_path' => $document->store('documents', 'public'),
+                    'file_size' => $document->getSize(),
+                    'mime_type' => $document->getMimeType(),
+                ]);
 
-            $communication->documents()->attach($newDoc->id);
+                $communication->documents()->attach($newDoc->id);
+            }
         }
 
-        $this->reset(['type', 'content', 'subject', 'selectedParties', 'selectedDocuments', 'newDocuments']);
-        $this->dispatch('communicationAdded');
-        $this->dispatch('close-add-communication-modal');
+        $this->reset([
+            'type',
+            'content',
+            'subject',
+            'selectedParties',
+            'selectedDocuments',
+            'newDocuments',
+            'partySearch',
+            'searchResults'
+        ]);
+
+        $this->dispatch('communication-saved');
+        $this->dispatch('close-modal');
     }
 
     public function cancel()
     {
-        $this->dispatch('close-add-communication-modal');
+        $this->reset([
+            'type',
+            'content',
+            'subject',
+            'selectedParties',
+            'selectedDocuments',
+            'newDocuments',
+            'partySearch',
+            'searchResults'
+        ]);
+        $this->dispatch('close-modal');
     }
 
     #[On('document-uploaded')]
