@@ -4,6 +4,7 @@ namespace App\Livewire\Correspondence;
 
 use App\Models\Thread;
 use App\Models\Document;
+use App\Models\Party;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -19,6 +20,8 @@ class ThreadView extends Component
     public $showingPreviewModal = false;
     public $previewDocument = null;
     public $documentUrls = [];
+    public $showingPartyModal = false;
+    public $selectedParty = null;
 
     #[Url(history: true)]
     public $search = '';
@@ -124,5 +127,17 @@ class ThreadView extends Component
         }
 
         return $this->documentUrls[$documentId];
+    }
+
+    public function showPartyModal($partyId)
+    {
+        $this->selectedParty = Party::find($partyId);
+        $this->showingPartyModal = true;
+    }
+
+    public function closePartyModal()
+    {
+        $this->showingPartyModal = false;
+        $this->selectedParty = null;
     }
 }

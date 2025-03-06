@@ -38,15 +38,20 @@
                                 <!-- Header section -->
                                 <div class="px-4 py-3 border-b border-base-300">
                                     <div class="flex justify-between items-start">
-                                        <div class="text-sm text-base-content/70">
-                                            {{ $communication->sent_at->format('l, F j, Y g:ia') }}
+                                        <div>
+                                            <div class="text-sm text-base-content/70">
+                                                {{ $communication->sent_at->format('l, F j, Y g:ia') }}
+                                            </div>
+                                            <div class="flex items-center gap-2 mt-1">
+                                                <h4 class="text-lg font-medium">{{ $communication->subject }}</h4>
+                                                <span class="badge badge-sm">{{ $communication->type }}</span>
+                                            </div>
                                         </div>
                                         <livewire:correspondence.delete-communication
                                             :communication="$communication"
                                             :key="'delete-'.$communication->id"
                                         />
                                     </div>
-                                    <h4 class="text-lg font-medium mt-1">{{ $communication->subject }}</h4>
                                 </div>
 
                                 <!-- Participants section -->
@@ -56,7 +61,8 @@
                                         <span class="text-sm font-medium text-base-content/70">{{ __('correspondence.correspondence.from') }}</span>
                                         <div class="mt-1 flex flex-wrap gap-2">
                                             @foreach($communication->participants()->wherePivot('role', 'sender')->get() as $sender)
-                                                <span class="px-2 py-1 text-xs rounded-full bg-primary/20 text-primary">
+                                                <span class="px-2 py-1 text-xs rounded-full bg-primary/20 text-primary cursor-pointer"
+                                                      wire:click="showPartyModal({{ $sender->id }})">
                                                     {{ $sender->name }}
                                                 </span>
                                             @endforeach
@@ -68,7 +74,8 @@
                                         <span class="text-sm font-medium text-base-content/70">{{ __('correspondence.correspondence.to') }}</span>
                                         <div class="mt-1 flex flex-wrap gap-2">
                                             @foreach($communication->participants()->wherePivot('role', 'recipient')->get() as $recipient)
-                                                <span class="px-2 py-1 text-xs rounded-full bg-secondary/20 text-secondary">
+                                                <span class="px-2 py-1 text-xs rounded-full bg-secondary/20 text-secondary cursor-pointer"
+                                                      wire:click="showPartyModal({{ $recipient->id }})">
                                                     {{ $recipient->name }}
                                                 </span>
                                             @endforeach
@@ -191,6 +198,72 @@
         <x-slot name="footer">
             <button class="btn btn-ghost" wire:click="closePreviewModal">
                 {{ __('correspondence.document_preview.close') }}
+            </button>
+        </x-slot>
+    </x-dialog-modal>
+
+    <!-- Party Details Modal -->
+    <x-dialog-modal wire:model.live="showingPartyModal">
+        <x-slot name="title">
+            {{ $selectedParty ? $selectedParty->name : '' }}
+        </x-slot>
+
+        <x-slot name="content">
+            @if($selectedParty)
+                <div class="space-y-4">
+                    <!-- Address -->
+                    <div class="flex gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/50 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        <div class="text-sm">
+                            <div>{{ $selectedParty->address_line1 }}</div>
+                            @if($selectedParty->address_line2)
+                                <div>{{ $selectedParty->address_line2 }}</div>
+                            @endif
+                            <div>{{ $selectedParty->city }}, {{ $selectedParty->state }} {{ $selectedParty->zip }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Email if exists -->
+                    @if($selectedParty->email)
+                        <div class="flex gap-2 items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/50 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                            </svg>
+                            <a href="mailto:{{ $selectedParty->email }}" class="text-sm text-primary hover:underline">
+                                {{ $selectedParty->email }}
+                            </a>
+                        </div>
+                    @endif
+
+                    <!-- Phone if exists -->
+                    @if($selectedParty->phone)
+                        <div class="flex gap-2 items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/50 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                            </svg>
+                            <a href="tel:{{ $selectedParty->phone }}" class="text-sm text-primary hover:underline">
+                                {{ $selectedParty->phone }}
+                            </a>
+                        </div>
+                    @endif
+
+                    <!-- Relationship type -->
+                    <div class="flex gap-2 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/50 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm capitalize">{{ $selectedParty->relationship }}</span>
+                    </div>
+                </div>
+            @endif
+        </x-slot>
+
+        <x-slot name="footer">
+            <button class="btn btn-ghost" wire:click="closePartyModal">
+                {{ __('Close') }}
             </button>
         </x-slot>
     </x-dialog-modal>
