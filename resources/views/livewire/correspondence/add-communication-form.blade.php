@@ -160,7 +160,12 @@
 
             <!-- Section 5: Documents -->
             <div class="space-y-4">
-                <h5 class="font-medium text-base-content/80">{{ __('correspondence.correspondence.documents') }}</h5>
+                <div class="flex justify-between items-center">
+                    <h5 class="font-medium text-base-content/80">{{ __('correspondence.correspondence.documents') }}</h5>
+                    <button type="button" wire:click="$set('showUploadModal', true)" class="btn btn-sm">
+                        {{ __('correspondence.correspondence.upload_new') }}
+                    </button>
+                </div>
                 <div class="bg-base-100 rounded-lg p-4 border border-base-300">
                     <!-- Search Input -->
                     <div class="relative">
