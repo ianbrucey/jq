@@ -1,37 +1,65 @@
 <?php
 
 return [
-    'Address Book' => 'Address Book',
-    'Hide Form' => 'Hide Form',
-    'New Contact' => 'New Contact',
-    'Manual Entry' => 'Manual Entry',
-    'Voice Input' => 'Voice Input',
-    'Edit Contact' => 'Edit Contact',
-    'Name' => 'Name',
-    'Relationship' => 'Relationship',
-    'Select Relationship' => 'Select Relationship',
-    'Address Line 1' => 'Address Line 1',
-    'Address Line 2' => 'Address Line 2',
-    'City' => 'City',
-    'State' => 'State',
-    'Select State' => 'Select State',
-    'ZIP Code' => 'ZIP Code',
-    'Email' => 'Email',
-    'Phone' => 'Phone',
-    'Cancel' => 'Cancel',
-    'Save Contact' => 'Save Contact',
-    'Search contacts by name or address...' => 'Search contacts by name or address...',
-    'Name & Relationship' => 'Name & Relationship',
-    'Contact Information' => 'Contact Information',
-    'Added' => 'Added',
-    'Actions' => 'Actions',
-    'No contacts found' => 'No contacts found',
-    "Click 'New Contact' to add someone to your address book" => "Click 'New Contact' to add someone to your address book",
-    'Confirm Deletion' => 'Confirm Deletion',
-    'Are you sure you want to delete the contact ":name"?' => 'Are you sure you want to delete the contact ":name"?',
-    'Delete Contact' => 'Delete Contact',
-    'Speaking Instructions' => 'Speaking Instructions',
-    "Speak naturally and list as many names and addresses as you wish. Don't worry about mistakes - we'll help sort everything out afterwards." => "Speak naturally and list as many names and addresses as you wish. Don't worry about mistakes - we'll help sort everything out afterwards.",
-    'Process Contacts' => 'Process Contacts',
-    'Processing...' => 'Processing...',
+    // Header
+    'title' => 'Address Book',
+
+    // Buttons
+    'hide_form' => 'Hide Form',
+    'new_contact' => 'New Contact',
+
+    // Tabs
+    'manual_entry' => 'Manual Entry',
+    'voice_input' => 'Voice Input',
+
+    // Form Labels
+    'name' => 'Name',
+    'address_line1' => 'Address Line 1',
+    'address_line2' => 'Address Line 2',
+    'city' => 'City',
+    'state' => 'State',
+    'zip' => 'ZIP',
+    'email' => 'Email',
+    'phone' => 'Phone',
+    'relationship' => 'Relationship',
+
+    // Relationships
+    'relationships' => [
+        'select' => 'Select relationship...',
+        'client' => 'Client',
+        'opposing_party' => 'Opposing Party',
+        'witness' => 'Witness',
+        'expert_witness' => 'Expert Witness',
+        'judge' => 'Judge',
+        'attorney' => 'Attorney',
+        'opposing_counsel' => 'Opposing Counsel',
+        'court_staff' => 'Court Staff',
+        'investigator' => 'Investigator',
+        'mediator' => 'Mediator',
+        'family_member' => 'Family Member',
+        'guardian' => 'Guardian',
+        'insurance_agent' => 'Insurance Agent',
+        'medical_provider' => 'Medical Provider',
+        'other' => 'Other'
+    ],
+
+    // Table Headers
+    'name_relationship' => 'Name & Relationship',
+    'address' => 'Address',
+    'contact_information' => 'Contact Information',
+    'added' => 'Added',
+    'actions' => 'Actions',
+
+    // Search
+    'search_placeholder' => 'Search contacts by name or address...',
+
+    // Empty State
+    'no_contacts' => 'No contacts found',
+    'add_contact_prompt' => 'Click \'New Contact\' to add someone to your address book',
+
+    // Delete Modal
+    'confirm_deletion' => 'Confirm Deletion',
+    'delete_confirmation_message' => 'Are you sure you want to delete this contact? This action cannot be undone.',
+    'cancel' => 'Cancel',
+    'delete_contact' => 'Delete Contact'
 ];

@@ -1,46 +1,65 @@
 <?php
 
 return [
-    'Address Book' => 'Libreta de Direcciones',
-    'Hide Form' => 'Ocultar Formulario',
-    'New Contact' => 'Nuevo Contacto',
-    'Manual Entry' => 'Entrada Manual',
-    'Voice Input' => 'Entrada de Voz',
-    'Edit Contact' => 'Editar Contacto',
-    'Name' => 'Nombre',
-    'Relationship' => 'Relación',
-    'Select Relationship' => 'Seleccionar Relación',
-    'Address Line 1' => 'Línea de Dirección 1',
-    'Address Line 2' => 'Línea de Dirección 2',
-    'City' => 'Ciudad',
-    'State' => 'Estado',
-    'Select State' => 'Seleccionar Estado',
-    'ZIP Code' => 'Código Postal',
-    'Email' => 'Correo Electrónico',
-    'Phone' => 'Teléfono',
-    'Cancel' => 'Cancelar',
-    'Save Contact' => 'Guardar Contacto',
-    'Search contacts by name or address...' => 'Buscar contactos por nombre o dirección...',
-    'Name & Relationship' => 'Nombre y Relación',
-    'Contact Information' => 'Información de Contacto',
-    'Added' => 'Agregado',
-    'Actions' => 'Acciones',
-    'No contacts found' => 'No se encontraron contactos',
-    "Click 'New Contact' to add someone to your address book" => "Haga clic en 'Nuevo Contacto' para agregar alguien a su libreta de direcciones",
-    'Confirm Deletion' => 'Confirmar Eliminación',
-    'Are you sure you want to delete the contact ":name"?' => '¿Está seguro de que desea eliminar el contacto ":name"?',
-    'Delete Contact' => 'Eliminar Contacto',
-    'Speaking Instructions' => 'Instrucciones de Voz',
-    "Speak naturally and list as many names and addresses as you wish. Don't worry about mistakes - we'll help sort everything out afterwards." => "Hable naturalmente y mencione tantos nombres y direcciones como desee. No se preocupe por los errores, lo ayudaremos a organizar todo después.",
-    'Process Contacts' => 'Procesar Contactos',
-    'Processing...' => 'Procesando...',
-    'relationship_options' => [
+    // Header
+    'title' => 'Directorio',
+
+    // Buttons
+    'hide_form' => 'Ocultar Formulario',
+    'new_contact' => 'Nuevo Contacto',
+
+    // Tabs
+    'manual_entry' => 'Entrada Manual',
+    'voice_input' => 'Entrada por Voz',
+
+    // Form Labels
+    'name' => 'Nombre',
+    'address_line1' => 'Dirección Línea 1',
+    'address_line2' => 'Dirección Línea 2',
+    'city' => 'Ciudad',
+    'state' => 'Estado',
+    'zip' => 'Código Postal',
+    'email' => 'Correo Electrónico',
+    'phone' => 'Teléfono',
+    'relationship' => 'Relación',
+
+    // Relationships
+    'relationships' => [
+        'select' => 'Seleccionar relación...',
+        'client' => 'Cliente',
+        'opposing_party' => 'Parte Contraria',
+        'witness' => 'Testigo',
+        'expert_witness' => 'Testigo Experto',
+        'judge' => 'Juez',
         'attorney' => 'Abogado',
-        'opposing_council' => 'Consejo/Abogado Opuesto',
-        'next_friend' => 'Amigo Próximo',
-        'court' => 'Tribunal',
-        'opponent' => 'Oponente',
-        'neutral' => 'Neutral',
-        'self' => 'Uno Mismo',
+        'opposing_counsel' => 'Abogado Contrario',
+        'court_staff' => 'Personal del Tribunal',
+        'investigator' => 'Investigador',
+        'mediator' => 'Mediador',
+        'family_member' => 'Familiar',
+        'guardian' => 'Tutor',
+        'insurance_agent' => 'Agente de Seguros',
+        'medical_provider' => 'Proveedor Médico',
+        'other' => 'Otro'
     ],
+
+    // Table Headers
+    'name_relationship' => 'Nombre y Relación',
+    'address' => 'Dirección',
+    'contact_information' => 'Información de Contacto',
+    'added' => 'Agregado',
+    'actions' => 'Acciones',
+
+    // Search
+    'search_placeholder' => 'Buscar contactos por nombre o dirección...',
+
+    // Empty State
+    'no_contacts' => 'No se encontraron contactos',
+    'add_contact_prompt' => 'Haga clic en \'Nuevo Contacto\' para agregar alguien a su directorio',
+
+    // Delete Modal
+    'confirm_deletion' => 'Confirmar Eliminación',
+    'delete_confirmation_message' => '¿Está seguro de que desea eliminar este contacto? Esta acción no se puede deshacer.',
+    'cancel' => 'Cancelar',
+    'delete_contact' => 'Eliminar Contacto'
 ];

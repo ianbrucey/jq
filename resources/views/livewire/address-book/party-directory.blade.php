@@ -1,92 +1,26 @@
 <div class="space-y-6">
-    <!-- Add this at the top of the file, after the opening div -->
-    @push('scripts')
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.places_api_key') }}&libraries=places"></script>
-        <script>
-            document.addEventListener('livewire:initialized', function () {
-                function initializeAddressAutocomplete() {
-                    const input = document.getElementById('address_line1');
-                    if (!input) return;
-
-                    const autocomplete = new google.maps.places.Autocomplete(input, {
-                        types: ['address'],
-                        fields: ['address_components', 'formatted_address']
-                    });
-
-                    autocomplete.addListener('place_changed', function() {
-                        const place = autocomplete.getPlace();
-                        console.log('Place changed event fired');
-
-                        let addressComponents = {
-                            street_number: '',
-                            route: '',
-                            locality: '',
-                            administrative_area_level_1: '',
-                            postal_code: ''
-                        };
-
-                        // Extract each component
-                        place.address_components.forEach(component => {
-                            const type = component.types[0];
-                            if (addressComponents.hasOwnProperty(type)) {
-                                addressComponents[type] = component.long_name;
-                                if (type === 'administrative_area_level_1') {
-                                    addressComponents[type] = component.short_name;
-                                }
-                            }
-                        });
-
-                        const address_line1 = [
-                            addressComponents.street_number,
-                            addressComponents.route
-                        ].filter(Boolean).join(' ');
-
-                        const payload = {
-                            address_line1: address_line1,
-                            city: addressComponents.locality,
-                            state: addressComponents.administrative_area_level_1,
-                            zip: addressComponents.postal_code
-                        };
-
-                        console.log('About to dispatch address-selected with payload:', payload);
-
-                        // Update to pass as array with named parameter
-                        Livewire.dispatch('address-selected', { address: payload });
-                    });
-                }
-
-                // Initialize on page load
-                initializeAddressAutocomplete();
-
-                // Re-initialize when the form becomes visible
-                Livewire.on('form-toggled', () => {
-                    setTimeout(initializeAddressAutocomplete, 100);
-                });
-            });
-        </script>
-    @endpush
-
     <!-- Header and Controls -->
     <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-semibold text-base-content">Address Book</h2>
+        <h2 class="text-2xl font-semibold text-base-content">{{ __('addressbook.title') }}</h2>
         <button
             wire:click="toggleForm"
             class="btn btn-primary">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
             </svg>
-            {{ $isFormVisible ? 'Hide Form' : 'New Contact' }}
+            {{ $isFormVisible ? __('addressbook.hide_form') : __('addressbook.new_contact') }}
         </button>
     </div>
 
+    <!-- Tabs -->
     <div class="tabs tabs-boxed">
         <a wire:click="setActiveTab('manual')"
            class="tab {{ $activeTab === 'manual' ? 'tab-active' : '' }}">
-            Manual Entry
+            {{ __('addressbook.manual_entry') }}
         </a>
         <a wire:click="setActiveTab('voice')"
            class="tab {{ $activeTab === 'voice' ? 'tab-active' : '' }}">
-            Voice Input
+            {{ __('addressbook.voice_input') }}
         </a>
     </div>
 
@@ -102,32 +36,43 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="label">
-                                <span class="label-text">Name</span>
+                                <span class="label-text">{{ __('addressbook.name') }}</span>
                             </label>
-                            <input type="text" wire:model="name" class="input input-bordered w-full" placeholder="Full Name">
+                            <input type="text"
+                                   wire:model="name"
+                                   class="input input-bordered w-full"
+                                   placeholder="{{ __('addressbook.name') }}">
                             @error('name') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="label">
-                                <span class="label-text">Relationship</span>
+                                <span class="label-text">{{ __('addressbook.relationship') }}</span>
                             </label>
                             <select wire:model="relationship" class="select select-bordered w-full">
-                                <option value="">Select Relationship</option>
-                                <option value="attorney">Attorney</option>
-                                <option value="opposing_council">Opposing Council/Attorney</option>
-                                <option value="next_friend">Next Friend</option>
-                                <option value="court">Court</option>
-                                <option value="opponent">Opponent</option>
-                                <option value="neutral">Neutral</option>
-                                <option value="self">Self</option>
+                                <option value="">{{ __('addressbook.relationships.select') }}</option>
+                                <option value="client">{{ __('addressbook.relationships.client') }}</option>
+                                <option value="opposing_party">{{ __('addressbook.relationships.opposing_party') }}</option>
+                                <option value="witness">{{ __('addressbook.relationships.witness') }}</option>
+                                <option value="expert_witness">{{ __('addressbook.relationships.expert_witness') }}</option>
+                                <option value="judge">{{ __('addressbook.relationships.judge') }}</option>
+                                <option value="attorney">{{ __('addressbook.relationships.attorney') }}</option>
+                                <option value="opposing_counsel">{{ __('addressbook.relationships.opposing_counsel') }}</option>
+                                <option value="court_staff">{{ __('addressbook.relationships.court_staff') }}</option>
+                                <option value="investigator">{{ __('addressbook.relationships.investigator') }}</option>
+                                <option value="mediator">{{ __('addressbook.relationships.mediator') }}</option>
+                                <option value="family_member">{{ __('addressbook.relationships.family_member') }}</option>
+                                <option value="guardian">{{ __('addressbook.relationships.guardian') }}</option>
+                                <option value="insurance_agent">{{ __('addressbook.relationships.insurance_agent') }}</option>
+                                <option value="medical_provider">{{ __('addressbook.relationships.medical_provider') }}</option>
+                                <option value="other">{{ __('addressbook.relationships.other') }}</option>
                             </select>
                             @error('relationship') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="md:col-span-2">
                             <label class="label">
-                                <span class="label-text">Address Line 1</span>
+                                <span class="label-text">{{ __('addressbook.address_line1') }}</span>
                             </label>
                             <div class="relative">
                                 <!-- Hidden dummy input to prevent autocomplete -->
@@ -143,7 +88,7 @@
                                     id="address_line1"
                                     wire:model="address_line1"
                                     class="input input-bordered w-full"
-                                    placeholder="Start typing to search an address..."
+                                    placeholder="{{ __('addressbook.search_placeholder') }}"
                                     autocomplete="off"
                                     x-ref="addressInput"
                                 >
@@ -153,24 +98,30 @@
 
                         <div class="md:col-span-2">
                             <label class="label">
-                                <span class="label-text">Address Line 2</span>
+                                <span class="label-text">{{ __('addressbook.address_line2') }}</span>
                             </label>
-                            <input type="text" wire:model="address_line2" class="input input-bordered w-full" placeholder="Apt, Suite, etc.">
+                            <input type="text"
+                                   wire:model="address_line2"
+                                   class="input input-bordered w-full"
+                                   placeholder="{{ __('addressbook.address_line2') }}">
                             @error('address_line2') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="label">
-                                <span class="label-text">City</span>
+                                <span class="label-text">{{ __('addressbook.city') }}</span>
                             </label>
-                            <input type="text" wire:model="city" class="input input-bordered w-full" placeholder="City">
+                            <input type="text"
+                                   wire:model="city"
+                                   class="input input-bordered w-full"
+                                   placeholder="{{ __('addressbook.city') }}">
                             @error('city') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="label">
-                                    <span class="label-text">State</span>
+                                    <span class="label-text">{{ __('addressbook.state') }}</span>
                                 </label>
                                 <select wire:model="state" class="select select-bordered w-full">
                                     <option value="">Select State</option>
@@ -183,26 +134,35 @@
 
                             <div>
                                 <label class="label">
-                                    <span class="label-text">ZIP Code</span>
+                                    <span class="label-text">{{ __('addressbook.zip_code') }}</span>
                                 </label>
-                                <input type="text" wire:model="zip" class="input input-bordered w-full" placeholder="ZIP">
+                                <input type="text"
+                                       wire:model="zip"
+                                       class="input input-bordered w-full"
+                                       placeholder="{{ __('addressbook.zip_code') }}">
                                 @error('zip') <span class="text-error text-sm">{{ $message }}</span> @enderror
                             </div>
                         </div>
 
                         <div>
                             <label class="label">
-                                <span class="label-text">Email</span>
+                                <span class="label-text">{{ __('addressbook.email') }}</span>
                             </label>
-                            <input type="email" wire:model="email" class="input input-bordered w-full" placeholder="Email">
+                            <input type="email"
+                                   wire:model="email"
+                                   class="input input-bordered w-full"
+                                   placeholder="{{ __('addressbook.email') }}">
                             @error('email') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
                             <label class="label">
-                                <span class="label-text">Phone</span>
+                                <span class="label-text">{{ __('addressbook.phone') }}</span>
                             </label>
-                            <input type="tel" wire:model="phone" class="input input-bordered w-full" placeholder="Phone">
+                            <input type="tel"
+                                   wire:model="phone"
+                                   class="input input-bordered w-full"
+                                   placeholder="{{ __('addressbook.phone') }}">
                             @error('phone') <span class="text-error text-sm">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -339,24 +299,25 @@
             </div>
 
             <!-- Delete Confirmation Modal -->
-            <x-modal wire:model="showDeleteModal">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-base-content">
-                        Confirm Deletion
-                    </h3>
-                    <div class="mt-4 text-base-content/70">
-                        Are you sure you want to delete the contact "{{ $partyToDelete?->name }}"? This action cannot be undone.
-                    </div>
-                    <div class="mt-6 flex justify-end gap-3">
-                        <button type="button" class="btn btn-ghost" wire:click="cancelDelete">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-error" wire:click="deleteParty">
-                            Delete Contact
-                        </button>
-                    </div>
-                </div>
-            </x-modal>
+            <x-confirmation-modal wire:model="showDeleteModal">
+                <x-slot name="title">
+                    {{ __('addressbook.confirm_deletion') }}
+                </x-slot>
+
+                <x-slot name="content">
+                    {{ __('addressbook.delete_confirmation_message') }}
+                </x-slot>
+
+                <x-slot name="footer">
+                    <x-secondary-button wire:click="$set('showDeleteModal', false)">
+                        {{ __('addressbook.cancel') }}
+                    </x-secondary-button>
+
+                    <x-danger-button wire:click="deleteParty" wire:loading.attr="disabled">
+                        {{ __('addressbook.delete_contact') }}
+                    </x-danger-button>
+                </x-slot>
+            </x-confirmation-modal>
         @elseif($activeTab === 'voice')
             <div class="bg-base-100 rounded-box p-6 shadow-lg space-y-4">
                 <h3 class="text-xl font-semibold mb-4">Voice Input</h3>
