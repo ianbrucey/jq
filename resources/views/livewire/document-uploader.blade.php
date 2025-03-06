@@ -122,21 +122,24 @@ Usage:
         <template x-for="(file, index) in files" :key="index">
             <div class="flex items-start p-4 space-x-4 bg-base-200 rounded-lg">
                 <div class="flex-1">
+                    <div class="mt-2 text-sm text-base-content/60 p-3">
+                        <span class="text-sm font-medium text-base-content p-2 bg-accent rounded-full" x-text="file.metadata.name"></span>
+                        <span>{{ __('documents.file_size_label') }}: </span>
+                        <span x-text="formatFileSize(file.metadata.size)"></span>
+
+                    </div>
                     <div class="mb-2">
                         <input type="text"
                                x-model="titles[index]"
                                class="w-full input input-bordered"
-                               :placeholder="__('documents.document_title_placeholder')">
+                               placeholder="{{ __('documents.document_title_placeholder') }}">
                     </div>
                     <div class="mt-2">
                         <textarea x-model="descriptions[index]"
                                 class="w-full textarea textarea-bordered"
-                                :placeholder="__('documents.document_description_placeholder')"></textarea>
+                                placeholder="{{ __('documents.document_description_placeholder') }}"></textarea>
                     </div>
-                    <div class="mt-2 text-sm text-base-content/60">
-                        <span>{{ __('documents.file_size_label') }}: </span>
-                        <span x-text="formatFileSize(file.metadata.size)"></span>
-                    </div>
+
                 </div>
                 <button type="button"
                         x-on:click="removeFile(index)"
