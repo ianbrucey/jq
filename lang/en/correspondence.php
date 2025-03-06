@@ -124,4 +124,9 @@ return [
         'cancel' => 'Cancel',
         'confirm' => 'Delete',
     ],
+    'document_preview' => [
+        'title' => 'Document Preview',
+        'not_available' => 'Preview not available for this file type',
+        'close' => 'Close',
+    ],
 ];

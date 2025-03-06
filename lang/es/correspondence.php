@@ -128,4 +128,9 @@ return [
         'cancel' => 'Cancelar',
         'confirm' => 'Eliminar',
     ],
+    'document_preview' => [
+        'title' => 'Vista previa del documento',
+        'not_available' => 'Vista previa no disponible para este tipo de archivo',
+        'close' => 'Cerrar',
+    ],
 ];

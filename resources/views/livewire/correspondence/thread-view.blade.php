@@ -174,7 +174,7 @@
     <!-- Document Preview Modal -->
     <x-dialog-modal wire:model.live="showingPreviewModal">
         <x-slot name="title">
-            Document Preview
+            {{ __('correspondence.document_preview.title') }}
         </x-slot>
 
         <x-slot name="content">
@@ -191,7 +191,7 @@
                                     frameborder="0"></iframe>
                         @else
                             <div class="p-4 text-center text-base-content/60">
-                                Preview not available for this file type
+                                {{ __('correspondence.document_preview.not_available') }}
                             </div>
                         @endif
                     </div>
@@ -200,7 +200,9 @@
         </x-slot>
 
         <x-slot name="footer">
-            <button class="btn btn-ghost" wire:click="closePreviewModal">Close</button>
+            <button class="btn btn-ghost" wire:click="closePreviewModal">
+                {{ __('correspondence.document_preview.close') }}
+            </button>
         </x-slot>
     </x-dialog-modal>
 </div>
