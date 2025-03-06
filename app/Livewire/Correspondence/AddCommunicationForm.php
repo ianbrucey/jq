@@ -164,12 +164,10 @@ class AddCommunicationForm extends Component
             'searchResults'
         ]);
 
-        // Dispatch both events
+        // Dispatch events and refresh page
         $this->dispatch('communication-saved');
         $this->dispatch('close-add-communication-modal');
-
-        // Dispatch refresh event to parent
-        $this->dispatch('communication-added')->to('correspondence.thread-view');
+        $this->js('window.location.reload()');
     }
 
     public function cancel()

@@ -18,11 +18,8 @@ class DeleteCommunication extends Component
     public function delete()
     {
         $this->communication->delete();
-
-        // Dispatch an event to refresh the thread view
-        $this->dispatch('communicationDeleted')->to('correspondence.thread-view');
-
-        $this->showDeleteModal = false;
+        $this->dispatch('communication-deleted');
+        $this->js('window.location.reload()');
     }
 
     public function render()
