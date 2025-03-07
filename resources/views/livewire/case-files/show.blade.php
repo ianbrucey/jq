@@ -120,18 +120,13 @@
     <!-- Collaborators Section -->
     <div class="p-6 border-t border-base-content/10">
         <div class="space-y-6">
-            <div class="flex items-center justify-between">
-                <h4 class="text-lg font-medium text-base-content">
-                    {{ __('collaboration.headers.collaborators') }}
-                </h4>
-            </div>
 
             @if($caseFile->collaboration_enabled)
-                <livewire:case-collaborators.manage-collaborators :case-file="$caseFile" />
+                <livewire:case-collaborators.collaborators-list :case-file="$caseFile" />
             @else
                 <div class="text-center py-6">
                     <p class="text-base-content/70">
-                        {{ __('collaboration.messages.not_enabled') }}
+                        {{ __('cases.collaboration.not_enabled') }}
                     </p>
                     @can('update', $caseFile)
                         <button
@@ -139,7 +134,12 @@
                             wire:click="enableCollaboration"
                             wire:loading.attr="disabled"
                         >
-                            {{ __('collaboration.buttons.enable') }}
+                            <span wire:loading.remove>
+                                {{ __('cases.collaboration.enable') }}
+                            </span>
+                            <span wire:loading>
+                                {{ __('general.processing') }}...
+                            </span>
                         </button>
                     @endcan
                 </div>

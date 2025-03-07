@@ -1,5 +1,5 @@
 <div>
-    <button 
+    <button
         class="btn btn-primary btn-sm"
         wire:click="$toggle('isOpen')"
     >
@@ -10,15 +10,15 @@
         <div class="modal modal-open">
             <div class="modal-box">
                 <h3 class="font-bold text-lg">Invite Collaborator</h3>
-                
+
                 <form wire:submit="invite" class="space-y-4 mt-4">
                     <div>
                         <label class="label">
                             <span class="label-text">Email Address</span>
                         </label>
-                        <input 
-                            type="email" 
-                            wire:model="email" 
+                        <input
+                            type="email"
+                            wire:model="email"
                             class="input input-bordered w-full @error('email') input-error @enderror"
                             placeholder="collaborator@example.com"
                         >
@@ -33,8 +33,8 @@
                         <label class="label">
                             <span class="label-text">Role</span>
                         </label>
-                        <select 
-                            wire:model="role" 
+                        <select
+                            wire:model="role"
                             class="select select-bordered w-full @error('role') select-error @enderror"
                         >
                             <option value="viewer">Viewer</option>

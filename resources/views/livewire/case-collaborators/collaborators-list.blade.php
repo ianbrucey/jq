@@ -1,8 +1,8 @@
 <div class="space-y-4">
     <div class="flex justify-between items-center">
         <h3 class="text-lg font-medium">Case Collaborators</h3>
-        @can('inviteCollaborators', $caseFile)
-            <livewire:invite-collaborator :case-file="$caseFile" />
+        @can('manageCollaborators', $caseFile)
+            <livewire:case-collaborators.invite :case-file="$caseFile" />
         @endcan
     </div>
 
@@ -26,7 +26,7 @@
                 </div>
 
                 @can('removeCollaborators', $caseFile)
-                    <button 
+                    <button
                         wire:click="removeCollaborator({{ $collaborator->id }})"
                         wire:confirm="Are you sure you want to remove this collaborator?"
                         class="text-red-600 hover:text-red-900"

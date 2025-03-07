@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\CaseCollaborators;
 
 use App\Models\CaseFile;
 use App\Models\CaseCollaborator;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use App\Models\User;
 
-class InviteCollaborator extends Component
+class Invite extends Component
 {
     public CaseFile $caseFile;
     public string $email = '';
@@ -57,7 +57,7 @@ class InviteCollaborator extends Component
             $this->reset('email', 'role', 'isOpen');
             $this->dispatch('collaborator-added');
             $this->dispatch('notify', message: 'Invitation sent successfully.');
-            
+
         } catch (\Exception $e) {
             $this->dispatch('error', message: 'Failed to send invitation.');
         }
@@ -65,6 +65,6 @@ class InviteCollaborator extends Component
 
     public function render()
     {
-        return view('livewire.invite-collaborator');
+        return view('livewire.case-collaborators.invite');
     }
 }

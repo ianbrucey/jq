@@ -7,6 +7,10 @@ use App\Models\User;
 
 class CaseFilePolicy
 {
+    public function create(User $user): bool
+    {
+        return true; // Or any other logic to determine if user can create cases
+    }
     public function view(User $user, CaseFile $caseFile): bool
     {
         return $user->id === $caseFile->user_id || $caseFile->hasCollaborator($user);
@@ -34,11 +38,6 @@ class CaseFilePolicy
         }
 
         return $caseFile->getCollaboratorRole($user) === 'manager';
-    }
-
-    public function inviteCollaborators(User $user, CaseFile $caseFile): bool
-    {
-        return $this->manageCollaborators($user, $caseFile);
     }
 
     public function removeCollaborators(User $user, CaseFile $caseFile): bool
