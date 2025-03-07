@@ -25,7 +25,18 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function (Request $request) {
         $search = $request->input('search');
-        $query = auth()->user()->caseFiles()->latest();
+
+        // Get cases where user is owner
+        $ownedQuery = auth()->user()->caseFiles();
+
+        // Get cases where user is an active collaborator
+        $collaboratingQuery = \App\Models\CaseFile::whereHas('collaborators', function($query) {
+            $query->where('user_id', auth()->id())
+                  ->where('status', 'active');
+        });
+
+        // Combine both queries
+        $query = $ownedQuery->union($collaboratingQuery)->latest();
 
         if ($search) {
             $query->where(function($q) use ($search) {

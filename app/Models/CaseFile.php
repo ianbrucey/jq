@@ -58,7 +58,7 @@ class CaseFile extends Model
         return $this->hasMany(Thread::class);
     }
 
-    public function collaborators(): HasMany
+    public function collaborators()
     {
         return $this->hasMany(CaseCollaborator::class);
     }
