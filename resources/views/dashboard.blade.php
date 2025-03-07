@@ -32,7 +32,8 @@
 
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-            <h2 class="text-xl font-semibold leading-tight text-base-content">
+            <h2 class="text-xl font-semibold leading-tight text-base-content flex items-center gap-2">
+                <span class="text-2xl">💼</span>
                 {{ __('dashboard.recent_cases') }}
             </h2>
             <a href="{{ route('case-files.create') }}"

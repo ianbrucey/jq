@@ -1,7 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-base-content/80">
+            <h2 class="text-xl font-semibold leading-tight text-base-content/80 flex items-center gap-2">
+                <span class="text-2xl">📋</span>
                 {{ __('cases.details') }}
             </h2>
             <div class="flex items-center gap-2">

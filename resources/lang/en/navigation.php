@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'dashboard' => 'Dashboard',
+    'dashboard' => 'My Cases',
     'address_book' => 'Address Book',
     'manage_project_tokens' => 'Manage Project Tokens',
     'theme' => 'Theme',
