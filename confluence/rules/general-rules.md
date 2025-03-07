@@ -28,9 +28,49 @@ When creating new features, ensure all required components are present and consi
 # Additional Rules:
 
 ## Translation Rules
-- all user-facing text must use translation keys (no hardcoded strings)
-- translation keys should follow the format: `feature.context.key`
-- when adding new translations, update both `lang/en` and `lang/es` files
+### Storage Location
+- All translations MUST be stored in `resources/lang/{locale}/*.php`
+- Each feature should have its own translation file
+- Common/shared translations go in `app.php`
+- Form-related translations go in `forms.php`
+- Validation messages go in `validation.php`
+
+### File Organization
+```
+resources/lang/
+├── en/
+│   ├── app.php           # Global application strings
+│   ├── auth.php          # Authentication related
+│   ├── forms.php         # Common form labels/messages
+│   ├── validation.php    # Validation messages
+│   ├── notifications.php # System notifications
+│   └── features/         # Feature-specific translations
+│       ├── docket.php    # Docket feature strings
+│       ├── cases.php     # Case management strings
+│       └── documents.php # Document management strings
+└── es/
+    └── [same structure as en/]
+```
+
+### Key Naming Conventions
+- Use dot notation for nesting: `feature.context.key`
+- Group related translations under common prefixes
+- Use descriptive, consistent key names
+- Avoid generic keys like `title` or `description`
+- Include context in key names when necessary
+
+### Examples
+```php
+// Good
+'docket.entry.create' => 'Create Entry'
+'cases.details.title' => 'Case Details'
+'documents.upload.drag_drop' => 'Drag and drop files'
+
+// Bad
+'title' => 'Title'
+'create' => 'Create'
+'message' => 'Success'
+```
 
 ## Component Rules
 - each Livewire component must have its own directory under `app/Livewire`

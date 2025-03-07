@@ -1,7 +1,7 @@
 <div class="space-y-4">
     <div class="flex justify-between items-center">
         <h2 class="text-2xl font-semibold">{{ __('docket.dashboard.title') }}</h2>
-        <button 
+        <button
             wire:click="showCreateModal"
             class="btn btn-primary"
         >
@@ -12,14 +12,14 @@
     <div class="bg-base-200 p-4 rounded-lg space-y-4">
         <div class="flex flex-wrap gap-4">
             <div class="flex-1">
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     wire:model.live.debounce.300ms="search"
                     placeholder="{{ __('docket.search.placeholder') }}"
                     class="input input-bordered w-full"
                 >
             </div>
-            <select 
+            <select
                 wire:model.live="entryType"
                 class="select select-bordered"
             >
@@ -28,7 +28,7 @@
                     <option value="{{ $type }}">{{ __("docket.entry.types.$type") }}</option>
                 @endforeach
             </select>
-            <select 
+            <select
                 wire:model.live="status"
                 class="select select-bordered"
             >
@@ -47,7 +47,7 @@
 
         <div wire:loading.delay.remove>
             @forelse($docketEntries as $entry)
-                <livewire:docket.entry-card 
+                <livewire:docket.entry-card
                     :key="$entry->id"
                     :entry="$entry"
                 />

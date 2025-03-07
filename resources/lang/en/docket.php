@@ -2,6 +2,17 @@
 
 return [
     'title' => 'Docket',
+    'dashboard' => [
+        'title' => 'Docket Entries',
+    ],
+    'search' => [
+        'placeholder' => 'Search docket entries...',
+    ],
+    'filter' => [
+        'all_types' => 'All Entry Types',
+        'all_statuses' => 'All Statuses',
+    ],
+    'empty_state' => 'No docket entries found',
     'actions' => [
         'create' => 'Add Entry',
         'edit' => 'Edit Entry',
@@ -10,6 +21,7 @@ return [
     ],
     'entry' => [
         'create_new' => 'Create New Docket Entry',
+        'create' => 'Create Entry',
         'fields' => [
             'date' => 'Date',
             'type' => 'Type',
@@ -37,9 +49,6 @@ return [
             'continued' => 'Continued',
             'withdrawn' => 'Withdrawn'
         ],
-        'create' => 'Create Entry',
-        'edit' => 'Edit Entry',
-        'delete' => 'Delete Entry',
     ],
     'messages' => [
         'created' => 'Docket entry created successfully.',

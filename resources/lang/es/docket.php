@@ -2,6 +2,17 @@
 
 return [
     'title' => 'Expediente',
+    'dashboard' => [
+        'title' => 'Entradas del Expediente',
+    ],
+    'search' => [
+        'placeholder' => 'Buscar entradas del expediente...',
+    ],
+    'filter' => [
+        'all_types' => 'Todos los Tipos de Entrada',
+        'all_statuses' => 'Todos los Estados',
+    ],
+    'empty_state' => 'No se encontraron entradas en el expediente',
     'actions' => [
         'create' => 'Agregar Entrada',
         'edit' => 'Editar Entrada',
@@ -10,6 +21,7 @@ return [
     ],
     'entry' => [
         'create_new' => 'Crear Nueva Entrada de Expediente',
+        'create' => 'Crear Entrada',
         'fields' => [
             'date' => 'Fecha',
             'type' => 'Tipo',
@@ -37,9 +49,6 @@ return [
             'continued' => 'Continuado',
             'withdrawn' => 'Retirado'
         ],
-        'create' => 'Crear Entrada',
-        'edit' => 'Editar Entrada',
-        'delete' => 'Eliminar Entrada',
     ],
     'messages' => [
         'created' => 'Entrada de expediente creada exitosamente.',
