@@ -30,7 +30,16 @@ return [
     ],
     'actions' => [
         'back_to_dashboard' => 'Back to Dashboard',
-        'edit' => 'Edit Case'
+        'edit' => 'Edit Case',
+        'back_to_case' => 'Back to Case',
+        'edit_case_file' => 'Edit Case File',
+        'save_changes' => 'Save Changes',
+        'cancel' => 'Cancel'
+    ],
+    'edit' => [
+        'title' => 'Edit Case File',
+        'success' => 'Case file updated successfully',
+        'error' => 'There was an error updating the case file'
     ],
     'collaboration' => [
         'title' => 'Case Collaborators',

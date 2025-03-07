@@ -25,7 +25,16 @@ return [
     ],
     'actions' => [
         'back_to_dashboard' => 'Volver al Panel',
-        'edit' => 'Editar Caso'
+        'edit' => 'Editar Caso',
+        'back_to_case' => 'Volver al Caso',
+        'edit_case_file' => 'Editar Expediente',
+        'save_changes' => 'Guardar Cambios',
+        'cancel' => 'Cancelar'
+    ],
+    'edit' => [
+        'title' => 'Editar Expediente',
+        'success' => 'Expediente actualizado exitosamente',
+        'error' => 'Hubo un error al actualizar el expediente'
     ],
     'collaboration' => [
         'title' => 'Colaboradores del Caso',
