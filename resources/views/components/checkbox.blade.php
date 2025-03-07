@@ -1,1 +1,6 @@
-<input type="checkbox" {!! $attributes->merge(['class' => 'rounded dark:bg-neutral-focus border-base-content/30 dark:border-base-content/70 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800']) !!}>
+@props(['disabled' => false])
+
+<input type="checkbox" {{ $disabled ? 'disabled' : '' }}
+    {!! $attributes->merge([
+        'class' => 'checkbox checkbox-primary'
+    ]) !!}>

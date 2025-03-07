@@ -1,0 +1,22 @@
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold leading-tight text-base-content/80 flex items-center gap-2">
+                <span class="text-2xl">📋</span>
+                {{ __('docket.title') }}
+            </h2>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('case-files.show', $caseFile) }}"
+                   class="btn btn-ghost btn-sm">
+                    ← {{ __('cases.actions.back_to_case') }}
+                </a>
+            </div>
+        </div>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <livewire:docket.docket-dashboard :case-file="$caseFile" />
+        </div>
+    </div>
+</x-app-layout>

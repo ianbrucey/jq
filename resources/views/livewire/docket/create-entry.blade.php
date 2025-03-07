@@ -7,106 +7,148 @@
         <form wire:submit="save" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <x-input-label for="entry_date" :value="__('docket.entry.fields.date')" />
-                    <x-text-input 
-                        wire:model="entry_date" 
-                        type="date" 
-                        class="mt-1 block w-full" 
-                        :error="$errors->has('entry_date')"
-                    />
-                    <x-input-error :messages="$errors->get('entry_date')" />
+                    <label class="label">
+                        <span class="label-text">{{ __('docket.entry.fields.date') }}</span>
+                    </label>
+                    <input
+                        type="date"
+                        wire:model="entry_date"
+                        class="input input-bordered w-full @error('entry_date') input-error @enderror"
+                    >
+                    @error('entry_date')
+                        <div class="text-error text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div>
-                    <x-input-label for="entry_type" :value="__('docket.entry.fields.type')" />
-                    <x-select 
+                    <label class="label">
+                        <span class="label-text">{{ __('docket.entry.fields.type') }}</span>
+                    </label>
+                    <select
                         wire:model="entry_type"
-                        :options="$entryTypes"
-                        :translate-prefix="'docket.entry.types'"
-                        class="mt-1 block w-full"
-                        :error="$errors->has('entry_type')"
-                    />
-                    <x-input-error :messages="$errors->get('entry_type')" />
+                        class="select select-bordered w-full @error('entry_type') select-error @enderror"
+                    >
+                        <option value="">{{ __('common.select') }}</option>
+                        @foreach($entryTypes as $type)
+                            <option value="{{ $type }}">
+                                {{ __("docket.entry.types.$type") }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('entry_type')
+                        <div class="text-error text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div>
-                <x-input-label for="title" :value="__('docket.entry.fields.title')" />
-                <x-text-input 
-                    wire:model="title" 
-                    type="text" 
-                    class="mt-1 block w-full" 
-                    :error="$errors->has('title')"
-                />
-                <x-input-error :messages="$errors->get('title')" />
+                <label class="label">
+                    <span class="label-text">{{ __('docket.entry.fields.title') }}</span>
+                </label>
+                <input
+                    type="text"
+                    wire:model="title"
+                    class="input input-bordered w-full @error('title') input-error @enderror"
+                >
+                @error('title')
+                    <div class="text-error text-sm mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div>
-                <x-input-label for="description" :value="__('docket.entry.fields.description')" />
-                <x-textarea 
-                    wire:model="description" 
-                    class="mt-1 block w-full" 
-                    :error="$errors->has('description')"
-                />
-                <x-input-error :messages="$errors->get('description')" />
+                <label class="label">
+                    <span class="label-text">{{ __('docket.entry.fields.description') }}</span>
+                </label>
+                <textarea
+                    wire:model="description"
+                    class="textarea textarea-bordered w-full @error('description') textarea-error @enderror"
+                    rows="3"
+                ></textarea>
+                @error('description')
+                    <div class="text-error text-sm mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <x-input-label for="filing_party" :value="__('docket.entry.fields.filing_party')" />
-                    <x-text-input 
-                        wire:model="filing_party" 
-                        type="text" 
-                        class="mt-1 block w-full"
-                        :error="$errors->has('filing_party')"
-                    />
-                    <x-input-error :messages="$errors->get('filing_party')" />
+                    <label class="label">
+                        <span class="label-text">{{ __('docket.entry.fields.filing_party') }}</span>
+                    </label>
+                    <input
+                        type="text"
+                        wire:model="filing_party"
+                        class="input input-bordered w-full @error('filing_party') input-error @enderror"
+                    >
+                    @error('filing_party')
+                        <div class="text-error text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div>
-                    <x-input-label for="judge" :value="__('docket.entry.fields.judge')" />
-                    <x-text-input 
-                        wire:model="judge" 
-                        type="text" 
-                        class="mt-1 block w-full"
-                        :error="$errors->has('judge')"
-                    />
-                    <x-input-error :messages="$errors->get('judge')" />
+                    <label class="label">
+                        <span class="label-text">{{ __('docket.entry.fields.judge') }}</span>
+                    </label>
+                    <input
+                        type="text"
+                        wire:model="judge"
+                        class="input input-bordered w-full @error('judge') input-error @enderror"
+                    >
+                    @error('judge')
+                        <div class="text-error text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <x-input-label for="docket_number" :value="__('docket.entry.fields.docket_number')" />
-                    <x-text-input 
-                        wire:model="docket_number" 
-                        type="text" 
-                        class="mt-1 block w-full"
-                        :error="$errors->has('docket_number')"
-                    />
-                    <x-input-error :messages="$errors->get('docket_number')" />
+                    <label class="label">
+                        <span class="label-text">{{ __('docket.entry.fields.docket_number') }}</span>
+                    </label>
+                    <input
+                        type="text"
+                        wire:model="docket_number"
+                        class="input input-bordered w-full @error('docket_number') input-error @enderror"
+                    >
+                    @error('docket_number')
+                        <div class="text-error text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div>
-                    <x-input-label for="status" :value="__('docket.entry.fields.status')" />
-                    <x-select 
+                    <label class="label">
+                        <span class="label-text">{{ __('docket.entry.fields.status') }}</span>
+                    </label>
+                    <select
                         wire:model="status"
-                        :options="$statuses"
-                        :translate-prefix="'docket.entry.status'"
-                        class="mt-1 block w-full"
-                        :error="$errors->has('status')"
-                    />
-                    <x-input-error :messages="$errors->get('status')" />
+                        class="select select-bordered w-full @error('status') select-error @enderror"
+                    >
+                        <option value="">{{ __('common.select') }}</option>
+                        @foreach($statuses as $status)
+                            <option value="{{ $status }}">
+                                {{ __("docket.entry.status.$status") }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('status')
+                        <div class="text-error text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="mt-6 flex justify-end space-x-3">
-                <x-secondary-button wire:click="$set('isOpen', false)" wire:loading.attr="disabled">
+                <button
+                    type="button"
+                    wire:click="$set('isOpen', false)"
+                    class="btn btn-ghost"
+                >
                     {{ __('common.cancel') }}
-                </x-secondary-button>
-                <x-primary-button type="submit" wire:loading.attr="disabled">
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
                     {{ __('docket.entry.create') }}
-                </x-primary-button>
+                </button>
             </div>
         </form>
     </div>

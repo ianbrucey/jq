@@ -1,17 +1,29 @@
-- all livewire components should be in the `app/Livewire` directory
-- us daisyUI for styling
-- refer to database_schema.md for database structure
-- refer to about_justice_quest.md for project overview
-- we store information about features in confluence/features
-- when you add a new field to a model, make sure that you update the fillable array on the class
-- we are using laravel 11 and Livewire 3
-- when working on a feature or a bug, do not touch any other functionality or elements, unless absolutely necessary to accomplish the task
-- any migrations you decide to create should have a file name with a date later than the last migration created. You should also provide the command to create the migration 
-- use the built-in banner component (`<x-banner>`) for user feedback after important actions. Set using:
-  ```php
-  session()->flash('flash.banner', __('translation.key'));
-  session()->flash('flash.bannerStyle', 'success'); // success, danger, warning
-  ```
+## Common Form Components
+The following Blade components should be available in all forms:
+- `<x-input-label>` - For form input labels
+- `<x-input-error>` - For displaying validation errors
+- `<x-text-input>` - For text input fields
+- `<x-textarea>` - For multiline text input
+- `<x-select>` - For dropdown select fields
+- `<x-checkbox>` - For checkbox inputs
+- `<x-radio>` - For radio inputs
+- `<x-button>` - For form submission and actions
+
+Usage example:
+```blade
+<div>
+    <x-input-label for="field_name" :value="__('label.text')" />
+    <x-text-input 
+        id="field_name"
+        type="text"
+        class="mt-1 block w-full"
+        :error="$errors->has('field_name')"
+    />
+    <x-input-error :messages="$errors->get('field_name')" />
+</div>
+```
+
+When creating new features, ensure all required components are present and consistent with the existing design system.
 
 # Additional Rules:
 
@@ -59,3 +71,55 @@
 - update technical documentation when changing architecture
 - include examples for complex component interactions
 - document any deviations from standard patterns
+
+## Page Creation Rules
+- New features should follow this structure:
+  1. Create a controller in `app/Http/Controllers`
+  2. Create a blade view in `resources/views/{feature}`
+  3. Create Livewire components in `app/Livewire/{Feature}`
+  4. Register route in `routes/web.php` using the controller
+
+- DO NOT route directly to Livewire components in `routes/web.php`
+  ```php
+  // ❌ Don't do this:
+  Route::get('/feature/{model}', \App\Livewire\Feature\FeatureComponent::class);
+  
+  // ✅ Do this instead:
+  Route::get('/feature/{model}', [\App\Http\Controllers\FeatureController::class, 'index']);
+  ```
+
+- Standard Controller Structure:
+  ```php
+  class FeatureController extends Controller
+  {
+      public function index(Model $model)
+      {
+          return view('feature.index', [
+              'model' => $model
+          ]);
+      }
+  }
+  ```
+
+- Standard View Structure:
+  ```blade
+  <x-app-layout>
+      <x-slot name="header">
+          <h2 class="text-xl font-semibold leading-tight text-base-content/80">
+              {{ __('feature.title') }}
+          </h2>
+      </x-slot>
+
+      <div class="py-12">
+          <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+              <livewire:feature.feature-component :model="$model" />
+          </div>
+      </div>
+  </x-app-layout>
+  ```
+
+## File Organization
+- Controllers: `app/Http/Controllers/{Feature}Controller.php`
+- Views: `resources/views/{feature}/{action}.blade.php`
+- Livewire Components: `app/Livewire/{Feature}/{ComponentName}.php`
+- Livewire Views: `resources/views/livewire/{feature}/{component-name}.blade.php`

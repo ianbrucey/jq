@@ -53,7 +53,7 @@ Route::middleware([
     })->name('dashboard');
 
     // Add new docket routes
-    Route::get('/case-files/{caseFile}/docket', \App\Livewire\Docket\DocketDashboard::class)
+    Route::get('/case-files/{caseFile}/docket', [\App\Http\Controllers\DocketController::class, 'index'])
         ->name('case-files.docket');
 
     Route::resource('case-files', \App\Http\Controllers\CaseFileController::class);
