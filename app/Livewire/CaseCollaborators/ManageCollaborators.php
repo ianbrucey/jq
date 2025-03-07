@@ -28,7 +28,7 @@ class ManageCollaborators extends Component
 
     public function invite()
     {
-        $this->authorize('inviteCollaborators', $this->caseFile);
+        $this->authorize('manageCollaborators', $this->caseFile);
 
         $this->validate();
 

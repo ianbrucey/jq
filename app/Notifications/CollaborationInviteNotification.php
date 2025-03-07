@@ -8,8 +8,10 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class CollaborationInviteNotification extends Notification implements ShouldQueue
+class CollaborationInviteNotification extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 
@@ -20,7 +22,7 @@ class CollaborationInviteNotification extends Notification implements ShouldQueu
 
     public function via($notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail', 'database', 'broadcast'];
     }
 
     public function toMail($notifiable): MailMessage
@@ -40,5 +42,15 @@ class CollaborationInviteNotification extends Notification implements ShouldQueu
             'case_title' => $this->caseFile->title,
             'role' => $this->collaborator->role,
         ];
+    }
+
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'case_file_id' => $this->caseFile->id,
+            'case_title' => $this->caseFile->title,
+            'role' => $this->collaborator->role,
+            'type' => 'collaboration_invite'
+        ]);
     }
 }

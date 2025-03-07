@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,7 @@ class LanguageSelector extends Component
         App::setLocale($language);
 
         // Add debug logging
-        \Log::info('Language switched', [
+        Log::info('Language switched', [
             'new_language' => $language,
             'app_locale' => App::getLocale(),
             'session_language' => session()->get('language'),
@@ -47,7 +48,7 @@ class LanguageSelector extends Component
     public function render()
     {
         // Add debug logging
-        \Log::info('LanguageSelector rendered', [
+        Log::info('LanguageSelector rendered', [
             'current_language' => $this->currentLanguage,
             'app_locale' => App::getLocale()
         ]);

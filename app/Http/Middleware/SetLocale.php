@@ -12,7 +12,7 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = config('language.default', 'en');
+        $locale = config('language.available', 'en');
 
         if (Auth::check()) {
             // Get language from authenticated user
