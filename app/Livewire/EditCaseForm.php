@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\CaseFile;
 use Livewire\Component;
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\On;
 
 class EditCaseForm extends Component
 {
@@ -31,16 +32,24 @@ class EditCaseForm extends Component
         $this->desired_outcome = $caseFile->desired_outcome;
     }
 
+    #[On('voice-message-updated')]
+    public function handleVoiceMessageUpdated($name, $message)
+    {
+        if ($name === 'summary') {
+            $this->summary = $message;
+        }
+    }
+
     public function save()
     {
         $validated = $this->validate();
 
         try {
             $this->caseFile->update($validated);
-            
+
             session()->flash('flash.banner', __('cases.edit.success'));
             session()->flash('flash.bannerStyle', 'success');
-            
+
             return redirect()->route('case-files.show', $this->caseFile);
         } catch (\Exception $e) {
             session()->flash('flash.banner', __('cases.edit.error'));
