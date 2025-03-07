@@ -13,4 +13,5 @@ return [
     'create_new_team' => 'Crear Nuevo Equipo',
     'switch_teams' => 'Cambiar Equipos',
     'logout' => 'Cerrar Sesión',
+    'invitations' => 'Invitaciones',
 ];

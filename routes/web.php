@@ -61,6 +61,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/case-files/{caseFile}/correspondences/{thread}', [CorrespondenceController::class, 'show'])
         ->name('case-files.correspondences.show');
+
+    Route::get('/invitations', function () {
+        return view('invitations.index');
+    })->name('invitations');
 });
 // AUTHENTICATED USER ROUTES
 

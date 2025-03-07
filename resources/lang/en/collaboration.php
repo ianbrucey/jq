@@ -34,5 +34,14 @@ return [
         'role' => 'Role',
         'added' => 'Added',
         'actions' => 'Actions'
-    ]
+    ],
+    'invitations' => 'Invitations',
+    'pending_invitations' => 'Pending Invitations',
+    'role' => 'Role',
+    'accept' => 'Accept',
+    'decline' => 'Decline',
+    'notifications' => [
+        'invitation_accepted' => 'Invitation accepted successfully',
+        'invitation_declined' => 'Invitation declined',
+    ],
 ];

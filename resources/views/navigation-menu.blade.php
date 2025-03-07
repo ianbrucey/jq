@@ -15,6 +15,14 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('navigation.dashboard') }}
                     </x-nav-link>
+                    @if(auth()->user()->collaborations()->where('status', 'pending')->exists())
+                        <x-nav-link href="{{ route('invitations') }}" :active="request()->routeIs('invitations')">
+                            {{ __('collaboration.invitations') }}
+                            <span class="ml-2 px-2 py-0.5 text-xs bg-primary text-primary-content rounded-full">
+                                {{ auth()->user()->collaborations()->where('status', 'pending')->count() }}
+                            </span>
+                        </x-nav-link>
+                    @endif
                     <livewire:notifications.notifications-list />
                 </div>
             </div>
@@ -198,6 +206,14 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('navigation.dashboard') }}
             </x-responsive-nav-link>
+            @if(auth()->user()->collaborations()->where('status', 'pending')->exists())
+                <x-responsive-nav-link href="{{ route('invitations') }}" :active="request()->routeIs('invitations')">
+                    {{ __('collaboration.invitations') }}
+                    <span class="ml-2 px-2 py-0.5 text-xs bg-primary text-primary-content rounded-full">
+                        {{ auth()->user()->collaborations()->where('status', 'pending')->count() }}
+                    </span>
+                </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link href="{{ route('address-book.index') }}" :active="request()->routeIs('address-book.*')">
                 {{ __('navigation.address_book') }}
             </x-responsive-nav-link>

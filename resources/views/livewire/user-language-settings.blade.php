@@ -10,10 +10,10 @@
 
         <x-slot name="form">
             <div class="col-span-6 sm:col-span-4">
-                <x-label for="language" value="{{ __('Language') }}" />
+                {{-- <x-label for="language" value="{{ __('Language') }}" /> --}}
                 <select
                     id="language"
-                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     wire:model="language"
                 >
                     @foreach($availableLanguages as $code => $lang)
@@ -37,3 +37,6 @@
         </x-slot>
     </x-form-section>
 </div>
+
+
+

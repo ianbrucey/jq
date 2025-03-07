@@ -41,6 +41,7 @@ class CollaborationInviteNotification extends Notification implements ShouldQueu
             'case_file_id' => $this->caseFile->id,
             'case_title' => $this->caseFile->title,
             'role' => $this->collaborator->role,
+            'collaborator_id' => $this->collaborator->id,
         ];
     }
 

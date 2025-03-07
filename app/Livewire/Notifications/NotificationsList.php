@@ -5,6 +5,7 @@ namespace App\Livewire\Notifications;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
+use App\Models\CaseCollaborator;
 
 class NotificationsList extends Component
 {
@@ -65,13 +66,59 @@ class NotificationsList extends Component
 
     public function markAsRead(string $notificationId)
     {
-        auth()->user()
+        $notification = auth()->user()
             ->notifications()
             ->where('id', $notificationId)
-            ->first()
-            ->markAsRead();
+            ->first();
 
-        $this->dispatch('notification-read');
+        if ($notification) {
+            $notification->markAsRead();
+            $this->dispatch('notification-read');
+        }
+    }
+
+    public function acceptInvitation(string $notificationId)
+    {
+        $notification = auth()->user()
+            ->notifications()
+            ->where('id', $notificationId)
+            ->first();
+
+        if ($notification) {
+            $collaborator = CaseCollaborator::find($notification->data['collaborator_id']);
+
+            if ($collaborator) {
+                $collaborator->update(['status' => 'active']);
+                $notification->markAsRead();
+
+                $this->dispatch('notify', [
+                    'message' => __('collaboration.notifications.invitation_accepted')
+                ]);
+
+                $this->redirect(route('case-files.show', $notification->data['case_file_id']));
+            }
+        }
+    }
+
+    public function declineInvitation(string $notificationId)
+    {
+        $notification = auth()->user()
+            ->notifications()
+            ->where('id', $notificationId)
+            ->first();
+
+        if ($notification) {
+            $collaborator = CaseCollaborator::find($notification->data['collaborator_id']);
+
+            if ($collaborator) {
+                $collaborator->delete();
+                $notification->markAsRead();
+
+                $this->dispatch('notify', [
+                    'message' => __('collaboration.notifications.invitation_declined')
+                ]);
+            }
+        }
     }
 
     public function markAllAsRead()

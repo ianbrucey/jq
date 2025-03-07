@@ -28,6 +28,11 @@ class User extends Authenticatable
         return $this->hasMany(CaseFile::class);
     }
 
+    public function collaborations(): HasMany
+    {
+        return $this->hasMany(CaseCollaborator::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

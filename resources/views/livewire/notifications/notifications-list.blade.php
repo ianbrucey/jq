@@ -45,12 +45,22 @@
                                                 'role' => $notification->data['role']
                                             ]) }}
                                         </p>
-                                        <a
-                                            href="{{ route('cases.show', $notification->data['case_file_id']) }}"
-                                            class="text-primary text-sm hover:text-primary-focus"
-                                        >
-                                            {{ __('notifications.view_case') }}
-                                        </a>
+                                        <div class="mt-2 space-x-2">
+                                            <button
+                                                wire:click="acceptInvitation('{{ $notification->id }}')"
+                                                wire:loading.attr="disabled"
+                                                class="btn btn-primary btn-xs"
+                                            >
+                                                {{ __('collaboration.accept') }}
+                                            </button>
+                                            <button
+                                                wire:click="declineInvitation('{{ $notification->id }}')"
+                                                wire:loading.attr="disabled"
+                                                class="btn btn-ghost btn-xs"
+                                            >
+                                                {{ __('collaboration.decline') }}
+                                            </button>
+                                        </div>
                                         @break
 
                                     @case('App\Notifications\CollaboratorRemovedNotification')
@@ -68,6 +78,12 @@
                                                 'role' => $notification->data['new_role']
                                             ]) }}
                                         </p>
+                                        <button
+                                            wire:click="markAsRead('{{ $notification->id }}', '{{ route('case-files.show', $notification->data['case_file_id']) }}')"
+                                            class="text-primary text-sm hover:text-primary-focus"
+                                        >
+                                            {{ __('notifications.view_case') }}
+                                        </button>
                                         @break
                                 @endswitch
                                 <span class="text-xs text-base-content/70">

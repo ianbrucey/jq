@@ -16,19 +16,19 @@ class UserLanguageSettings extends Component
 
     public function updateLanguage()
     {
+        $availableLanguages = array_keys(config('language.available', []));
+        
         $this->validate([
-            'language' => ['required', 'string', 'in:' . implode(',', array_keys(config('language.available')))],
+            'language' => ['required', 'string', 'in:' . implode(',', $availableLanguages)],
         ]);
 
         Auth::user()->update(['language' => $this->language]);
         app()->setLocale($this->language);
         session()->put('language', $this->language);
 
-        // Dispatch event for language selector sync
         $this->dispatch('language-updated', language: $this->language)->to('language-selector');
         $this->dispatch('saved');
 
-        // Refresh the page
         return $this->redirect(request()->header('Referer'), navigate: true);
     }
 
@@ -36,7 +36,8 @@ class UserLanguageSettings extends Component
     {
         return view('livewire.user-language-settings', [
             'availableLanguages' => collect(config('language.available'))
-                ->filter(fn ($lang) => $lang['active'])
+                ->filter(fn ($lang) => $lang['active'] ?? true)
+                ->toArray()
         ]);
     }
 }
