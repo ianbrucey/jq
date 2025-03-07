@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'navigation' => [
+        'docket' => 'Docket',
+        'view_docket' => 'View Docket',
+    ],
     'title' => 'Docket',
     'dashboard' => [
         'title' => 'Docket Entries',

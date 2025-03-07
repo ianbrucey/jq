@@ -143,7 +143,7 @@
       "unique": [["team_id", "email"]]
     },
     "case_files": {
-      "description": "Stores legal case information",
+      "description": "Stores case information",
       "columns": {
         "id": {"type": "bigint", "primary": true, "autoIncrement": true},
         "user_id": {"type": "bigint", "nullable": false, "references": {"table": "users", "column": "id", "onDelete": "cascade"}},
@@ -154,6 +154,8 @@
         "openai_project_id": {"type": "bigint", "nullable": true, "references": {"table": "openai_projects", "column": "id", "onDelete": "set null"}},
         "openai_assistant_id": {"type": "string", "nullable": true},
         "openai_vector_store_id": {"type": "string", "nullable": true},
+        "collaboration_enabled": {"type": "boolean", "default": false},
+        "max_collaborators": {"type": "integer", "nullable": true},
         "filed_date": {"type": "date", "nullable": true},
         "created_at": {"type": "timestamp", "nullable": true},
         "updated_at": {"type": "timestamp", "nullable": true}
@@ -357,6 +359,49 @@
       },
       "unique": [["case_file_id", "user_id"]],
       "indexes": [["status", "created_at"]]
+    },
+    "docket_entries": {
+      "description": "Stores court docket entries",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "entry_date": {"type": "date", "nullable": false},
+        "entry_type": {"type": "enum", "values": ["filing", "order", "hearing", "notice", "motion", "judgment", "other"], "nullable": false},
+        "title": {"type": "string", "nullable": false},
+        "description": {"type": "text", "nullable": true},
+        "filing_party": {"type": "string", "nullable": true},
+        "judge": {"type": "string", "nullable": true},
+        "docket_number": {"type": "string", "nullable": true},
+        "status": {"type": "enum", "values": ["pending", "granted", "denied", "heard", "continued", "withdrawn"], "nullable": true},
+        "is_sealed": {"type": "boolean", "default": false},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
+    },
+    "docket_documents": {
+      "description": "Links documents to docket entries",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "docket_entry_id": {"type": "bigint", "nullable": false, "references": {"table": "docket_entries", "column": "id", "onDelete": "cascade"}},
+        "document_id": {"type": "bigint", "nullable": false, "references": {"table": "documents", "column": "id", "onDelete": "cascade"}},
+        "is_primary": {"type": "boolean", "default": false},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "unique": [["docket_entry_id", "is_primary"]]
+    },
+    "docket_deadlines": {
+      "description": "Stores deadlines associated with docket entries",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "docket_entry_id": {"type": "bigint", "nullable": false, "references": {"table": "docket_entries", "column": "id", "onDelete": "cascade"}},
+        "deadline_date": {"type": "date", "nullable": false},
+        "deadline_type": {"type": "string", "nullable": false},
+        "description": {"type": "text", "nullable": true},
+        "reminder_id": {"type": "bigint", "nullable": true, "references": {"table": "reminders", "column": "id", "onDelete": "set null"}},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      }
     }
   },
   "relationships": [
@@ -454,6 +499,31 @@
       "from": {"table": "personal_access_tokens", "column": "id"},
       "to": {"table": "api_token_usage", "column": "personal_access_token_id"},
       "type": "one-to-many"
+    },
+    {
+      "from": {"table": "docket_entries", "column": "case_file_id"},
+      "to": {"table": "case_files", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "docket_documents", "column": "docket_entry_id"},
+      "to": {"table": "docket_entries", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "docket_documents", "column": "document_id"},
+      "to": {"table": "documents", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "docket_deadlines", "column": "docket_entry_id"},
+      "to": {"table": "docket_entries", "column": "id"},
+      "type": "many-to-one"
+    },
+    {
+      "from": {"table": "docket_deadlines", "column": "reminder_id"},
+      "to": {"table": "reminders", "column": "id"},
+      "type": "many-to-one"
     }
   ]
 }
