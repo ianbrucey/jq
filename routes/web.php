@@ -52,6 +52,10 @@ Route::middleware([
         ]);
     })->name('dashboard');
 
+    // Add new docket routes
+    Route::get('/case-files/{caseFile}/docket', \App\Livewire\Docket\DocketDashboard::class)
+        ->name('case-files.docket');
+
     Route::resource('case-files', \App\Http\Controllers\CaseFileController::class);
     Route::resource('case-files.drafts', \App\Http\Controllers\DraftController::class);
 });

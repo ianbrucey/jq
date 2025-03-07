@@ -10,6 +10,10 @@
                    class="btn btn-ghost btn-sm">
                     ← {{ __('cases.actions.back_to_dashboard') }}
                 </a>
+                <a href="{{ route('case-files.docket', $caseFile) }}"
+                   class="btn btn-sm {{ request()->routeIs('case-files.docket') ? 'btn-primary' : 'btn-ghost' }}">
+                    {{ __('docket.navigation.docket') }}
+                </a>
             </div>
         </div>
     </x-slot>

@@ -67,4 +67,10 @@ class DocketEntry extends Model
     {
         return $this->documents()->wherePivot('is_primary', true);
     }
+
+    public function communications(): BelongsToMany
+    {
+        return $this->belongsToMany(Communication::class, 'docket_entry_communications')
+            ->withTimestamps();
+    }
 }

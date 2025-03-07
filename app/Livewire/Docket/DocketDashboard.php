@@ -15,7 +15,7 @@ class DocketDashboard extends Component
     use WithPagination;
 
     public CaseFile $caseFile;
-    
+
     public string $search = '';
     public ?string $entryType = null;
     public ?string $status = null;
@@ -42,18 +42,19 @@ class DocketDashboard extends Component
     #[Computed]
     public function entries(): Builder
     {
-        return $this->caseFile->docketEntries()
-            ->when($this->search, fn($query) => 
+        return DocketEntry::query()
+            ->where('case_file_id', $this->caseFile->id)
+            ->when($this->search, fn($query) =>
                 $query->where(function($q) {
                     $q->where('title', 'like', "%{$this->search}%")
                       ->orWhere('description', 'like', "%{$this->search}%")
                       ->orWhere('docket_number', 'like', "%{$this->search}%");
                 })
             )
-            ->when($this->entryType, fn($query) => 
+            ->when($this->entryType, fn($query) =>
                 $query->where('entry_type', $this->entryType)
             )
-            ->when($this->status, fn($query) => 
+            ->when($this->status, fn($query) =>
                 $query->where('status', $this->status)
             )
             ->orderBy('entry_date', 'desc')

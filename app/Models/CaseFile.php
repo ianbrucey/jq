@@ -85,4 +85,9 @@ class CaseFile extends Model
 
         return $collaborator ? $collaborator->role : null;
     }
+
+    public function docketEntries(): HasMany
+    {
+        return $this->hasMany(DocketEntry::class);
+    }
 }
