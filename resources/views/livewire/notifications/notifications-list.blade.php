@@ -1,5 +1,5 @@
 <div class="relative">
-    <button 
+    <button
         wire:click="$toggle('showNotifications')"
         class="btn btn-ghost btn-circle"
     >
@@ -14,7 +14,7 @@
     </button>
 
     @if($showNotifications)
-        <div 
+        <div
             class="absolute right-0 mt-2 w-80 bg-base-100 rounded-lg shadow-xl border border-base-300 z-50"
             x-on:click.away="$wire.showNotifications = false"
         >
@@ -22,7 +22,7 @@
                 <div class="flex justify-between items-center">
                     <h3 class="text-lg font-medium">{{ __('notifications.title') }}</h3>
                     @if($this->unreadCount > 0)
-                        <button 
+                        <button
                             wire:click="markAllAsRead"
                             class="text-sm text-primary hover:text-primary-focus"
                         >
@@ -45,7 +45,7 @@
                                                 'role' => $notification->data['role']
                                             ]) }}
                                         </p>
-                                        <a 
+                                        <a
                                             href="{{ route('cases.show', $notification->data['case_file_id']) }}"
                                             class="text-primary text-sm hover:text-primary-focus"
                                         >
@@ -74,7 +74,7 @@
                                     {{ $notification->created_at->diffForHumans() }}
                                 </span>
                             </div>
-                            <button 
+                            <button
                                 wire:click="markAsRead('{{ $notification->id }}')"
                                 class="text-xs text-base-content/70 hover:text-base-content"
                             >

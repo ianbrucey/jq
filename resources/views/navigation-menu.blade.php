@@ -15,14 +15,7 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('navigation.dashboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('address-book.index') }}" :active="request()->routeIs('address-book.*')">
-                        {{ __('navigation.address_book') }}
-                    </x-nav-link>
-                    @can('manage-project-tokens')
-                        <x-nav-link href="{{ route('openai.projects.index') }}" :active="request()->routeIs('api-tokens')">
-                            {{ __('navigation.manage_project_tokens') }}
-                        </x-nav-link>
-                    @endcan
+                    <livewire:notifications.notifications-list />
                 </div>
             </div>
 
@@ -167,19 +160,8 @@
                             @endif
 
                             @can('manage-project-tokens')
-
-                                <div class="border-t border-base-content/20 dark:border-base-content/60"></div>
-
-                                <div class="block px-4 py-2 text-xs text-base-content/60">
-                                    {{ __('Admin Tools') }}
-                                </div>
-
-                                <x-dropdown-link href="{{ route('horizon.index') }}">
-                                    {{ __('Horizon') }}
-                                </x-dropdown-link>
-
                                 <x-dropdown-link href="{{ route('openai.projects.index') }}">
-                                    {{ __('Manage OpenAI Project Tokens') }}
+                                    {{ __('navigation.manage_project_tokens') }}
                                 </x-dropdown-link>
                             @endcan
                             <div class="border-t border-base-content/20 dark:border-base-content/60"></div>
