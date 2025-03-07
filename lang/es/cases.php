@@ -4,16 +4,8 @@ return [
     'details' => 'Detalles del Caso',
     'case_number' => 'Número de Caso',
     'desired_outcome' => 'Resultado Deseado',
-    'documents' => [
-        'title' => 'Documentos del Caso',
-        'description' => 'Gestionar y organizar los documentos relacionados con este caso',
-    ],
-    'correspondences' => [
-        'title' => 'Correspondencias',
-        'description' => 'Seguimiento de las comunicaciones entre las partes involucradas en este caso',
-    ],
     'status' => [
-        'title' => 'Estado del Caso',
+        'title' => 'Estado',
         'created' => 'Creado',
         'last_updated' => 'Última Actualización',
         'not_assigned' => 'No Asignado'
@@ -22,22 +14,26 @@ return [
         'title' => 'Acciones Rápidas',
         'documents' => [
             'title' => 'Documentos',
-            'description' => 'Gestionar documentos y archivos del caso',
-            'action' => 'Ver Documentos'
+            'description' => 'Subir y gestionar documentos del caso',
+            'action' => 'Gestionar Documentos'
         ],
         'correspondences' => [
-            'title' => 'Correspondencias',
-            'description' => 'Seguimiento de comunicaciones y mensajes',
-            'action' => 'Ver Conversaciones'
-        ],
-        'parties' => [
-            'title' => 'Partes Relacionadas',
-            'description' => 'Gestionar partes involucradas',
-            'action' => 'Ver Partes'
+            'title' => 'Correspondencia',
+            'description' => 'Ver y gestionar comunicaciones del caso',
+            'action' => 'Ver Correspondencia'
         ]
     ],
     'actions' => [
-        'edit' => 'Editar Caso',
-        'back_to_dashboard' => 'Volver al Panel'
+        'back_to_dashboard' => 'Volver al Panel',
+        'edit' => 'Editar Caso'
+    ],
+    'collaboration' => [
+        'title' => 'Colaboradores del Caso',
+        'not_enabled' => 'La colaboración no está habilitada para este caso.',
+        'enable' => 'Habilitar Colaboración',
+        'manage' => 'Gestionar Colaboradores',
+        'current' => 'Colaboradores Actuales',
+        'invite' => 'Invitar Colaborador',
+        'no_collaborators' => 'Aún no hay colaboradores'
     ]
 ];

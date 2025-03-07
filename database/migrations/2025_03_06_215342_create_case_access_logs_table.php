@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('case_access_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('case_file_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('action');
+            $table->json('metadata')->nullable();
             $table->timestamps();
+
+            $table->index(['case_file_id', 'created_at']);
+            $table->index(['user_id', 'created_at']);
         });
     }
 

@@ -22,7 +22,15 @@ class CaseFile extends Model
         'filed_date',
         'openai_assistant_id',
         'openai_vector_store_id',
-        'openai_project_id'
+        'openai_project_id',
+        'collaboration_enabled',
+        'max_collaborators'
+    ];
+
+    protected $casts = [
+        'collaboration_enabled' => 'boolean',
+        'max_collaborators' => 'integer',
+        'filed_date' => 'date'
     ];
 
     public function user(): BelongsTo
@@ -48,5 +56,33 @@ class CaseFile extends Model
     public function threads(): HasMany
     {
         return $this->hasMany(Thread::class);
+    }
+
+    public function collaborators(): HasMany
+    {
+        return $this->hasMany(CaseCollaborator::class);
+    }
+
+    public function accessLogs(): HasMany
+    {
+        return $this->hasMany(CaseAccessLog::class);
+    }
+
+    public function hasCollaborator(User $user): bool
+    {
+        return $this->collaborators()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->exists();
+    }
+
+    public function getCollaboratorRole(User $user): ?string
+    {
+        $collaborator = $this->collaborators()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->first();
+
+        return $collaborator ? $collaborator->role : null;
     }
 }

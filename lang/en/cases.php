@@ -4,16 +4,8 @@ return [
     'details' => 'Case Details',
     'case_number' => 'Case Number',
     'desired_outcome' => 'Desired Outcome',
-    'documents' => [
-        'title' => 'Case Documents',
-        'description' => 'Manage and organize documents related to this case',
-    ],
-    'correspondences' => [
-        'title' => 'Correspondences',
-        'description' => 'Track communications between parties involved in this case',
-    ],
     'status' => [
-        'title' => 'Case Status',
+        'title' => 'Status',
         'created' => 'Created',
         'last_updated' => 'Last Updated',
         'not_assigned' => 'Not Assigned'
@@ -22,22 +14,31 @@ return [
         'title' => 'Quick Actions',
         'documents' => [
             'title' => 'Documents',
-            'description' => 'Manage case documents and files',
-            'action' => 'View Documents'
+            'description' => 'Upload and manage case documents',
+            'action' => 'Manage Documents'
         ],
         'correspondences' => [
             'title' => 'Correspondences',
-            'description' => 'Track communications and messages',
-            'action' => 'View Threads'
+            'description' => 'View and manage case communications',
+            'action' => 'View Correspondences'
         ],
         'parties' => [
-            'title' => 'Related Parties',
-            'description' => 'Manage involved parties',
-            'action' => 'View Parties'
+            'title' => 'Parties',
+            'description' => 'Manage case parties and contacts',
+            'action' => 'Manage Parties'
         ]
     ],
     'actions' => [
-        'edit' => 'Edit Case',
-        'back_to_dashboard' => 'Back to Dashboard'
+        'back_to_dashboard' => 'Back to Dashboard',
+        'edit' => 'Edit Case'
+    ],
+    'collaboration' => [
+        'title' => 'Case Collaborators',
+        'not_enabled' => 'Collaboration is not enabled for this case.',
+        'enable' => 'Enable Collaboration',
+        'manage' => 'Manage Collaborators',
+        'current' => 'Current Collaborators',
+        'invite' => 'Invite Collaborator',
+        'no_collaborators' => 'No collaborators yet'
     ]
 ];

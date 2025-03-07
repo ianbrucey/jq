@@ -327,6 +327,36 @@
         "created_at": {"type": "timestamp", "nullable": true},
         "updated_at": {"type": "timestamp", "nullable": true}
       }
+    },
+    "case_access_logs": {
+      "description": "Stores audit logs for case access and actions",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "user_id": {"type": "bigint", "nullable": false, "references": {"table": "users", "column": "id", "onDelete": "cascade"}},
+        "action": {"type": "string", "nullable": false},
+        "metadata": {"type": "json", "nullable": true},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "indexes": [
+        ["case_file_id", "created_at"],
+        ["user_id", "created_at"]
+      ]
+    },
+    "case_collaborators": {
+      "description": "Stores case collaboration permissions and status",
+      "columns": {
+        "id": {"type": "bigint", "primary": true, "autoIncrement": true},
+        "case_file_id": {"type": "bigint", "nullable": false, "references": {"table": "case_files", "column": "id", "onDelete": "cascade"}},
+        "user_id": {"type": "bigint", "nullable": false, "references": {"table": "users", "column": "id", "onDelete": "cascade"}},
+        "role": {"type": "enum", "values": ["viewer", "editor", "manager"], "nullable": false},
+        "status": {"type": "enum", "values": ["pending", "active", "revoked"], "nullable": false, "default": "pending"},
+        "created_at": {"type": "timestamp", "nullable": true},
+        "updated_at": {"type": "timestamp", "nullable": true}
+      },
+      "unique": [["case_file_id", "user_id"]],
+      "indexes": [["status", "created_at"]]
     }
   },
   "relationships": [
