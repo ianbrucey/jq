@@ -18,8 +18,8 @@ return new class extends Migration
             $table->enum('entry_type', ['filing', 'order', 'hearing', 'notice', 'motion', 'judgment', 'other']);
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('filing_party')->nullable();
-            $table->string('judge')->nullable();
+            $table->foreignId('filing_party_id')->nullable()->constrained('parties')->nullOnDelete();
+            $table->foreignId('judge_id')->nullable()->constrained('parties')->nullOnDelete();
             $table->string('docket_number')->nullable();
             $table->enum('status', ['pending', 'granted', 'denied', 'heard', 'continued', 'withdrawn'])->nullable();
             $table->boolean('is_sealed')->default(false);
