@@ -12,4 +12,6 @@ return [
     'cancel' => 'Cancel',
     'view_case' => 'View Case',
     'delete' => 'Delete',
+    'collaborators' => 'Collaborators',
+    'collaboration_enabled' => 'Collaboration Enabled',
 ];
