@@ -53,6 +53,32 @@ return [
             'continued' => 'Continued',
             'withdrawn' => 'Withdrawn'
         ],
+        'search_filing_party' => 'Search for filing party...',
+        'no_parties_found' => 'No matching parties found',
+        'search_judge' => 'Search for judge...',
+        'no_judges_found' => 'No matching judges found',
+        'upload_documents' => 'Upload Documents',
+        'documents' => [
+            'title' => 'Related Documents',
+            'add' => 'Add Document',
+            'remove' => 'Remove Document',
+            'none_selected' => 'No documents selected',
+            'search' => 'Search documents...',
+            'no_results' => 'No documents found'
+        ],
+        'validation' => [
+            'date_required' => 'The entry date is required.',
+            'type_required' => 'The entry type is required.',
+            'title_required' => 'The entry title is required.',
+            'description_required' => 'The description is required.',
+            'filing_party_required' => 'The filing party is required.',
+            'judge_required' => 'The judge is required.'
+        ],
+        'actions' => [
+            'save' => 'Save Entry',
+            'cancel' => 'Cancel',
+            'clear_search' => 'Clear Search'
+        ]
     ],
     'messages' => [
         'created' => 'Docket entry created successfully.',

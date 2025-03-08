@@ -49,6 +49,32 @@ return [
             'continued' => 'Continuado',
             'withdrawn' => 'Retirado'
         ],
+        'search_filing_party' => 'Buscar parte presentante...',
+        'no_parties_found' => 'No se encontraron partes coincidentes',
+        'search_judge' => 'Buscar juez...',
+        'no_judges_found' => 'No se encontraron jueces coincidentes',
+        'upload_documents' => 'Subir Documentos',
+        'documents' => [
+            'title' => 'Documentos Relacionados',
+            'add' => 'Agregar Documento',
+            'remove' => 'Eliminar Documento',
+            'none_selected' => 'No hay documentos seleccionados',
+            'search' => 'Buscar documentos...',
+            'no_results' => 'No se encontraron documentos'
+        ],
+        'validation' => [
+            'date_required' => 'La fecha de entrada es requerida.',
+            'type_required' => 'El tipo de entrada es requerido.',
+            'title_required' => 'El título de la entrada es requerido.',
+            'description_required' => 'La descripción es requerida.',
+            'filing_party_required' => 'La parte presentante es requerida.',
+            'judge_required' => 'El juez es requerido.'
+        ],
+        'actions' => [
+            'save' => 'Guardar Entrada',
+            'cancel' => 'Cancelar',
+            'clear_search' => 'Limpiar Búsqueda'
+        ]
     ],
     'messages' => [
         'created' => 'Entrada de expediente creada exitosamente.',

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\CaseFile;
 use App\Observers\CaseFileObserver;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use App\Livewire\EnhancedApiTokenManager;
@@ -32,5 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('manage-project-tokens', function ($user) {
             return strtolower($user->email) === 'ian@yopmail.com';
         });
+
+        Blade::component('icon', \App\View\Components\Icon::class);
     }
 }

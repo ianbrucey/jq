@@ -1,0 +1,1 @@
+We need the following items to be completed for documentary: we need to add the court name to the migration, when in entry is made, we should see the judges name, the filing party, and the court name. We need a delete button. It should be paginated (limit 5) and should look just like the thread view.. We need a search bar and we need to quick search on title 
